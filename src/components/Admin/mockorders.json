@@ -1,0 +1,58 @@
+[
+  {
+    "orderID": "H0939-307897",
+    "grandTotalAmount": 64.33,
+    "orderStatus": "Delivered",
+    "address": "28 Rugby St, Browns Mills, NJ, 08015, US",
+    "deliveryDate": "2024-12-15",
+    "source": "HomeDepot"
+  },
+  {
+    "orderID": "H0989-522926",
+    "grandTotalAmount": 382.7,
+    "orderStatus": "Delivered",
+    "address": "1937 Springfield Ave, Pennsauken, NJ, 08110, US",
+    "deliveryDate": "2024-12-16",
+    "source": "Amazon"
+  },
+  {
+    "orderID": "WJ68520380",
+    "grandTotalAmount": 28.28,
+    "orderStatus": "Delivered",
+    "address": "28 Rugby St, Grey House, BROWNS MILLS, NJ, 08015, US",
+    "deliveryDate": "2024-12-17",
+    "source": "HomeDepot"
+  },
+  {
+    "orderID": "AMZ-123456",
+    "grandTotalAmount": 150.75,
+    "orderStatus": "Pending",
+    "address": "12 Maple St, Trenton, NJ, 08610, US",
+    "deliveryDate": "2024-12-20",
+    "source": "Amazon"
+  },
+  {
+    "orderID": "HD-789012",
+    "grandTotalAmount": 89.99,
+    "orderStatus": "Shipped",
+    "address": "45 Oakwood Blvd, Camden, NJ, 08104, US",
+    "deliveryDate": "2024-12-21",
+    "source": "HomeDepot"
+  },
+  {
+    "orderID": "AMZ-345678",
+    "grandTotalAmount": 275.49,
+    "orderStatus": "Delivered",
+    "address": "198 Cedar Ave, Cherry Hill, NJ, 08002, US",
+    "deliveryDate": "2024-12-18",
+    "source": "Amazon"
+  },
+  {
+    "orderID": "HD-901234",
+    "grandTotalAmount": 45.0,
+    "orderStatus": "Processing",
+    "address": "67 Pine St, Newark, NJ, 07104, US",
+    "deliveryDate": "2024-12-22",
+    "source": "HomeDepot"
+  }
+]

@@ -1,0 +1,153 @@
+.bg-dark {
+  background-color: #2d2c2c !important;
+}
+.bg-black {
+  background-color: black !important;
+}
+
+.sidebarBar {
+  width: 13dvw;
+  height: 100dvh;
+}
+
+.mainSection {
+  width: 100%;
+}
+
+.mainSectionInner {
+  border-radius: 2.5em;
+  background-color: black;
+  height: 91dvh;
+  overflow-y: auto;
+}
+
+.sidebarBar .nav-link {
+  color: #d1d4d5 !important;
+}
+
+.sidebarBar .nav-link.active {
+  color: #fabc3f !important;
+  background-color: black !important;
+  border-left: 4px solid #fabc3f;
+  border-radius: 0 0.5em 0.5em 0;
+}
+
+.searchIcon {
+  position: absolute;
+  top: 50%;
+  left: 5%;
+  transform: translateY(-50%);
+  height: 40%;
+}
+
+.ordersTable {
+  border-radius: 1.5em;
+  border: 2px solid #9b9b9c;
+}
+.ordersTable table thead tr {
+  background-color: black;
+  color: white;
+  font-weight: normal;
+
+  width: 100%;
+  border: none !important;
+}
+
+.ordersTable table thead th {
+  padding: 1em;
+}
+.ordersTable table thead th:first-child {
+  border-radius: 10px 0 0 10px;
+}
+
+.ordersTable table thead th:last-child {
+  border-radius: 0 10px 10px 0;
+}
+
+.ordersTable table tbody {
+  color: white;
+  position: relative;
+}
+.ordersTable table tbody td,
+.ordersTable table tbody th {
+  padding: 2em 0.5em;
+  border: none;
+}
+
+.table > :not(caption) > * > * {
+  border: none !important;
+}
+.text-secondary {
+  color: #d1d4d5 !important;
+}
+
+.noScrollBar::-webkit-scrollbar {
+  display: none;
+}
+
+.fw-semi-bold {
+  font-weight: 600;
+}
+
+.fade-in {
+  animation: 0.5s fade-in ease-in-out forwards;
+}
+
+@keyframes fade-in {
+  0% {
+    opacity: 0;
+    transform: translateY(300px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.sidebarBar .collaspseButton {
+  cursor: pointer;
+}
+
+.d-xxxl-none {
+  display: none;
+}
+.d-xxxl-none-revert {
+  display: block;
+}
+
+@media screen and (max-width: 1500px) {
+  .d-xxxl-none-revert {
+    display: none;
+  }
+  .d-xxxl-none {
+    display: block;
+  }
+
+  .sidebarBar {
+    width: 5dvw;
+    transition: all 0.3s ease-in-out;
+  }
+  .sidebarBar.expand {
+    width: 250px;
+  }
+  .sidebarBar.expand .txt {
+    display: inline;
+    opacity: 1;
+  }
+
+  .sidebarBar .txt {
+    display: none;
+    transition: all 0.5s ease-in-out;
+    opacity: 0;
+  }
+
+  .mainSection {
+    width: 100vw;
+  }
+  .mainSectionInner {
+    border-radius: 1.3em;
+
+    height: 94dvh;
+    overflow-y: auto;
+  }
+}
