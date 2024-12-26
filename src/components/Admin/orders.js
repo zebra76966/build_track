@@ -1,12 +1,11 @@
 import React, { useEffect, useState, useRef } from "react";
-import OrdersData from "./mockorders.json";
 import { baseUrl } from "../config";
 import toast from "react-hot-toast";
 
 const Orders = () => {
   const [orders, setOrders] = useState([]);
+  const [filteredOrders, setFilteredOrders] = useState([]);
   const [isLoading, setIsloading] = useState(false);
-
   const [active, setActive] = useState("");
   const [activeDetail, setActiveDetail] = useState("");
 
@@ -14,45 +13,39 @@ const Orders = () => {
     setIsloading(true);
 
     try {
-      // const response = await fetch(baseUrl + "/bookings/search-flight/basic/", {
       const response = await fetch(baseUrl + `/dashboard/orders/${active}`, {
         method: "GET",
         headers: { "Content-Type": "application/json" },
       });
       const data = await response.json();
-
-      // Assuming the API returns a `data.offers` array
       setActiveDetail(data);
     } catch (error) {
-      toast.error("Something went wrong while fetching flights.");
+      toast.error("Something went wrong while fetching order details.");
     } finally {
       setIsloading(false);
     }
   };
 
   useEffect(() => {
-    console.log(active);
     if (active !== "") {
       handleDetailView();
     }
   }, [active]);
 
-  const hasFetched = useRef(false); // Prevent multiple API calls
+  const hasFetched = useRef(false);
   const handlesubmit = async () => {
     setIsloading(true);
 
     try {
-      // const response = await fetch(baseUrl + "/bookings/search-flight/basic/", {
       const response = await fetch(baseUrl + "/dashboard/orders/", {
         method: "GET",
         headers: { "Content-Type": "application/json" },
       });
       const data = await response.json();
-
-      // Assuming the API returns a `data.offers` array
       setOrders(data);
+      setFilteredOrders(data); // Set filtered orders to match the original data
     } catch (error) {
-      toast.error("Something went wrong while fetching flights.");
+      toast.error("Something went wrong while fetching orders.");
     } finally {
       setIsloading(false);
     }
@@ -60,7 +53,7 @@ const Orders = () => {
 
   useEffect(() => {
     if (!hasFetched.current) {
-      hasFetched.current = true; // Mark as fetched
+      hasFetched.current = true;
       handlesubmit();
     }
   }, []);
@@ -71,8 +64,8 @@ const Orders = () => {
   const handleSearch = (e) => {
     const value = e.target.value.toLowerCase();
     setSearchTerm(value);
-    const filteredOrders = OrdersData.filter((order) => Object.values(order).some((val) => String(val).toLowerCase().includes(value)));
-    setOrders(filteredOrders);
+    const filteredOrders = orders.filter((order) => Object.values(order).some((val) => String(val).toLowerCase().includes(value)));
+    setFilteredOrders(filteredOrders); // Update filtered data
   };
 
   const handleSort = (key) => {
@@ -82,7 +75,7 @@ const Orders = () => {
     }
     setSortConfig({ key, direction });
 
-    const sortedOrders = [...orders].sort((a, b) => {
+    const sortedOrders = [...filteredOrders].sort((a, b) => {
       if (key === "grand_total_amount") {
         return direction === "asc" ? a[key] - b[key] : b[key] - a[key];
       } else if (key === "delivery_date") {
@@ -91,7 +84,7 @@ const Orders = () => {
         return 0;
       }
     });
-    setOrders(sortedOrders);
+    setFilteredOrders(sortedOrders); // Sort only the filtered data
   };
 
   return (
@@ -158,7 +151,7 @@ const Orders = () => {
         </div>
       )}
 
-      {orders && orders.length > 0 && (
+      {filteredOrders && filteredOrders.length > 0 && (
         <table className="table text-light">
           <thead className="thead">
             <tr>
@@ -175,7 +168,7 @@ const Orders = () => {
             </tr>
           </thead>
           <tbody>
-            {orders.map((ini) => (
+            {filteredOrders.map((ini) => (
               <tr key={ini.order_id} onClick={() => setActive(ini.order_id)} style={{ cursor: "pointer" }}>
                 <th scope="row">{ini.order_id}</th>
                 <td>{ini.source}</td>

@@ -1,10 +1,10 @@
 import React, { useState, useEffect, useRef } from "react";
-import TransactionsData from "./mockTrans.json";
 import { baseUrl } from "../config";
 import toast from "react-hot-toast";
 
 const Transactions = () => {
   const [transactions, setTransactions] = useState([]);
+  const [filteredTransactions, setFilteredTransactions] = useState([]);
   const [isLoading, setIsloading] = useState(false);
   const [active, setActive] = useState("");
   const [activeDetail, setActiveDetail] = useState("");
@@ -13,30 +13,26 @@ const Transactions = () => {
     setIsloading(true);
 
     try {
-      // const response = await fetch(baseUrl + "/bookings/search-flight/basic/", {
       const response = await fetch(baseUrl + `/dashboard/transactions/${active}`, {
         method: "GET",
         headers: { "Content-Type": "application/json" },
       });
       const data = await response.json();
-
-      // Assuming the API returns a `data.offers` array
       setActiveDetail(data);
     } catch (error) {
-      toast.error("Something went wrong while fetching flights.");
+      toast.error("Something went wrong while fetching transactions.");
     } finally {
       setIsloading(false);
     }
   };
 
   useEffect(() => {
-    console.log(active);
     if (active !== "") {
       handleDetailView();
     }
   }, [active]);
 
-  const hasFetched = useRef(false); // Prevent multiple API calls
+  const hasFetched = useRef(false);
 
   const handlesubmit = async () => {
     setIsloading(true);
@@ -48,8 +44,9 @@ const Transactions = () => {
       });
       const data = await response.json();
       setTransactions(data);
+      setFilteredTransactions(data); // Set both original and filtered data
     } catch (error) {
-      toast.error("Something went wrong while fetching flights.");
+      toast.error("Something went wrong while fetching transactions.");
     } finally {
       setIsloading(false);
     }
@@ -57,7 +54,7 @@ const Transactions = () => {
 
   useEffect(() => {
     if (!hasFetched.current) {
-      hasFetched.current = true; // Mark as fetched
+      hasFetched.current = true;
       handlesubmit();
     }
   }, []);
@@ -67,7 +64,7 @@ const Transactions = () => {
 
   const handleSort = (field) => {
     const order = sortOrder.field === field && sortOrder.order === "asc" ? "desc" : "asc";
-    const sortedData = [...transactions].sort((a, b) => {
+    const sortedData = [...filteredTransactions].sort((a, b) => {
       if (field === "date") {
         return order === "asc" ? new Date(a.date) - new Date(b.date) : new Date(b.date) - new Date(a.date);
       } else if (field === "amount") {
@@ -76,14 +73,14 @@ const Transactions = () => {
       return 0;
     });
     setSortOrder({ field, order });
-    setTransactions(sortedData);
+    setFilteredTransactions(sortedData); // Sort only the filtered data
   };
 
   const handleSearch = (e) => {
     const value = e.target.value.toLowerCase();
     setSearchTerm(value);
-    const filteredData = TransactionsData.filter((transaction) => Object.values(transaction).some((field) => String(field).toLowerCase().includes(value)));
-    setTransactions(filteredData);
+    const filteredData = transactions.filter((transaction) => Object.values(transaction).some((field) => String(field).toLowerCase().includes(value)));
+    setFilteredTransactions(filteredData); // Update the filtered data
   };
 
   return (
@@ -151,12 +148,12 @@ const Transactions = () => {
         )}
 
         <div className="w-100" style={{ overflowX: "auto" }}>
-          {transactions && transactions.length > 0 && (
+          {filteredTransactions && filteredTransactions.length > 0 && (
             <table className="table">
               <thead className="text-light thead">
                 <tr className="border-0">
                   <th scope="col">#Id</th>
-                  <th scope="col">Name</th>
+                  <th scope="col">Name </th>
                   <th scope="col">Desc.</th>
                   <th scope="col">Recipient</th>
                   <th scope="col" onClick={() => handleSort("date")} style={{ cursor: "pointer", textDecoration: "none", userSelect: "none" }}>
@@ -169,7 +166,7 @@ const Transactions = () => {
                 </tr>
               </thead>
               <tbody className="border-0">
-                {transactions.map((transaction) => (
+                {filteredTransactions.map((transaction) => (
                   <tr key={transaction.transaction_id} onClick={() => setActive(transaction.transaction_id)} style={{ cursor: "pointer" }}>
                     <th scope="row">{transaction.transaction_id.slice(0, 5)}***</th>
                     <td>{transaction.name}</td>
