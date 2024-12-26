@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import OrdersData from "./mockorders.json";
 import { baseUrl } from "../config";
 import toast from "react-hot-toast";
@@ -7,6 +7,37 @@ const Orders = () => {
   const [orders, setOrders] = useState([]);
   const [isLoading, setIsloading] = useState(false);
 
+  const [active, setActive] = useState("");
+  const [activeDetail, setActiveDetail] = useState("");
+
+  const handleDetailView = async () => {
+    setIsloading(true);
+
+    try {
+      // const response = await fetch(baseUrl + "/bookings/search-flight/basic/", {
+      const response = await fetch(baseUrl + `/dashboard/orders/${active}`, {
+        method: "GET",
+        headers: { "Content-Type": "application/json" },
+      });
+      const data = await response.json();
+
+      // Assuming the API returns a `data.offers` array
+      setActiveDetail(data);
+    } catch (error) {
+      toast.error("Something went wrong while fetching flights.");
+    } finally {
+      setIsloading(false);
+    }
+  };
+
+  useEffect(() => {
+    console.log(active);
+    if (active !== "") {
+      handleDetailView();
+    }
+  }, [active]);
+
+  const hasFetched = useRef(false); // Prevent multiple API calls
   const handlesubmit = async () => {
     setIsloading(true);
 
@@ -28,7 +59,10 @@ const Orders = () => {
   };
 
   useEffect(() => {
-    handlesubmit();
+    if (!hasFetched.current) {
+      hasFetched.current = true; // Mark as fetched
+      handlesubmit();
+    }
   }, []);
 
   const [searchTerm, setSearchTerm] = useState("");
@@ -81,6 +115,49 @@ const Orders = () => {
         </div>
       </div>
 
+      {activeDetail && active !== "" && (
+        <div class="CustomModal fade-in">
+          <div class="CustomModal-content position-relative bg-dark">
+            <div class="bg-black text-light d-flex align-items-center justify-content-between p-3">
+              <h5 class="fs-5" id="exampleModalLabel">
+                ID : #{active}
+              </h5>
+              <button type="button" class="btn-close" style={{ filter: "invert(1)" }} onClick={() => setActive("")}></button>
+            </div>
+            <div class="modal-body text-light">
+              <h5 className="fs-4">{activeDetail.source}</h5>
+              <p className="pt-0 mt-0 text-secondary">{activeDetail.address}</p>
+              {/* <p className="lead mb-5">{activeDetail.description}</p> */}
+
+              <h6 className="fs-5 fw-light  mt-5 pt-5">
+                Status:{" "}
+                <span
+                  className={`fw-bold ${
+                    activeDetail.order_status.toLowerCase() === "pending"
+                      ? "text-danger"
+                      : activeDetail.order_status.toLowerCase() === "complete"
+                      ? "text-success"
+                      : activeDetail.order_status.toLowerCase() === "delivered" || activeDetail.order_status.toLowerCase() === "shipped"
+                      ? "text-info"
+                      : "text-warning"
+                  }`}
+                >
+                  {activeDetail.order_status}
+                </span>
+              </h6>
+              <p className="text-secondary mb-3">{activeDetail.delivery_date}</p>
+
+              <h5 className="fs-4 fw-bold text-success">${activeDetail.grand_total_amount}</h5>
+            </div>
+            <div class="modal-footer bg-black position-absolute bottom-0 w-100">
+              <button type="button" class="btn btn-info" onClick={() => setActive("")}>
+                Close
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
       {orders && orders.length > 0 && (
         <table className="table text-light">
           <thead className="thead">
@@ -99,7 +176,7 @@ const Orders = () => {
           </thead>
           <tbody>
             {orders.map((ini) => (
-              <tr key={ini.order_id}>
+              <tr key={ini.order_id} onClick={() => setActive(ini.order_id)} style={{ cursor: "pointer" }}>
                 <th scope="row">{ini.order_id}</th>
                 <td>{ini.source}</td>
                 <td>{ini.address}</td>

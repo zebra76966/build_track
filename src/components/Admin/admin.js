@@ -34,7 +34,7 @@ const AdminDashboard = () => {
                   </div>
                 )}
                 {active == 1 && (
-                  <div className="fade-in ">
+                  <div className="fade-in position-relative">
                     <Transactions />
                   </div>
                 )}
