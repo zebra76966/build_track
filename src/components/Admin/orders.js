@@ -87,6 +87,60 @@ const Orders = () => {
     setFilteredOrders(sortedOrders); // Sort only the filtered data
   };
 
+  const [fixAddressModal, setFixaAddressModal] = useState(false);
+
+  const [masterAddresses, setMasterAdresses] = useState([]);
+
+  const handleFetchMasterAddress = async () => {
+    setIsloading(true);
+
+    try {
+      const response = await fetch(baseUrl + "/dashboard/pos/", {
+        method: "GET",
+        headers: { "Content-Type": "application/json" },
+      });
+      const data = await response.json();
+      console.log("address", data);
+      setMasterAdresses(data);
+    } catch (error) {
+      toast.error("Something went wrong while fetching orders.");
+    } finally {
+      setIsloading(false);
+    }
+  };
+
+  useEffect(() => {
+    handleFetchMasterAddress();
+  }, []);
+
+  const [ediMasterid, setEditMasterId] = useState("");
+
+  const handleEditMasterAddress = async () => {
+    if (ediMasterid !== "") {
+      setIsloading(true);
+
+      try {
+        const response = await fetch(baseUrl + `/dashboard/orders/${active}/update-po-master/`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: {
+            po_id: 1,
+          },
+        });
+        const data = await response.json();
+        console.log("address", data);
+        toast.success("Success!");
+        setEditMasterId("");
+      } catch (error) {
+        toast.error("Something went wrong while fetching orders.");
+      } finally {
+        setIsloading(false);
+      }
+    } else {
+      toast.error("PLlease select a valid option.");
+    }
+  };
+
   return (
     <div className="w-100 ordersTable bg-dark p-3">
       <div className="d-flex align-items-center justify-content-between p-3">
@@ -107,8 +161,8 @@ const Orders = () => {
           <img src="icons/more-vertical.svg" height={15} alt="More" />
         </div>
       </div>
-
-      {activeDetail && active !== "" && (
+      {console.log(fixAddressModal)}
+      {/* {activeDetail && active !== "" &&  (
         <div class="CustomModal fade-in">
           <div class="CustomModal-content position-relative bg-dark">
             <div class="bg-black text-light d-flex align-items-center justify-content-between p-3">
@@ -117,10 +171,11 @@ const Orders = () => {
               </h5>
               <button type="button" class="btn-close" style={{ filter: "invert(1)" }} onClick={() => setActive("")}></button>
             </div>
+
             <div class="modal-body text-light">
               <h5 className="fs-4">{activeDetail.source}</h5>
               <p className="pt-0 mt-0 text-secondary">{activeDetail.address}</p>
-              {/* <p className="lead mb-5">{activeDetail.description}</p> */}
+ 
 
               <h6 className="fs-5 fw-light  mt-5 pt-5">
                 Status:{" "}
@@ -149,6 +204,86 @@ const Orders = () => {
             </div>
           </div>
         </div>
+      )} */}
+
+      {activeDetail && active !== "" && (
+        <div class="CustomModal fade-in">
+          <div class="CustomModal-content position-relative bg-dark">
+            <div class="bg-black text-light d-flex align-items-center justify-content-between p-3">
+              <h5 class="fs-5" id="exampleModalLabel">
+                ID : #{active}
+              </h5>
+              <button type="button" class="btn-close" style={{ filter: "invert(1)" }} onClick={() => setActive("")}></button>
+            </div>
+
+            <div class="modal-body text-light">
+              <div className="d-flex justify-content-center">
+                <div className="border-1 border-light border rounded-pill d-flex gap-1 p-1">
+                  <button className={`btn ${fixAddressModal ? "btn-outline-light border-0" : "btn-light"} rounded-pill`} onClick={() => setFixaAddressModal(false)}>
+                    Detail
+                  </button>
+                  <button className={`btn ${!fixAddressModal ? "btn-outline-light border-0" : "btn-light "} rounded-pill`} onClick={() => setFixaAddressModal(true)}>
+                    Edit Address
+                  </button>
+                </div>
+              </div>
+              {!fixAddressModal ? (
+                <div className="w-100">
+                  <h5 className="fs-4">{activeDetail.source}</h5>
+                  <p className="pt-0 mt-0 text-secondary">{activeDetail.address}</p>
+                  {/* <p className="lead mb-5">{activeDetail.description}</p> */}
+
+                  <h6 className="fs-5 fw-light  mt-5 pt-5">
+                    Status:{" "}
+                    <span
+                      className={`fw-bold ${
+                        activeDetail.order_status.toLowerCase() === "pending"
+                          ? "text-danger"
+                          : activeDetail.order_status.toLowerCase() === "complete"
+                          ? "text-success"
+                          : activeDetail.order_status.toLowerCase() === "delivered" || activeDetail.order_status.toLowerCase() === "shipped"
+                          ? "text-info"
+                          : "text-warning"
+                      }`}
+                    >
+                      {activeDetail.order_status}
+                    </span>
+                  </h6>
+                  <p className="text-secondary mb-3">{activeDetail.delivery_date}</p>
+
+                  <h5 className="fs-4 fw-bold text-success">${activeDetail.grand_total_amount}</h5>
+                </div>
+              ) : (
+                <div className="w-100 pb-4">
+                  <h5 className="fs-4">Edit Address</h5>
+                  <p className="pt-0 mt-0 text-secondary">Pick a master address</p>
+
+                  <h6 className="fs-5 fw-light  mt-5 pt-2">Master Address: </h6>
+                  <div className="d-flex gap-4 align-items-center  mb-5 ">
+                    <select value={ediMasterid} onChange={(e) => setEditMasterId(e.target.value)} className="form-select bg-dark text-light  mb-3 mt-2" aria-label=".form-select-lg example">
+                      <option value={null} selected className="text-muted">
+                        ----Select Address----
+                      </option>
+                      {masterAddresses.map((ini, i) => {
+                        return <option value={ini.id}>{ini.master_address}</option>;
+                      })}
+                    </select>
+
+                    <button type="button" class="btn btn-info" onClick={handleEditMasterAddress}>
+                      Save
+                    </button>
+                  </div>
+                </div>
+              )}
+            </div>
+
+            <div class="modal-footer bg-black position-absolute bottom-0 w-100">
+              <button type="button" class="btn btn-info" onClick={() => setActive("")}>
+                Close
+              </button>
+            </div>
+          </div>
+        </div>
       )}
 
       {filteredOrders && filteredOrders.length > 0 && (
@@ -168,11 +303,25 @@ const Orders = () => {
             </tr>
           </thead>
           <tbody>
-            {filteredOrders.map((ini) => (
-              <tr key={ini.order_id} onClick={() => setActive(ini.order_id)} style={{ cursor: "pointer" }}>
+            {filteredOrders.map((ini, i) => (
+              <tr key={i} onClick={() => setActive(ini.order_id)} style={{ cursor: "pointer" }}>
                 <th scope="row">{ini.order_id}</th>
                 <td>{ini.source}</td>
-                <td>{ini.address}</td>
+                <td
+                  onClick={() => {
+                    setFixaAddressModal(true);
+                  }}
+                  className={`${!ini.master_address ? "edit-address text-warning" : ""}`}
+                >
+                  {!ini.master_address ? (
+                    <>
+                      <span className="txt-2 pe-2">{"No matching master address found"}</span>
+                      <img src="icons/pen.svg" className="ms-1 border-start border-light ps-2" height={20} />
+                    </>
+                  ) : (
+                    <span className="txt-1">{ini.address}</span>
+                  )}
+                </td>
                 <td>{ini.delivery_date}</td>
                 <td
                   className={`${
