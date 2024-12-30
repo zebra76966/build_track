@@ -124,7 +124,7 @@ const Orders = () => {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
-            po_id: 1,
+            po_id: ediMasterid,
           }),
         });
         const data = await response.json();
@@ -139,7 +139,7 @@ const Orders = () => {
         setIsloading(false);
       }
     } else {
-      toast.error("PLlease select a valid option.");
+      toast.error("Please select a valid option.");
     }
   };
 
@@ -214,13 +214,19 @@ const Orders = () => {
                   </button>
                 </div>
               </div>
+              {console.log(activeDetail)}
               {!fixAddressModal ? (
                 <div className="w-100">
                   <h5 className="fs-4">{activeDetail.source}</h5>
-                  <p className="pt-0 mt-0 text-secondary">{activeDetail.address}</p>
-                  {/* <p className="lead mb-5">{activeDetail.description}</p> */}
+                  <p className="pt-0 mt-0 text-secondary"> Shipping Address : {activeDetail.address}</p>
+                  <p className="fs-6 mt-1 mb-0">
+                    PO : <strong>{activeDetail.PO ? activeDetail.PO : "Not Found"}</strong>{" "}
+                  </p>
+                  <p className="fs-6 mt-0 mb-4">
+                    Master Address : <strong>{activeDetail.master_address ? activeDetail.master_address : "Not Found"}</strong>{" "}
+                  </p>
 
-                  <h6 className="fs-5 fw-light  mt-5 pt-5">
+                  <h6 className="fs-5 fw-light  mt-2 pt-2">
                     Status:{" "}
                     <span
                       className={`fw-bold ${
@@ -244,22 +250,24 @@ const Orders = () => {
                 <div className="w-100 pb-4">
                   <h5 className="fs-4">Edit Address</h5>
 
-                  <div className="d-flex gap-3 align-items-center  mb-5 mt-4">
-                    <p className="fs-5 py-0 my-0 border-end border-1 border-light pe-2">
-                      Current Master Add.: <span className="text-info">{activeDetail.address}</span>{" "}
-                    </p>
-                    {!confirmDelete ? (
-                      <button type="button" class="btn btn-danger" onClick={() => setConfirmDelete(true)}>
-                        Delete
-                      </button>
-                    ) : (
-                      <button type="button" class="btn btn-warning" onClick={handleDeletePOAddress}>
-                        Confirm
-                      </button>
-                    )}
-                  </div>
+                  {activeDetail.PO && (
+                    <div className="d-flex gap-3 align-items-center  mb-5 mt-4">
+                      <p className="fs-5 py-0 my-0 border-end border-1 border-light pe-2">
+                        Current PO: <span className="text-info">{activeDetail.PO}</span>{" "}
+                      </p>
+                      {!confirmDelete ? (
+                        <button type="button" class="btn btn-danger" onClick={() => setConfirmDelete(true)}>
+                          Delete
+                        </button>
+                      ) : (
+                        <button type="button" class="btn btn-warning" onClick={handleDeletePOAddress}>
+                          Confirm
+                        </button>
+                      )}
+                    </div>
+                  )}
 
-                  <p className="pt-0 mt-0 text-secondary mb-0">Change PO</p>
+                  <p className={`pt-0 mt-0 text-secondary ${activeDetail.PO ? "" : "mt-5"} mb-0`}>Change PO</p>
 
                   <div className="d-flex gap-4 align-items-center  mb-5 ">
                     <select value={ediMasterid} onChange={(e) => setEditMasterId(e.target.value)} className="form-select bg-dark text-light  mb-3 mt-2" aria-label=".form-select-lg example">
@@ -277,6 +285,8 @@ const Orders = () => {
                   </div>
                 </div>
               )}
+
+              {console.log(ediMasterid)}
             </div>
 
             <div class="modal-footer bg-black position-absolute bottom-0 w-100">
