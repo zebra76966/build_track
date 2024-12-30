@@ -256,16 +256,16 @@ const Orders = () => {
               ) : (
                 <div className="w-100 pb-4">
                   <h5 className="fs-4">Edit Address</h5>
-                  <p className="pt-0 mt-0 text-secondary">Pick a master address</p>
+                  <p className="pt-0 mt-0 text-secondary">Select PO</p>
 
-                  <h6 className="fs-5 fw-light  mt-5 pt-2">Master Address: </h6>
+                  <h6 className="fs-5 fw-light  mt-5 pt-2">PO Names: </h6>
                   <div className="d-flex gap-4 align-items-center  mb-5 ">
                     <select value={ediMasterid} onChange={(e) => setEditMasterId(e.target.value)} className="form-select bg-dark text-light  mb-3 mt-2" aria-label=".form-select-lg example">
                       <option value={null} selected className="text-muted">
-                        ----Select Address----
+                        ----Select PO----
                       </option>
                       {masterAddresses.map((ini, i) => {
-                        return <option value={ini.id}>{ini.master_address}</option>;
+                        return <option value={ini.id}>{ini.po_name}</option>;
                       })}
                     </select>
 

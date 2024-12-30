@@ -27,7 +27,7 @@ const AdminDashboard = () => {
               <div className="col-12">
                 <h4 className="display-6 fw-semi-bold">Good Evening 👋</h4>
               </div>
-              <div className="col-xl-8 mt-2">
+              <div className="col-xl-10 mt-2">
                 {active == 0 && (
                   <div className="fade-in ">
                     <Orders />
@@ -40,7 +40,7 @@ const AdminDashboard = () => {
                 )}
               </div>
 
-              <div className="col-xl-4 mt-2">
+              <div className="col-xl-4 mt-2 d-none">
                 <div className="position-sticky top-0 left-0 fade-in">
                   <TodoList />
                 </div>
