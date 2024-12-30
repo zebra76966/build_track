@@ -131,6 +131,8 @@ const Orders = () => {
         console.log("address", data);
         toast.success("Success!");
         setEditMasterId("");
+        setActive("");
+        handlesubmit();
       } catch (error) {
         toast.error("Something went wrong while fetching orders.");
       } finally {
@@ -140,6 +142,34 @@ const Orders = () => {
       toast.error("PLlease select a valid option.");
     }
   };
+
+  // Delete PO================>
+
+  const handleDeletePOAddress = async () => {
+    if (active !== "") {
+      setIsloading(true);
+
+      try {
+        const response = await fetch(baseUrl + `/dashboard/orders/${active}/remove-po-master/`, {
+          method: "DELETE",
+          headers: { "Content-Type": "application/json" },
+        });
+        const data = await response.json();
+        toast.success("Success!");
+        setConfirmDelete(false);
+        setActive("");
+        handlesubmit();
+      } catch (error) {
+        toast.error("Something went wrong while fetching orders.");
+      } finally {
+        setIsloading(false);
+      }
+    } else {
+      toast.error("Please select a valid option.");
+    }
+  };
+
+  const [confirmDelete, setConfirmDelete] = useState(false);
 
   return (
     <div className="w-100 ordersTable bg-dark p-3">
@@ -162,49 +192,6 @@ const Orders = () => {
         </div>
       </div>
       {console.log(fixAddressModal)}
-      {/* {activeDetail && active !== "" &&  (
-        <div class="CustomModal fade-in">
-          <div class="CustomModal-content position-relative bg-dark">
-            <div class="bg-black text-light d-flex align-items-center justify-content-between p-3">
-              <h5 class="fs-5" id="exampleModalLabel">
-                ID : #{active}
-              </h5>
-              <button type="button" class="btn-close" style={{ filter: "invert(1)" }} onClick={() => setActive("")}></button>
-            </div>
-
-            <div class="modal-body text-light">
-              <h5 className="fs-4">{activeDetail.source}</h5>
-              <p className="pt-0 mt-0 text-secondary">{activeDetail.address}</p>
- 
-
-              <h6 className="fs-5 fw-light  mt-5 pt-5">
-                Status:{" "}
-                <span
-                  className={`fw-bold ${
-                    activeDetail.order_status.toLowerCase() === "pending"
-                      ? "text-danger"
-                      : activeDetail.order_status.toLowerCase() === "complete"
-                      ? "text-success"
-                      : activeDetail.order_status.toLowerCase() === "delivered" || activeDetail.order_status.toLowerCase() === "shipped"
-                      ? "text-info"
-                      : "text-warning"
-                  }`}
-                >
-                  {activeDetail.order_status}
-                </span>
-              </h6>
-              <p className="text-secondary mb-3">{activeDetail.delivery_date}</p>
-
-              <h5 className="fs-4 fw-bold text-success">${activeDetail.grand_total_amount}</h5>
-            </div>
-            <div class="modal-footer bg-black position-absolute bottom-0 w-100">
-              <button type="button" class="btn btn-info" onClick={() => setActive("")}>
-                Close
-              </button>
-            </div>
-          </div>
-        </div>
-      )} */}
 
       {activeDetail && active !== "" && (
         <div class="CustomModal fade-in">
@@ -256,9 +243,24 @@ const Orders = () => {
               ) : (
                 <div className="w-100 pb-4">
                   <h5 className="fs-4">Edit Address</h5>
-                  <p className="pt-0 mt-0 text-secondary">Select PO</p>
 
-                  <h6 className="fs-5 fw-light  mt-5 pt-2">PO Names: </h6>
+                  <div className="d-flex gap-3 align-items-center  mb-5 mt-4">
+                    <p className="fs-5 py-0 my-0 border-end border-1 border-light pe-2">
+                      Current Master Add.: <span className="text-info">{activeDetail.address}</span>{" "}
+                    </p>
+                    {!confirmDelete ? (
+                      <button type="button" class="btn btn-danger" onClick={() => setConfirmDelete(true)}>
+                        Delete
+                      </button>
+                    ) : (
+                      <button type="button" class="btn btn-warning" onClick={handleDeletePOAddress}>
+                        Confirm
+                      </button>
+                    )}
+                  </div>
+
+                  <p className="pt-0 mt-0 text-secondary mb-0">Change PO</p>
+
                   <div className="d-flex gap-4 align-items-center  mb-5 ">
                     <select value={ediMasterid} onChange={(e) => setEditMasterId(e.target.value)} className="form-select bg-dark text-light  mb-3 mt-2" aria-label=".form-select-lg example">
                       <option value={null} selected className="text-muted">
