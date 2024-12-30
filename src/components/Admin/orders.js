@@ -123,9 +123,9 @@ const Orders = () => {
         const response = await fetch(baseUrl + `/dashboard/orders/${active}/update-po-master/`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: {
+          body: JSON.stringify({
             po_id: 1,
-          },
+          }),
         });
         const data = await response.json();
         console.log("address", data);
