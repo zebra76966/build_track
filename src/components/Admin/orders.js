@@ -194,9 +194,9 @@ const Orders = () => {
       {console.log(fixAddressModal)}
 
       {activeDetail && active !== "" && (
-        <div class="CustomModal fade-in">
-          <div class="CustomModal-content position-relative bg-dark">
-            <div class="bg-black text-light d-flex align-items-center justify-content-between p-3">
+        <div class="CustomModal fade-in shadow-lg">
+          <div class="CustomModal-content position-relative bg-dark" style={{ borderRadius: "1.1em" }}>
+            <div class="bg-black text-light d-flex align-items-center justify-content-between p-3" style={{ borderRadius: "1.1em" }}>
               <h5 class="fs-5" id="exampleModalLabel">
                 ID : #{active}
               </h5>
@@ -217,40 +217,66 @@ const Orders = () => {
               {console.log(activeDetail)}
               {!fixAddressModal ? (
                 <div className="w-100">
-                  <h5 className="fs-4">{activeDetail.source}</h5>
-                  <p className="pt-0 mt-0 text-secondary"> Shipping Address : {activeDetail.address}</p>
-                  <p className="fs-6 mt-1 mb-0">
-                    PO : <strong>{activeDetail.PO ? activeDetail.PO : "Not Found"}</strong>{" "}
-                  </p>
-                  <p className="fs-6 mt-1 mb-0">
-                    Scrapped Address : <strong>{activeDetail.scrapped_address ? activeDetail.scrapped_address : "Not Found"}</strong>{" "}
-                  </p>
-                  <p className="fs-6 mt-1 mb-0">
-                    Scrapped PO : <strong>{activeDetail.scrapped_po ? activeDetail.scrapped_po : "Not Found"}</strong>{" "}
-                  </p>
-                  <p className="fs-6 mt-0 mb-4">
-                    Master Address : <strong>{activeDetail.master_address ? activeDetail.master_address : "Not Found"}</strong>{" "}
-                  </p>
+                  <div className="d-flex justify-content-between align-items-center mt-4">
+                    <h5 className="fs-5 fw-light">
+                      Vendor : <span className="fw-bold">{activeDetail.source}</span>
+                    </h5>
 
-                  <h6 className="fs-5 fw-light  mt-2 pt-2">
-                    Status:{" "}
-                    <span
-                      className={`fw-bold ${
-                        activeDetail.order_status.toLowerCase() === "pending"
-                          ? "text-danger"
-                          : activeDetail.order_status.toLowerCase() === "complete"
-                          ? "text-success"
-                          : activeDetail.order_status.toLowerCase() === "delivered" || activeDetail.order_status.toLowerCase() === "shipped"
-                          ? "text-info"
-                          : "text-warning"
-                      }`}
-                    >
-                      {activeDetail.order_status}
-                    </span>
-                  </h6>
-                  <p className="text-secondary mb-3">{activeDetail.delivery_date}</p>
+                    <h6 className="fs-6 fw-light  mt-2 pt-2">
+                      Status:{" "}
+                      <span
+                        className={`fw-bold p-2 rounded-3 ${
+                          activeDetail.order_status.toLowerCase() === "pending"
+                            ? "bg-danger"
+                            : activeDetail.order_status.toLowerCase() === "complete"
+                            ? "bg-success"
+                            : activeDetail.order_status.toLowerCase() === "delivered" || activeDetail.order_status.toLowerCase() === "shipped"
+                            ? "bg-info"
+                            : "bg-warning"
+                        }`}
+                      >
+                        {activeDetail.order_status}
+                      </span>
+                    </h6>
+                  </div>
 
-                  <h5 className="fs-4 fw-bold text-success">${activeDetail.grand_total_amount}</h5>
+                  <div className="row pb-5 pt-3">
+                    <div className="col-md-6 ">
+                      <div class="card shadow text-white bg-blackOpac mb-3 w-100 border-secondary h-100" style={{ borderRadius: "1.1em" }}>
+                        <div class="card-header border-secondary">Shipping Address</div>
+                        <div class="card-body">
+                          <p className="pt-0 mt-0"> Shipping Address : {activeDetail.address}</p>
+                          <p className="">
+                            Scrapped Address : <strong>{activeDetail.scrapped_address ? activeDetail.scrapped_address : "Not Found"}</strong>{" "}
+                          </p>
+                          <p className="">
+                            Scrapped PO : <strong>{activeDetail.scrapped_po ? activeDetail.scrapped_po : "Not Found"}</strong>{" "}
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="col-md-6 ">
+                      <div class="card shadow text-white bg-blackOpac mb-3 w-100 border-secondary h-100" style={{ borderRadius: "1.1em" }}>
+                        <div class="card-header border-secondary">System Addresses</div>
+                        <div class="card-body">
+                          <p className="fs-6 mt-0 mb-4">
+                            Master Address : <strong>{activeDetail.master_address ? activeDetail.master_address : "Not Found"}</strong>{" "}
+                          </p>
+                          <p className="fs-6 mt-1 mb-0">
+                            PO : <strong>{activeDetail.PO ? activeDetail.PO : "Not Found"}</strong>{" "}
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <p className="text-secondary mb-1 mt-2"> Delivered by : {activeDetail.delivery_date}</p>
+
+                  <h5 className="fs-5 fw-light">
+                    {" "}
+                    Total Amount : <span className="fw-bold text-success"> ${activeDetail.grand_total_amount}</span>
+                  </h5>
                 </div>
               ) : (
                 <div className="w-100 pb-4">
@@ -301,7 +327,7 @@ const Orders = () => {
               {console.log(ediMasterid)}
             </div>
 
-            <div class="modal-footer bg-black position-absolute bottom-0 w-100">
+            <div class="modal-footer bg-black position-absolute bottom-0 w-100" style={{ borderRadius: "1.1em" }}>
               <button type="button" class="btn btn-info" onClick={() => setActive("")}>
                 Close
               </button>
@@ -311,7 +337,7 @@ const Orders = () => {
       )}
 
       {filteredOrders && filteredOrders.length > 0 && (
-        <table className="table text-light">
+        <table className="table text-light" style={{ filter: activeDetail && active !== "" && "blur(10px)" }}>
           <thead className="thead">
             <tr>
               <th scope="col">#Id</th>
