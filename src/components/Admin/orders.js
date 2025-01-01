@@ -222,6 +222,12 @@ const Orders = () => {
                   <p className="fs-6 mt-1 mb-0">
                     PO : <strong>{activeDetail.PO ? activeDetail.PO : "Not Found"}</strong>{" "}
                   </p>
+                  <p className="fs-6 mt-1 mb-0">
+                    Scrapped Address : <strong>{activeDetail.scrapped_address ? activeDetail.scrapped_address : "Not Found"}</strong>{" "}
+                  </p>
+                  <p className="fs-6 mt-1 mb-0">
+                    Scrapped PO : <strong>{activeDetail.scrapped_po ? activeDetail.scrapped_po : "Not Found"}</strong>{" "}
+                  </p>
                   <p className="fs-6 mt-0 mb-4">
                     Master Address : <strong>{activeDetail.master_address ? activeDetail.master_address : "Not Found"}</strong>{" "}
                   </p>
@@ -274,9 +280,15 @@ const Orders = () => {
                       <option value={null} selected className="text-muted">
                         ----Select PO----
                       </option>
-                      {masterAddresses.map((ini, i) => {
-                        return <option value={ini.id}>{ini.po_name}</option>;
-                      })}
+                      {masterAddresses
+                        .filter((ini) => ini.vendor == activeDetail.source)
+                        .map((ini, i) => {
+                          return (
+                            <option value={ini.id}>
+                              {ini.po_name} ({ini.vendor})
+                            </option>
+                          );
+                        })}
                     </select>
 
                     <button type="button" class="btn btn-info" onClick={handleEditMasterAddress}>
@@ -304,7 +316,7 @@ const Orders = () => {
             <tr>
               <th scope="col">#Id</th>
               <th scope="col">Source</th>
-              <th scope="col">Address</th>
+              <th scope="col">M. Address</th>
               <th scope="col" onClick={() => handleSort("delivery_date")} style={{ cursor: "pointer", textDecoration: "none", userSelect: "none" }}>
                 Dated {sortConfig.key === "delivery_date" ? (sortConfig.direction === "asc" ? "↑" : "↓") : ""}
               </th>
@@ -331,7 +343,7 @@ const Orders = () => {
                       <img src="icons/pen.svg" className="ms-1 border-start border-light ps-2" height={20} />
                     </>
                   ) : (
-                    <span className="txt-1">{ini.address}</span>
+                    <span className="txt-1">{ini.master_address}</span>
                   )}
                 </td>
                 <td>{ini.delivery_date}</td>
