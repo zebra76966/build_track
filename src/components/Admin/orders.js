@@ -10,7 +10,7 @@ const Orders = ({ orderFilter }) => {
   const [active, setActive] = useState("");
   const [activeDetail, setActiveDetail] = useState("");
 
-  const [filters, setFilters] = useState({ vendors: [], status: [] });
+  const [filters, setFilters] = useState({ vendors: [], status: [], addresses: [] });
 
   useEffect(() => {
     setIsloading(true);
@@ -372,18 +372,11 @@ const Orders = ({ orderFilter }) => {
               <tbody>
                 {filteredOrders
                   .filter((jini) => {
-                    if (filters.vendors.length == 0 && filters.status.length == 0) {
-                      return true;
-                    }
-                    if (filters.vendors.length == 0 && filters.status.length !== 0) {
-                      return filters.status.includes(jini.order_status.toLowerCase());
-                    }
-                    if (filters.vendors.length !== 0 && filters.status.length == 0) {
-                      return filters.vendors.includes(jini.source.toLowerCase());
-                    }
-                    if (filters.vendors.length !== 0 && filters.status.length !== 0) {
-                      return filters.vendors.includes(jini.source.toLowerCase()) && filters.status.includes(jini.order_status.toLowerCase());
-                    }
+                    const matchVendors = filters.vendors.length === 0 || filters.vendors.includes(jini.source.toLowerCase());
+                    const matchStatus = filters.status.length === 0 || filters.status.includes(jini.order_status.toLowerCase());
+                    const matchAddresses = filters.addresses.length === 0 || filters.addresses.includes(jini.master_address);
+
+                    return matchVendors && matchStatus && matchAddresses;
                   })
                   .map((ini, i) => (
                     <tr key={i} onClick={() => setActive(ini.order_id)} style={{ cursor: "pointer" }}>

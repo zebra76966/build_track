@@ -11,7 +11,7 @@ import FilterCard from "./filtercard";
 const AdminDashboard = () => {
   const [active, setActive] = useState(0);
 
-  const [orderFilter, setOrderFilter] = useState({ vendors: [], status: [] });
+  const [orderFilter, setOrderFilter] = useState({ vendors: [], status: [], addresses: [] });
 
   return (
     <div className="d-flex bg-dark" style={{ height: "100dvh" }}>
