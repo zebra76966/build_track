@@ -235,22 +235,24 @@ const Orders = ({ orderFilter }) => {
                       Vendor : <span className="fw-bold">{activeDetail.source}</span>
                     </h5>
 
-                    <h6 className="fs-6 fw-light  mt-2 pt-2">
-                      Status:{" "}
-                      <span
-                        className={`fw-bold p-2 rounded-3 ${
-                          activeDetail.order_status.toLowerCase() === "pending"
-                            ? "bg-danger"
-                            : activeDetail.order_status.toLowerCase() === "complete"
-                            ? "bg-success"
-                            : activeDetail.order_status.toLowerCase() === "delivered" || activeDetail.order_status.toLowerCase() === "shipped"
-                            ? "bg-info"
-                            : "bg-warning"
-                        }`}
-                      >
-                        {activeDetail.order_status}
-                      </span>
-                    </h6>
+                    {activeDetail.order_status && (
+                      <h6 className="fs-6 fw-light  mt-2 pt-2">
+                        Status:{" "}
+                        <span
+                          className={`fw-bold p-2 rounded-3 ${
+                            activeDetail.order_status.toLowerCase() === "pending"
+                              ? "bg-danger"
+                              : activeDetail.order_status.toLowerCase() === "complete"
+                              ? "bg-success"
+                              : activeDetail.order_status.toLowerCase() === "delivered" || activeDetail.order_status.toLowerCase() === "shipped"
+                              ? "bg-info"
+                              : "bg-warning"
+                          }`}
+                        >
+                          {activeDetail.order_status}
+                        </span>
+                      </h6>
+                    )}
                   </div>
 
                   <div className="row pb-5 pt-3">
