@@ -1,13 +1,25 @@
 import React, { useEffect, useState, useRef } from "react";
 import { baseUrl } from "../config";
 import toast from "react-hot-toast";
+import Skeleton from "../skeleton";
 
-const Orders = () => {
+const Orders = ({ orderFilter }) => {
   const [orders, setOrders] = useState([]);
   const [filteredOrders, setFilteredOrders] = useState([]);
   const [isLoading, setIsloading] = useState(false);
   const [active, setActive] = useState("");
   const [activeDetail, setActiveDetail] = useState("");
+
+  const [filters, setFilters] = useState({ vendors: [], status: [] });
+
+  useEffect(() => {
+    setIsloading(true);
+
+    setTimeout(() => {
+      setFilters(orderFilter);
+      setIsloading(false);
+    }, 3000);
+  }, [orderFilter]);
 
   const handleDetailView = async () => {
     setIsloading(true);
@@ -173,6 +185,7 @@ const Orders = () => {
 
   return (
     <div className="w-100 ordersTable bg-dark p-3">
+      {console.log(orderFilter)}
       <div className="d-flex align-items-center justify-content-between p-3">
         <h4 className="fs-3 my-0 py-0">Recent Orders</h4>
 
@@ -336,61 +349,82 @@ const Orders = () => {
         </div>
       )}
 
-      {filteredOrders && filteredOrders.length > 0 && (
-        <table className="table text-light" style={{ filter: activeDetail && active !== "" && "blur(10px)" }}>
-          <thead className="thead">
-            <tr>
-              <th scope="col">#Id</th>
-              <th scope="col">Source</th>
-              <th scope="col">M. Address</th>
-              <th scope="col" onClick={() => handleSort("delivery_date")} style={{ cursor: "pointer", textDecoration: "none", userSelect: "none" }}>
-                Dated {sortConfig.key === "delivery_date" ? (sortConfig.direction === "asc" ? "↑" : "↓") : ""}
-              </th>
-              <th scope="col">Status</th>
-              <th scope="col" onClick={() => handleSort("grand_total_amount")} style={{ cursor: "pointer", textDecoration: "none", userSelect: "none" }}>
-                Price {sortConfig.key === "grand_total_amount" ? (sortConfig.direction === "asc" ? "↑" : "↓") : ""}
-              </th>
-            </tr>
-          </thead>
-          <tbody>
-            {filteredOrders.map((ini, i) => (
-              <tr key={i} onClick={() => setActive(ini.order_id)} style={{ cursor: "pointer" }}>
-                <th scope="row">{ini.order_id}</th>
-                <td>{ini.source}</td>
-                <td
-                  onClick={() => {
-                    setFixaAddressModal(true);
-                  }}
-                  className={`${!ini.master_address ? "edit-address text-warning" : ""}`}
-                >
-                  {!ini.master_address ? (
-                    <>
-                      <span className="txt-2 pe-2">{"No matching master address found"}</span>
-                      <img src="icons/pen.svg" className="ms-1 border-start border-light ps-2" height={20} />
-                    </>
-                  ) : (
-                    <span className="txt-1">{ini.master_address}</span>
-                  )}
-                </td>
-                <td>{ini.delivery_date}</td>
-                <td
-                  className={`${
-                    ini.order_status.toLowerCase() === "pending"
-                      ? "text-danger"
-                      : ini.order_status.toLowerCase() === "complete"
-                      ? "text-success"
-                      : ini.order_status.toLowerCase() === "delivered" || ini.order_status.toLowerCase() === "shipped"
-                      ? "text-info"
-                      : "text-warning"
-                  }`}
-                >
-                  {ini.order_status}
-                </td>
-                <td className="fw-bold">${ini.grand_total_amount}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+      {isLoading && <Skeleton />}
+
+      {!isLoading && (
+        <>
+          {filteredOrders && filteredOrders.length > 0 && (
+            <table className="table text-light" style={{ filter: activeDetail && active !== "" && "blur(10px)" }}>
+              <thead className="thead">
+                <tr>
+                  <th scope="col">#Id</th>
+                  <th scope="col">Source</th>
+                  <th scope="col">M. Address</th>
+                  <th scope="col" onClick={() => handleSort("delivery_date")} style={{ cursor: "pointer", textDecoration: "none", userSelect: "none" }}>
+                    Dated {sortConfig.key === "delivery_date" ? (sortConfig.direction === "asc" ? "↑" : "↓") : ""}
+                  </th>
+                  <th scope="col">Status</th>
+                  <th scope="col" onClick={() => handleSort("grand_total_amount")} style={{ cursor: "pointer", textDecoration: "none", userSelect: "none" }}>
+                    Price {sortConfig.key === "grand_total_amount" ? (sortConfig.direction === "asc" ? "↑" : "↓") : ""}
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                {filteredOrders
+                  .filter((jini) => {
+                    if (filters.vendors.length == 0 && filters.status.length == 0) {
+                      return true;
+                    }
+                    if (filters.vendors.length == 0 && filters.status.length !== 0) {
+                      return filters.status.includes(jini.order_status.toLowerCase());
+                    }
+                    if (filters.vendors.length !== 0 && filters.status.length == 0) {
+                      return filters.vendors.includes(jini.source.toLowerCase());
+                    }
+                    if (filters.vendors.length !== 0 && filters.status.length !== 0) {
+                      return filters.vendors.includes(jini.source.toLowerCase()) && filters.status.includes(jini.order_status.toLowerCase());
+                    }
+                  })
+                  .map((ini, i) => (
+                    <tr key={i} onClick={() => setActive(ini.order_id)} style={{ cursor: "pointer" }}>
+                      <th scope="row">{ini.order_id}</th>
+                      <td>{ini.source}</td>
+                      <td
+                        onClick={() => {
+                          setFixaAddressModal(true);
+                        }}
+                        className={`${!ini.master_address ? "edit-address text-warning" : ""}`}
+                      >
+                        {!ini.master_address ? (
+                          <>
+                            <span className="txt-2 pe-2">{"No matching master address found"}</span>
+                            <img src="icons/pen.svg" className="ms-1 border-start border-light ps-2" height={20} />
+                          </>
+                        ) : (
+                          <span className="txt-1">{ini.master_address}</span>
+                        )}
+                      </td>
+                      <td>{ini.delivery_date}</td>
+                      <td
+                        className={`${
+                          ini.order_status.toLowerCase() === "pending"
+                            ? "text-danger"
+                            : ini.order_status.toLowerCase() === "complete"
+                            ? "text-success"
+                            : ini.order_status.toLowerCase() === "delivered" || ini.order_status.toLowerCase() === "shipped"
+                            ? "text-info"
+                            : "text-warning"
+                        }`}
+                      >
+                        {ini.order_status}
+                      </td>
+                      <td className="fw-bold">${ini.grand_total_amount}</td>
+                    </tr>
+                  ))}
+              </tbody>
+            </table>
+          )}
+        </>
       )}
     </div>
   );

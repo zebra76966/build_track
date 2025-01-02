@@ -6,9 +6,12 @@ import Orders from "./orders";
 import Transactions from "./transactions";
 import TodoList from "./todolist";
 import { ToastBar, Toaster } from "react-hot-toast";
+import FilterCard from "./filtercard";
 
 const AdminDashboard = () => {
   const [active, setActive] = useState(0);
+
+  const [orderFilter, setOrderFilter] = useState({ vendors: [], status: [] });
 
   return (
     <div className="d-flex bg-dark" style={{ height: "100dvh" }}>
@@ -27,10 +30,19 @@ const AdminDashboard = () => {
               <div className="col-12">
                 <h4 className="display-6 fw-semi-bold">Good Evening 👋</h4>
               </div>
-              <div className="col-xl-10 mt-2">
+              <div className="col-xl-12 mt-2">
                 {active == 0 && (
                   <div className="fade-in ">
-                    <Orders />
+                    <div className="row">
+                      <div className="col-9">
+                        <Orders orderFilter={orderFilter} />
+                      </div>
+                      <div className="col-3">
+                        <div className="position-sticky top-0 left-0">
+                          <FilterCard setFilter={(e) => setOrderFilter(e)} />
+                        </div>
+                      </div>
+                    </div>
                   </div>
                 )}
                 {active == 1 && (
