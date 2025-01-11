@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from "react";
-
 import Axios from "axios";
 import toast from "react-hot-toast";
 import { baseUrl } from "../config";
 
 const AddProperty = () => {
   document.title = "Add Property";
+
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
@@ -23,6 +23,21 @@ const AddProperty = () => {
     video_link: "",
     content: "",
   });
+
+  const propertyTypeOptions = [
+    "Single Family",
+    "2-4 Multifamily",
+    "5+ Multifamily",
+    "Commercial",
+    "Commercial (Hospital)",
+    "Commercial (Industrial)",
+    "Commercial (Office)",
+    "Commercial (Retail)",
+    "Co-Op",
+    "Condo",
+    "Mobile Home",
+    "Vacant Land",
+  ];
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -84,28 +99,79 @@ const AddProperty = () => {
       <div className="bg-black">
         <div className="card bg-dark pBorder mt-2" style={{ width: "80%" }}>
           <div className="d-flex h-100 align-items-center justify-content-center">
-            <form onSubmit={handleSubmit} className="row g-3 col-12 p-4 my-2 text-light " style={{ borderRadius: "1rem" }}>
+            <form onSubmit={handleSubmit} className="row g-3 col-12 p-4 my-2 text-light" style={{ borderRadius: "1rem" }}>
               <h3 className="fw-bold">Add Property</h3>
               <p className="fw-bold text-info">{tresponse}</p>
               <hr />
 
-              {Object.keys(propertyData).map((key) => (
-                <div className="col-12 col-lg-4" key={key}>
-                  <label htmlFor={key} className="form-label">
-                    {key.replace(/_/g, " ").replace(/\b\w/g, (char) => char.toUpperCase())}
-                  </label>
-                  <input
-                    type="text"
-                    className="form-control text-light bg-dark shadow-sm p-3 border-light"
-                    id={key}
-                    placeholder={`Enter ${key.replace(/_/g, " ")}`}
-                    value={propertyData[key]}
-                    onChange={(e) => setPropertyData({ ...propertyData, [key]: e.target.value })}
-                    style={{ borderRadius: "10px" }}
-                    required
-                  />
-                </div>
-              ))}
+              {Object.keys(propertyData).map((key) => {
+                if (key === "property_type") {
+                  return (
+                    <div className="col-12 col-lg-4" key={key}>
+                      <label htmlFor={key} className="form-label">
+                        Property Type
+                      </label>
+                      <select
+                        data-bs-theme="dark"
+                        className="form-control form-select text-light bg-dark shadow-sm p-3 border-light"
+                        id={key}
+                        value={propertyData[key]}
+                        onChange={(e) => setPropertyData({ ...propertyData, [key]: e.target.value })}
+                        style={{ borderRadius: "10px" }}
+                        required
+                      >
+                        <option value="" disabled>
+                          Select Property Type
+                        </option>
+                        {propertyTypeOptions.map((option) => (
+                          <option key={option} value={option}>
+                            {option}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+                  );
+                }
+
+                if (key === "content") {
+                  return (
+                    <div className="col-12 " key={key}>
+                      <label htmlFor={key} className="form-label">
+                        {key.replace(/_/g, " ").replace(/\b\w/g, (char) => char.toUpperCase())}
+                      </label>
+                      <textarea
+                        rows="5"
+                        type="text"
+                        className="form-control text-light bg-dark shadow-sm p-3 border-light"
+                        id={key}
+                        placeholder={`Enter ${key.replace(/_/g, " ")}`}
+                        value={propertyData[key]}
+                        onChange={(e) => setPropertyData({ ...propertyData, [key]: e.target.value })}
+                        style={{ borderRadius: "10px" }}
+                        required
+                      />
+                    </div>
+                  );
+                }
+
+                return (
+                  <div className="col-12 col-lg-4" key={key}>
+                    <label htmlFor={key} className="form-label">
+                      {key.replace(/_/g, " ").replace(/\b\w/g, (char) => char.toUpperCase())}
+                    </label>
+                    <input
+                      type="text"
+                      className="form-control text-light bg-dark shadow-sm p-3 border-light"
+                      id={key}
+                      placeholder={`Enter ${key.replace(/_/g, " ")}`}
+                      value={propertyData[key]}
+                      onChange={(e) => setPropertyData({ ...propertyData, [key]: e.target.value })}
+                      style={{ borderRadius: "10px" }}
+                      required
+                    />
+                  </div>
+                );
+              })}
 
               <div className="col-md-4 py-2 ms-auto" style={{ borderRadius: "10px" }}>
                 <button type="submit" className="btn w-100 fw-bold py-3 btn-lg bg-black text-light" style={{ borderRadius: "10px" }}>
