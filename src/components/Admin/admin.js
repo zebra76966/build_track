@@ -7,6 +7,7 @@ import Transactions from "./transactions";
 import TodoList from "./todolist";
 import { ToastBar, Toaster } from "react-hot-toast";
 import FilterCard from "./filtercard";
+import AddProperty from "./addProp";
 
 const AdminDashboard = () => {
   const [active, setActive] = useState(0);
@@ -48,6 +49,11 @@ const AdminDashboard = () => {
                 {active == 1 && (
                   <div className="fade-in position-relative">
                     <Transactions />
+                  </div>
+                )}
+                {active == 2 && (
+                  <div className="fade-in position-relative">
+                    <AddProperty />
                   </div>
                 )}
               </div>

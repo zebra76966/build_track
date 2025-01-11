@@ -44,6 +44,12 @@
   border-radius: 1.5em;
   border: 2px solid #9b9b9c;
 }
+
+.pBorder {
+  border-radius: 1.5em;
+  border: 2px solid #9b9b9c;
+}
+
 .ordersTable table thead tr {
   background-color: black;
   color: white;

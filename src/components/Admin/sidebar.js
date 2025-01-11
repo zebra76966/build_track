@@ -35,10 +35,10 @@ const Sidebar = ({ setActive, active }) => {
             <span className="txt">Transactions</span>
           </a>
         </li>
-        <li class="nav-item">
-          <a href="#" class="nav-link ps-4 text-white">
+        <li class="nav-item" onClick={() => setActive(2)}>
+          <a href="#" class={`nav-link ps-4 text-white ${active == 2 ? "active" : ""}`}>
             <img src="logo192.png" className="me-2" height={20} />
-            <span className="txt">Orders</span>
+            <span className="txt">Add Property</span>
           </a>
         </li>
         <li class="nav-item">
