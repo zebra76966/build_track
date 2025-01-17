@@ -8,7 +8,7 @@ const FilterCard = ({ filter, setFilter }) => {
   const [searchTerm, setSearchTerm] = useState("");
 
   const vendors = ["HD", "Amazon", "Walmart"];
-  const status = ["Complete", "Delivered", "Canceled", "Pending", "Shipped", "Being Processed"];
+  const status = ["Complete", "Delivered", "Canceled", "Pending", "Shipped", "Being Processed", "Arriving"];
 
   const handleSearch = (e) => {
     setFilter(udata);

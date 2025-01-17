@@ -90,7 +90,7 @@ const Orders = ({ orderFilter }) => {
     const sortedOrders = [...filteredOrders].sort((a, b) => {
       if (key === "grand_total_amount") {
         return direction === "asc" ? a[key] - b[key] : b[key] - a[key];
-      } else if (key === "delivery_date") {
+      } else if (key === "ordered_date") {
         return direction === "asc" ? new Date(a[key]) - new Date(b[key]) : new Date(b[key]) - new Date(a[key]);
       } else {
         return 0;
@@ -236,22 +236,26 @@ const Orders = ({ orderFilter }) => {
                     </h5>
 
                     {activeDetail.order_status && (
-                      <h6 className="fs-6 fw-light  mt-2 pt-2">
-                        Status:{" "}
-                        <span
-                          className={`fw-bold p-2 rounded-3 ${
-                            activeDetail.order_status.toLowerCase() === "pending"
-                              ? "bg-danger"
-                              : activeDetail.order_status.toLowerCase() === "complete"
-                              ? "bg-success"
-                              : activeDetail.order_status.toLowerCase() === "delivered" || activeDetail.order_status.toLowerCase() === "shipped"
-                              ? "bg-info"
-                              : "bg-warning"
-                          }`}
-                        >
-                          {activeDetail.order_status}
-                        </span>
-                      </h6>
+                      <div className="text-end">
+                        <h6 className="fs-6 fw-light  mt-2 pt-2">
+                          Status:{" "}
+                          <span
+                            className={`fw-bold p-2 rounded-3 ${
+                              activeDetail.order_status.toLowerCase() === "pending"
+                                ? "bg-danger"
+                                : activeDetail.order_status.toLowerCase() === "complete"
+                                ? "bg-success"
+                                : activeDetail.order_status.toLowerCase() === "delivered" || activeDetail.order_status.toLowerCase() === "shipped"
+                                ? "bg-info"
+                                : "bg-warning"
+                            }`}
+                          >
+                            {activeDetail.order_status}
+                          </span>
+                        </h6>
+
+                        <p className="text-secondary mt-3 "> {activeDetail.status}</p>
+                      </div>
                     )}
                   </div>
 
@@ -287,6 +291,7 @@ const Orders = ({ orderFilter }) => {
                   </div>
 
                   <p className="text-secondary mb-1 mt-2"> Delivered by : {activeDetail.delivery_date}</p>
+                  <p className="text-secondary mb-3"> Message : {activeDetail.delivery_message}</p>
 
                   <h5 className="fs-5 fw-light">
                     {" "}
@@ -361,11 +366,14 @@ const Orders = ({ orderFilter }) => {
                 <tr>
                   <th scope="col">#Id</th>
                   <th scope="col">Source</th>
-                  <th scope="col">M. Address</th>
-                  <th scope="col" onClick={() => handleSort("delivery_date")} style={{ cursor: "pointer", textDecoration: "none", userSelect: "none" }}>
-                    Dated {sortConfig.key === "delivery_date" ? (sortConfig.direction === "asc" ? "↑" : "↓") : ""}
+
+                  <th scope="col" onClick={() => handleSort("ordered_date")} style={{ cursor: "pointer", textDecoration: "none", userSelect: "none" }}>
+                    Ordered Date {sortConfig.key === "ordered_date" ? (sortConfig.direction === "asc" ? "↑" : "↓") : ""}
                   </th>
+
                   <th scope="col">Status</th>
+                  <th scope="col">M. Address</th>
+
                   <th scope="col" onClick={() => handleSort("grand_total_amount")} style={{ cursor: "pointer", textDecoration: "none", userSelect: "none" }}>
                     Price {sortConfig.key === "grand_total_amount" ? (sortConfig.direction === "asc" ? "↑" : "↓") : ""}
                   </th>
@@ -375,7 +383,7 @@ const Orders = ({ orderFilter }) => {
                 {filteredOrders
                   .filter((jini) => {
                     const matchVendors = filters.vendors.length === 0 || filters.vendors.includes(jini.source.toLowerCase());
-                    const matchStatus = filters.status.length === 0 || filters.status.includes(jini.order_status.toLowerCase());
+                    const matchStatus = filters.status.length === 0 || filters.status.includes(jini.order_status && jini.order_status.toLowerCase());
                     const matchAddresses = filters.addresses.length === 0 || filters.addresses.includes(jini.master_address);
 
                     return matchVendors && matchStatus && matchAddresses;
@@ -384,6 +392,22 @@ const Orders = ({ orderFilter }) => {
                     <tr key={i} onClick={() => setActive(ini.order_id)} style={{ cursor: "pointer" }}>
                       <th scope="row">{ini.order_id}</th>
                       <td>{ini.source}</td>
+
+                      <td>{ini.ordered_date}</td>
+                      <td
+                        className={`${
+                          ini.order_status && ini.order_status.toLowerCase() === "pending"
+                            ? "text-danger"
+                            : ini.order_status && ini.order_status.toLowerCase() === "complete"
+                            ? "text-success"
+                            : (ini.order_status && ini.order_status.toLowerCase() === "delivered") || (ini.order_status && ini.order_status.toLowerCase() === "shipped")
+                            ? "text-light"
+                            : "text-info"
+                        }`}
+                      >
+                        {ini.order_status}
+                      </td>
+
                       <td
                         onClick={() => {
                           setFixaAddressModal(true);
@@ -399,20 +423,7 @@ const Orders = ({ orderFilter }) => {
                           <span className="txt-1">{ini.master_address}</span>
                         )}
                       </td>
-                      <td>{ini.delivery_date}</td>
-                      <td
-                        className={`${
-                          ini.order_status.toLowerCase() === "pending"
-                            ? "text-danger"
-                            : ini.order_status.toLowerCase() === "complete"
-                            ? "text-success"
-                            : ini.order_status.toLowerCase() === "delivered" || ini.order_status.toLowerCase() === "shipped"
-                            ? "text-info"
-                            : "text-warning"
-                        }`}
-                      >
-                        {ini.order_status}
-                      </td>
+
                       <td className="fw-bold">${ini.grand_total_amount}</td>
                     </tr>
                   ))}
