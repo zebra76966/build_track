@@ -18,7 +18,7 @@ const Sidebar = ({ setActive, active }) => {
       />
       <div className="w-100 d-xxxl-none-revert">
         <a href="/" class="d-flex p-xl-3 align-items-center justify-content-xl-start justify-content-center  mb-xl-3 mb-1 p-1 mb-md-0 me-xl-auto text-white text-decoration-none">
-          <span class="fs-4  fw-bold">Logo</span>
+          <span class="fs-4  fw-bold">CBO</span>
         </a>
       </div>
       <hr className="bg-black" />
@@ -39,6 +39,12 @@ const Sidebar = ({ setActive, active }) => {
           <a href="#" class={`nav-link ps-4 text-white ${active == 2 ? "active" : ""}`}>
             <img src="logo192.png" className="me-2" height={20} />
             <span className="txt">Add Property</span>
+          </a>
+        </li>
+        <li class="nav-item" onClick={() => setActive(3)}>
+          <a href="#" class={`nav-link ps-4 text-white ${active == 3 ? "active" : ""}`}>
+            <img src="logo192.png" className="me-2" height={20} />
+            <span className="txt">Materials</span>
           </a>
         </li>
         <li class="nav-item">
