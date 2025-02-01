@@ -11,7 +11,7 @@ const Header = ({ setGlobalMatchingProducts }) => {
     setIsloading(true);
 
     try {
-      const response = await fetch(baseUrl + "/dashboard/pos/", {
+      const response = await fetch(baseUrl + "/dashboard/master-addresses/", {
         method: "GET",
         headers: { "Content-Type": "application/json" },
       });
@@ -101,7 +101,7 @@ const Header = ({ setGlobalMatchingProducts }) => {
                 data-bs-toggle="dropdown"
                 aria-expanded="false"
               >
-                {masterAddresses.find((ini) => ini.id === selectedAddress)?.po_name || "Select Address"}
+                {masterAddresses.find((ini) => ini.id === selectedAddress)?.formatted_address || "Select Address"}
 
                 <span
                   className="position-absolute top-50   translate-middle-y  p-2 bg-black rounded-circle border-primary border-1 border d-flex align-items-center justify-content-center"
@@ -114,7 +114,7 @@ const Header = ({ setGlobalMatchingProducts }) => {
                 {masterAddresses.map((ini) => (
                   <li key={ini.id}>
                     <span class="dropdown-item text-light" onClick={() => setSelectedAddress(ini.id)} style={{ cursor: "pointer" }}>
-                      {ini.po_name} ({ini.vendor})
+                      {ini.formatted_address}
                     </span>
                   </li>
                 ))}

@@ -104,6 +104,8 @@ const Materials = ({ globalMatchingProducts }) => {
     }
   }
 
+  const [isFull, setIsFull] = useState(false);
+
   return (
     <>
       <div className="w-100 p-3">
@@ -227,13 +229,15 @@ const Materials = ({ globalMatchingProducts }) => {
         </div>
 
         {globalMatchingProducts.map((ini, index) => (
-          <div className="row border-1 border border-secondary align-items-stretch p-1 px-0 mb-1" style={{ borderRadius: "1em", height: "85px" }} key={index}>
+          <div className="row border-1 border border-secondary align-items-stretch p-1 px-0 mb-1" style={{ borderRadius: "1em", height: isFull ? "100%" : "85px", cursor: "pointer" }} key={index}>
             <div className="col-1 h-100 position-relative  d-flex px-1 py-0">
-              <img src={`${getProductImageUrl(ini.link)}`} className="w-100 h-100" style={{ objectFit: "cover", borderRadius: "0.8em 0 0 0.8em" }} />
+              <img src={`${getProductImageUrl(ini.link)}`} className="w-100 " style={{ objectFit: "cover", height: isFull ? "85px" : "100%", borderRadius: "0.8em 0 0 0.8em" }} />
             </div>
             <div className="col-4 d-flex flex-column justify-content-center border-end border-1 border-secondary">
-              <p className="fs-6 mb-1 text-light text-truncate">{ini.product_name.split(",")[0].trim()}</p>
-              <p className="fs-6 text-secondary mb-1 textClamp-2">{ini.product_name}</p>
+              <p className="fs-6 mb-1 text-light text-truncate w-75">{ini.product_name.split(",")[0].trim()}</p>
+              <p className={`text-secondary mb-1 ${isFull ? "" : "textClamp-2"} small`} onClick={() => setIsFull(!isFull)}>
+                {ini.product_name}
+              </p>
             </div>
             <div className="col-1 border-end flex-column justify-content-center d-flex border-1 border-secondary ">
               <p className="fs-6 text-light mb-0 text-center">$29.07</p>
