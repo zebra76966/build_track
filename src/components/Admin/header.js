@@ -3,7 +3,7 @@ import { useState, useEffect } from "react";
 import { baseUrl } from "../config";
 import toast from "react-hot-toast";
 
-const Header = ({ setGlobalMatchingProducts }) => {
+const Header = ({ setGlobalMatchingProducts, setGlobalSelectedAddress }) => {
   const [masterAddresses, setMasterAdresses] = useState([]);
   const [isLoading, setIsloading] = useState(false);
 
@@ -66,6 +66,12 @@ const Header = ({ setGlobalMatchingProducts }) => {
       setGlobalMatchingProducts(matchingAddress);
     }
   }, [matchingAddress]);
+
+  useEffect(() => {
+    if (selectedAddress) {
+      setGlobalSelectedAddress(selectedAddress);
+    }
+  }, [selectedAddress]);
 
   return (
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">

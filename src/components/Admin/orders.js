@@ -3,7 +3,7 @@ import { baseUrl } from "../config";
 import toast from "react-hot-toast";
 import Skeleton from "../skeleton";
 
-const Orders = ({ orderFilter }) => {
+const Orders = ({ orderFilter, globalSelectedAddress }) => {
   const [orders, setOrders] = useState([]);
   const [filteredOrders, setFilteredOrders] = useState([]);
   const [isLoading, setIsloading] = useState(false);
@@ -45,13 +45,19 @@ const Orders = ({ orderFilter }) => {
   }, [active]);
 
   const hasFetched = useRef(false);
-  const handlesubmit = async () => {
+
+  const handlesubmit = async (id) => {
     setIsloading(true);
+
+    let body = {
+      master_address_id: id,
+    };
 
     try {
       const response = await fetch(baseUrl + "/dashboard/orders/", {
-        method: "GET",
+        method: "POST",
         headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(body),
       });
       const data = await response.json();
       setOrders(data);
@@ -64,11 +70,8 @@ const Orders = ({ orderFilter }) => {
   };
 
   useEffect(() => {
-    if (!hasFetched.current) {
-      hasFetched.current = true;
-      handlesubmit();
-    }
-  }, []);
+    handlesubmit(globalSelectedAddress);
+  }, [globalSelectedAddress]);
 
   const [searchTerm, setSearchTerm] = useState("");
   const [sortConfig, setSortConfig] = useState({ key: "", direction: "" });
