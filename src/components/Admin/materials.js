@@ -1,8 +1,10 @@
 import React, { useState, useEffect, useRef } from "react";
 import { baseUrl } from "../config";
 import toast from "react-hot-toast";
+import axios from "axios";
+import { Cheerio } from "cheerio";
 
-const Materials = () => {
+const Materials = ({ globalMatchingProducts }) => {
   const [transactions, setTransactions] = useState([]);
   const [filteredTransactions, setFilteredTransactions] = useState([]);
   const [isLoading, setIsloading] = useState(false);
@@ -82,6 +84,25 @@ const Materials = () => {
     const filteredData = transactions.filter((transaction) => Object.values(transaction).some((field) => String(field).toLowerCase().includes(value)));
     setFilteredTransactions(filteredData); // Update the filtered data
   };
+
+  const cheerio = require("cheerio");
+
+  async function getProductImageUrl(productUrl) {
+    try {
+      const { data } = await axios.get(productUrl, {
+        headers: { "User-Agent": "Mozilla/5.0" }, // Avoid bot detection
+      });
+
+      const $ = cheerio.load(data);
+      const imageUrl = $('meta[property="og:image"]').attr("content");
+      console.log("Image URL:", imageUrl);
+
+      return imageUrl || null; // Return image URL or null if not found
+    } catch (error) {
+      console.error("Error fetching Amazon page:", error.message);
+      return null;
+    }
+  }
 
   return (
     <>
@@ -205,34 +226,36 @@ const Materials = () => {
           </div>
         </div>
 
-        {[...Array(10)].map((_, index) => (
-          <div className="row border-1 border border-secondary align-items-stretch p-1 px-0 mb-1" style={{ borderRadius: "1em", height: "85px" }}>
+        {globalMatchingProducts.map((ini, index) => (
+          <div className="row border-1 border border-secondary align-items-stretch p-1 px-0 mb-1" style={{ borderRadius: "1em", height: "85px" }} key={index}>
             <div className="col-1 h-100 position-relative  d-flex px-1 py-0">
-              <img src="./suppl.jpg" className="w-100 h-100" style={{ objectFit: "cover", borderRadius: "0.8em 0 0 0.8em" }} />
+              <img src={`${getProductImageUrl(ini.link)}`} className="w-100 h-100" style={{ objectFit: "cover", borderRadius: "0.8em 0 0 0.8em" }} />
             </div>
             <div className="col-4 d-flex flex-column justify-content-center border-end border-1 border-secondary">
-              <p className="fs-6 mb-1 text-light">Trash Bags 3 MIL</p>
-              <p className="fs-6 text-secondary mb-1">Husky 42 gal. Heavy-Duty Clean-Up Bags (50-count)</p>
+              <p className="fs-6 mb-1 text-light text-truncate">{ini.product_name.split(",")[0].trim()}</p>
+              <p className="fs-6 text-secondary mb-1 textClamp-2">{ini.product_name}</p>
             </div>
             <div className="col-1 border-end flex-column justify-content-center d-flex border-1 border-secondary ">
               <p className="fs-6 text-light mb-0 text-center">$29.07</p>
             </div>
             <div className="col-1 border-end flex-column justify-content-center d-flex border-1 border-secondary ">
-              <p className="fs-6 text-light mb-0 text-center">50</p>
+              <p className="fs-6 text-light mb-0 text-center">{ini.total_quantity}</p>
             </div>
             <div className="col-1 border-end flex-column justify-content-center d-flex border-1 border-secondary ">
               <p className="fs-6 text-light mb-0 text-center">2</p>
             </div>
             <div className="col-1 border-end flex-column justify-content-center d-flex border-1 border-secondary ">
-              <p className="fs-6 text-light mb-0 fw-bold text-center">Demo</p>
+              <p className="fs-6 text-light mb-0 fw-bold text-center">{ini.category}</p>
             </div>
 
             <div className="col-1 border-end flex-column justify-content-center d-flex border-1 border-secondary ">
-              <p className="fs-6 text-light mb-0  text-center">12345****</p>
+              <p className="fs-6 text-light mb-0  text-center">{ini.order_id}</p>
             </div>
 
             <div className="col-2   justify-content-center align-items-center d-flex gap-4 pe-1">
-              <img src="icons/eye.svg" height={30} className="w-100" />
+              <a herf={ini.link} target="_blank">
+                <img src="icons/eye.svg" height={30} className="w-100" />
+              </a>
 
               <button className="btn btn-dark border-secondary  h-100 px-4  fw-bold w-50 me-0" style={{ borderRadius: "0.9em" }} onClick={handlesubmit}>
                 <span className="fs-3"> ? </span>

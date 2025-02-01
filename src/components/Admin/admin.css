@@ -235,3 +235,20 @@
 .text-primary {
   color: #fabc3f !important;
 }
+
+.dropdown-item:focus,
+.dropdown-item:hover {
+  color: #1e2125;
+  background-color: #1e2125 !important;
+}
+
+.border-dashed {
+  border-style: dashed;
+}
+
+.textClamp-2 {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}

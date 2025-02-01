@@ -14,6 +14,7 @@ const AdminDashboard = () => {
   const [active, setActive] = useState(0);
 
   const [orderFilter, setOrderFilter] = useState({ vendors: [], status: [], addresses: [] });
+  const [globalMatchingProducts, setGlobalMatchingProducts] = useState([]);
 
   return (
     <div className="d-flex bg-dark" style={{ height: "100dvh" }}>
@@ -24,7 +25,7 @@ const AdminDashboard = () => {
 
       <div className="mainSection ">
         <div className="w-100 mb-1 py-1 px-2">
-          <Header />
+          <Header setGlobalMatchingProducts={(e) => setGlobalMatchingProducts(e)} />
         </div>
         <div className="px-1 pb-3 pt-0">
           <div className="mainSectionInner w-100 py-4 px-3 text-light noScrollBar">
@@ -58,7 +59,7 @@ const AdminDashboard = () => {
 
                 {active == 3 && (
                   <div className="fade-in position-relative">
-                    <Materials />
+                    <Materials globalMatchingProducts={globalMatchingProducts} />
                   </div>
                 )}
               </div>

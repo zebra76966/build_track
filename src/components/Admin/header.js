@@ -1,6 +1,72 @@
 import React from "react";
+import { useState, useEffect } from "react";
+import { baseUrl } from "../config";
+import toast from "react-hot-toast";
 
-const Header = () => {
+const Header = ({ setGlobalMatchingProducts }) => {
+  const [masterAddresses, setMasterAdresses] = useState([]);
+  const [isLoading, setIsloading] = useState(false);
+
+  const handleFetchMasterAddress = async () => {
+    setIsloading(true);
+
+    try {
+      const response = await fetch(baseUrl + "/dashboard/pos/", {
+        method: "GET",
+        headers: { "Content-Type": "application/json" },
+      });
+      const data = await response.json();
+      console.log("address", data);
+      setMasterAdresses(data);
+    } catch (error) {
+      toast.error("Something went wrong while fetching orders.");
+    } finally {
+      setIsloading(false);
+    }
+  };
+
+  useEffect(() => {
+    handleFetchMasterAddress();
+  }, []);
+
+  const [matchingAddress, setMatchingAddress] = useState([]);
+
+  const GetPropertyMacthingProducts = async (id) => {
+    setIsloading(true);
+    let body = {
+      master_address_id: 28,
+    };
+
+    try {
+      const response = await fetch(baseUrl + "/dashboard/property-matching-products/", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(body),
+      });
+      const data = await response.json();
+      console.log("address", data);
+      setMatchingAddress(data.matching_products);
+    } catch (error) {
+      toast.error("Something went wrong while fetching orders.");
+    } finally {
+      setIsloading(false);
+    }
+  };
+
+  const [selectedAddress, setSelectedAddress] = useState(null);
+
+  useEffect(() => {
+    if (selectedAddress) {
+      GetPropertyMacthingProducts(selectedAddress);
+    }
+  }, [selectedAddress]);
+
+  useEffect(() => {
+    if (matchingAddress && matchingAddress.length > 0) {
+      setGlobalMatchingProducts(matchingAddress);
+    }
+  }, [matchingAddress]);
+
   return (
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
       <div class="container-fluid">
@@ -19,16 +85,41 @@ const Header = () => {
           <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
-          <form class="d-flex ">
+          <form class="d-flex align-items-center">
             <span class="fs-4 d-xxxl-none  text-white fw-bold me-3">Logo</span>
             <div className="position-relative">
               <input class="form-control me-2 topSearch bg-black rounded-pill border-0 px-5 py-2" type="search" placeholder="Search..." aria-label="Search" />
 
               <img src="icons/search.svg" className="searchIcon" />
             </div>
-            {/* <button class="btn btn-outline-success" type="submit">
-              Search
-            </button> */}
+
+            <div class="dropdown ms-1">
+              <button
+                class="btn btn-secondary btn-sm mb-0 dropdown-toggle bg-dark border-secondary rounded-pill border-2 px-5 border-dashed position-relative"
+                type="button"
+                id="dropdownMenuButton1"
+                data-bs-toggle="dropdown"
+                aria-expanded="false"
+              >
+                {masterAddresses.find((ini) => ini.id === selectedAddress)?.po_name || "Select Address"}
+
+                <span
+                  className="position-absolute top-50   translate-middle-y  p-2 bg-black rounded-circle border-primary border-1 border d-flex align-items-center justify-content-center"
+                  style={{ width: "40px", height: "40px", right: "-10px" }}
+                >
+                  <img src="./icons/anchor-lock-solid.svg" style={{ height: "100%", width: "100%" }} />
+                </span>
+              </button>
+              <ul class="dropdown-menu bg-dark slim-scroll shadow" aria-labelledby="dropdownMenuButton1" style={{ maxHeight: "200px", width: "500px", overflowY: "auto" }}>
+                {masterAddresses.map((ini) => (
+                  <li key={ini.id}>
+                    <span class="dropdown-item text-light" onClick={() => setSelectedAddress(ini.id)} style={{ cursor: "pointer" }}>
+                      {ini.po_name} ({ini.vendor})
+                    </span>
+                  </li>
+                ))}
+              </ul>
+            </div>
           </form>
 
           <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
