@@ -34,7 +34,7 @@ const Header = ({ setGlobalMatchingProducts }) => {
   const GetPropertyMacthingProducts = async (id) => {
     setIsloading(true);
     let body = {
-      master_address_id: 28,
+      master_address_id: id,
     };
 
     try {
