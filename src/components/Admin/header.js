@@ -48,6 +48,7 @@ const Header = ({ setGlobalMatchingProducts, setGlobalSelectedAddress }) => {
       setMatchingAddress(data.matching_products);
     } catch (error) {
       toast.error("Something went wrong while fetching orders.");
+      setMatchingAddress([]);
     } finally {
       setIsloading(false);
     }
@@ -62,7 +63,7 @@ const Header = ({ setGlobalMatchingProducts, setGlobalSelectedAddress }) => {
   }, [selectedAddress]);
 
   useEffect(() => {
-    if (matchingAddress && matchingAddress.length > 0) {
+    if (matchingAddress) {
       setGlobalMatchingProducts(matchingAddress);
     }
   }, [matchingAddress]);

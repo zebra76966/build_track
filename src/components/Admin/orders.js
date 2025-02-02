@@ -64,6 +64,8 @@ const Orders = ({ orderFilter, globalSelectedAddress }) => {
       setFilteredOrders(data); // Set filtered orders to match the original data
     } catch (error) {
       toast.error("Something went wrong while fetching orders.");
+      setOrders([]);
+      setFilteredOrders([]);
     } finally {
       setIsloading(false);
     }
