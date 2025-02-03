@@ -204,10 +204,10 @@ const Materials = ({ globalMatchingProducts }) => {
 
       <div className="w-100 p-3 mt-2">
         <div className="row  align-items-stretch p-1 px-0 mb-1 fw-bold">
-          <div className="col-1 h-100 position-relative  d-flex px-1 py-0">
+          {/* <div className="col-1 h-100 position-relative  d-flex px-1 py-0">
             <p className="fs-6 mb-1 text-light">#</p>
-          </div>
-          <div className="col-5 d-flex flex-column justify-content-center border-end border-1 border-secondary">
+          </div> */}
+          <div className="col-6 d-flex flex-column justify-content-center border-end border-1 border-secondary">
             <p className="fs-6 mb-1 text-light">Name</p>
           </div>
           {/* <div className="col-1 border-end flex-column justify-content-center d-flex border-1 border-secondary ">
@@ -230,10 +230,10 @@ const Materials = ({ globalMatchingProducts }) => {
 
         {globalMatchingProducts.map((ini, index) => (
           <div className="row border-1 border border-secondary align-items-stretch p-1 px-0 mb-1" style={{ borderRadius: "1em", height: isFull ? "100%" : "85px", cursor: "pointer" }} key={index}>
-            <div className="col-1 h-100 position-relative  d-flex px-1 py-0">
+            {/* <div className="col-1 h-100 position-relative  d-flex px-1 py-0">
               <img src={`${getProductImageUrl(ini.link)}`} className="w-100 " style={{ objectFit: "cover", height: isFull ? "85px" : "100%", borderRadius: "0.8em 0 0 0.8em" }} />
-            </div>
-            <div className="col-5 d-flex flex-column justify-content-center border-end border-1 border-secondary">
+            </div> */}
+            <div className="col-6 d-flex flex-column justify-content-center border-end border-1 border-secondary">
               <p className="fs-6 mb-1 text-light text-truncate w-75">{ini.common_name}</p>
               <p className={`text-secondary mb-1 ${isFull ? "" : "textClamp-2"} small`} onClick={() => setIsFull(!isFull)}>
                 {ini.product_name}
