@@ -120,7 +120,7 @@ const FilterCard = ({ filter, setFilter }) => {
       </div>
 
       <hr />
-      <h5 className="text-light  fs-5 fw-light mt-4 mb-3">Master Addresses</h5>
+      {/* <h5 className="text-light  fs-5 fw-light mt-4 mb-3">Master Addresses</h5>
       <div className="w-100 slim-scroll mb-4 text-secondary fs-6 fw-light" style={{ maxHeight: "150px", overflowY: "auto" }}>
         {masterAddresses &&
           masterAddresses.map((jini, k) => (
@@ -151,7 +151,7 @@ const FilterCard = ({ filter, setFilter }) => {
               </label>
             </div>
           ))}
-      </div>
+      </div> */}
 
       <buton className="btn btn-light rounded-3 mt-2 fw-bol w-100" onClick={handleSearch}>
         Apply Filters
