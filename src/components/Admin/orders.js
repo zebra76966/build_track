@@ -378,7 +378,7 @@ const Orders = ({ orderFilter, globalSelectedAddress, date }) => {
                   </th>
 
                   <th scope="col">Status</th>
-                  {/* <th scope="col">M. Address</th> */}
+                  <th scope="col">M. Address</th>
 
                   <th scope="col" onClick={() => handleSort("grand_total_amount")} style={{ cursor: "pointer", textDecoration: "none", userSelect: "none" }}>
                     Price {sortConfig.key === "grand_total_amount" ? (sortConfig.direction === "asc" ? "↑" : "↓") : ""}
@@ -414,7 +414,7 @@ const Orders = ({ orderFilter, globalSelectedAddress, date }) => {
                         {ini.order_status}
                       </td>
 
-                      {/* <td
+                      <td
                         onClick={() => {
                           setFixaAddressModal(true);
                         }}
@@ -428,7 +428,7 @@ const Orders = ({ orderFilter, globalSelectedAddress, date }) => {
                         ) : (
                           <span className="txt-1">{ini.master_address}</span>
                         )}
-                      </td> */}
+                      </td>
 
                       <td className="fw-bold">${ini.grand_total_amount}</td>
                     </tr>
