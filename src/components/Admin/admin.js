@@ -47,7 +47,7 @@ const AdminDashboard = () => {
                   <div className="fade-in ">
                     <div className="row">
                       <div className="col-9">
-                        <Orders orderFilter={orderFilter} globalSelectedAddress={globalSelectedAddress} date={selectedDate.toISOString().split("T")[0]} />
+                        <Orders orderFilter={orderFilter} globalSelectedAddress={globalSelectedAddress} date={selectedDate && selectedDate.toISOString().split("T")[0]} />
                       </div>
                       {console.log("selectedDate", selectedDate)}
                       <div className="col-3">
@@ -57,7 +57,7 @@ const AdminDashboard = () => {
                               className="form-control topSearch bg-black  border-1 border-secondary w-100 py-3 px-2  text-light"
                               type="date"
                               disabled
-                              value={selectedDate.toISOString().split("T")[0]}
+                              value={selectedDate && selectedDate.toISOString().split("T")[0]}
                               // onChange={handleSearch}
                               style={{ borderRadius: "1em" }}
                             />
