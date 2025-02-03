@@ -214,7 +214,7 @@ const Materials = ({ globalMatchingProducts }) => {
             <p className="fs-6 text-light mb-0 text-center">Pricing</p>
           </div> */}
           <div className="col-1 border-end flex-column justify-content-center d-flex border-1 border-secondary ">
-            <p className="fs-6 text-light mb-0 text-center">Pack Qty.</p>
+            <p className="fs-6 text-light mb-0 text-center">Suggested Pack Qty.</p>
           </div>
           <div className="col-1 border-end flex-column justify-content-center d-flex border-1 border-secondary ">
             <p className="fs-6 text-light mb-0 text-center">Qty.</p>
@@ -234,7 +234,7 @@ const Materials = ({ globalMatchingProducts }) => {
               <img src={`${getProductImageUrl(ini.link)}`} className="w-100 " style={{ objectFit: "cover", height: isFull ? "85px" : "100%", borderRadius: "0.8em 0 0 0.8em" }} />
             </div>
             <div className="col-5 d-flex flex-column justify-content-center border-end border-1 border-secondary">
-              <p className="fs-6 mb-1 text-light text-truncate w-75">{ini.product_name.split(",")[0].trim()}</p>
+              <p className="fs-6 mb-1 text-light text-truncate w-75">{ini.common_name}</p>
               <p className={`text-secondary mb-1 ${isFull ? "" : "textClamp-2"} small`} onClick={() => setIsFull(!isFull)}>
                 {ini.product_name}
               </p>

@@ -3,7 +3,7 @@ import { baseUrl } from "../config";
 import toast from "react-hot-toast";
 import Skeleton from "../skeleton";
 
-const Orders = ({ orderFilter, globalSelectedAddress }) => {
+const Orders = ({ orderFilter, globalSelectedAddress, date }) => {
   const [orders, setOrders] = useState([]);
   const [filteredOrders, setFilteredOrders] = useState([]);
   const [isLoading, setIsloading] = useState(false);
@@ -51,6 +51,7 @@ const Orders = ({ orderFilter, globalSelectedAddress }) => {
 
     let body = {
       master_address_id: id,
+      ordered_date: date,
     };
 
     try {
@@ -73,7 +74,7 @@ const Orders = ({ orderFilter, globalSelectedAddress }) => {
 
   useEffect(() => {
     handlesubmit(globalSelectedAddress);
-  }, [globalSelectedAddress]);
+  }, [globalSelectedAddress, date]);
 
   const [searchTerm, setSearchTerm] = useState("");
   const [sortConfig, setSortConfig] = useState({ key: "", direction: "" });
@@ -377,7 +378,7 @@ const Orders = ({ orderFilter, globalSelectedAddress }) => {
                   </th>
 
                   <th scope="col">Status</th>
-                  <th scope="col">M. Address</th>
+                  {/* <th scope="col">M. Address</th> */}
 
                   <th scope="col" onClick={() => handleSort("grand_total_amount")} style={{ cursor: "pointer", textDecoration: "none", userSelect: "none" }}>
                     Price {sortConfig.key === "grand_total_amount" ? (sortConfig.direction === "asc" ? "↑" : "↓") : ""}
@@ -413,7 +414,7 @@ const Orders = ({ orderFilter, globalSelectedAddress }) => {
                         {ini.order_status}
                       </td>
 
-                      <td
+                      {/* <td
                         onClick={() => {
                           setFixaAddressModal(true);
                         }}
@@ -427,7 +428,7 @@ const Orders = ({ orderFilter, globalSelectedAddress }) => {
                         ) : (
                           <span className="txt-1">{ini.master_address}</span>
                         )}
-                      </td>
+                      </td> */}
 
                       <td className="fw-bold">${ini.grand_total_amount}</td>
                     </tr>

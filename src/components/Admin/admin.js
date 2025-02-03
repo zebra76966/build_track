@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import Sidebar from "./sidebar";
 import Header from "./header";
 import "./admin.css";
@@ -9,6 +9,8 @@ import { ToastBar, Toaster } from "react-hot-toast";
 import FilterCard from "./filtercard";
 import AddProperty from "./addProp";
 import Materials from "./materials";
+import DatePicker from "react-datepicker"; // Import react-datepicker
+import "react-datepicker/dist/react-datepicker.css"; // Import the styles
 
 const AdminDashboard = () => {
   const [active, setActive] = useState(0);
@@ -17,6 +19,14 @@ const AdminDashboard = () => {
   const [globalMatchingProducts, setGlobalMatchingProducts] = useState([]);
   const [globalSelectedAddress, setGlobalSelectedAddress] = useState(null);
 
+  const [selectedDate, setSelectedDate] = useState(null); // State to hold selected date
+
+  const [calendarVisible, setCalendarVisible] = useState(false); // Control calendar visibility
+
+  // Handle the click on the calendar icon
+  const handleCalendarClick = () => {
+    setCalendarVisible(!calendarVisible);
+  };
   return (
     <div className="d-flex bg-dark" style={{ height: "100dvh" }}>
       <Toaster />
@@ -37,10 +47,35 @@ const AdminDashboard = () => {
                   <div className="fade-in ">
                     <div className="row">
                       <div className="col-9">
-                        <Orders orderFilter={orderFilter} globalSelectedAddress={globalSelectedAddress} />
+                        <Orders orderFilter={orderFilter} globalSelectedAddress={globalSelectedAddress} date={selectedDate.toISOString().split("T")[0]} />
                       </div>
+                      {console.log("selectedDate", selectedDate)}
                       <div className="col-3">
                         <div className="position-sticky top-0 left-0">
+                          <div className="position-relative mb-2">
+                            <input
+                              className="form-control topSearch bg-black  border-1 border-secondary w-100 py-3 px-2  text-light"
+                              type="date"
+                              disabled
+                              value={selectedDate.toISOString().split("T")[0]}
+                              // onChange={handleSearch}
+                              style={{ borderRadius: "1em" }}
+                            />
+
+                            <div className="p-3 position-absolute top-0 end-0 h-100" onClick={handleCalendarClick}>
+                              <img src="icons/calendar-range-solid.svg" height={"20px"} />
+                            </div>
+                            {/* Conditionally render the custom date picker */}
+                            {calendarVisible && (
+                              <DatePicker
+                                selected={selectedDate}
+                                onChange={(date) => setSelectedDate(date)}
+                                inline
+                                calendarClassName="custom-calendar" // Optional styling class for the calendar
+                              />
+                            )}
+                          </div>
+
                           <FilterCard setFilter={(e) => setOrderFilter(e)} />
                         </div>
                       </div>
