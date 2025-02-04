@@ -207,7 +207,7 @@ const Materials = ({ globalMatchingProducts }) => {
           {/* <div className="col-1 h-100 position-relative  d-flex px-1 py-0">
             <p className="fs-6 mb-1 text-light">#</p>
           </div> */}
-          <div className="col-5 d-flex flex-column justify-content-center border-end border-1 border-secondary">
+          <div className="col-4 d-flex flex-column justify-content-center border-end border-1 border-secondary">
             <p className="fs-6 mb-1 text-light">Name</p>
           </div>
           {/* <div className="col-1 border-end flex-column justify-content-center d-flex border-1 border-secondary ">
@@ -226,6 +226,10 @@ const Materials = ({ globalMatchingProducts }) => {
           <div className="col-2 border-end flex-column justify-content-center d-flex border-1 border-secondary ">
             <p className="fs-6 text-light mb-0  text-center">ID</p>
           </div>
+
+          <div className="col-2 border-end flex-column justify-content-center d-flex border-1 border-secondary ">
+            <p className="fs-6 text-light mb-0  text-center">Vendors</p>
+          </div>
         </div>
 
         {globalMatchingProducts.map((ini, index) => (
@@ -233,7 +237,7 @@ const Materials = ({ globalMatchingProducts }) => {
             {/* <div className="col-1 h-100 position-relative  d-flex px-1 py-0">
               <img src={`${getProductImageUrl(ini.link)}`} className="w-100 " style={{ objectFit: "cover", height: isFull ? "85px" : "100%", borderRadius: "0.8em 0 0 0.8em" }} />
             </div> */}
-            <div className="col-5 d-flex flex-column justify-content-center border-end border-1 border-secondary">
+            <div className="col-4 d-flex flex-column justify-content-center border-end border-1 border-secondary">
               <p className="fs-6 mb-1 text-light text-truncate w-75">{ini.common_name}</p>
               <p className={`text-secondary mb-1 ${isFull ? "" : "textClamp-2"} small`} onClick={() => setIsFull(!isFull)}>
                 {ini.product_name}
@@ -254,6 +258,10 @@ const Materials = ({ globalMatchingProducts }) => {
 
             <div className="col-2 border-end flex-column justify-content-center d-flex border-1 border-secondary ">
               <p className="fs-6 text-light mb-0  text-center">{ini.order_id}</p>
+            </div>
+
+            <div className="col-2 border-end flex-column justify-content-center d-flex border-1 border-secondary ">
+              <p className="fs-6 text-light mb-0  text-center">{ini.vendor}</p>
             </div>
 
             <div className="col-1   justify-content-center align-items-center d-flex gap-4 pe-1">
