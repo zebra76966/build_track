@@ -23,6 +23,8 @@ const AdminDashboard = () => {
 
   const [calendarVisible, setCalendarVisible] = useState(false); // Control calendar visibility
 
+  const [materialDate, seMaterialDate] = useState(null);
+
   // Handle the click on the calendar icon
   const handleCalendarClick = () => {
     setCalendarVisible(!calendarVisible);
@@ -36,7 +38,7 @@ const AdminDashboard = () => {
 
       <div className="mainSection ">
         <div className="w-100 mb-1 py-1 px-2">
-          <Header setGlobalMatchingProducts={(e) => setGlobalMatchingProducts(e)} setGlobalSelectedAddress={(e) => setGlobalSelectedAddress(e)} />
+          <Header setGlobalMatchingProducts={(e) => setGlobalMatchingProducts(e)} setGlobalSelectedAddress={(e) => setGlobalSelectedAddress(e)} materialDate={materialDate} />
         </div>
         <div className="px-1 pb-3 pt-0">
           <div className="mainSectionInner w-100 py-4 px-3 text-light noScrollBar">
@@ -69,7 +71,10 @@ const AdminDashboard = () => {
                             {calendarVisible && (
                               <DatePicker
                                 selected={selectedDate}
-                                onChange={(date) => setSelectedDate(date)}
+                                onChange={(date) => {
+                                  const localDate = new Date(date.getTime() - date.getTimezoneOffset() * 60000);
+                                  setSelectedDate(localDate);
+                                }}
                                 inline
                                 calendarClassName="custom-calendar" // Optional styling class for the calendar
                               />
@@ -95,7 +100,7 @@ const AdminDashboard = () => {
 
                 {active == 3 && (
                   <div className="fade-in position-relative">
-                    <Materials globalMatchingProducts={globalMatchingProducts} />
+                    <Materials globalMatchingProducts={globalMatchingProducts} seMaterialDate={(e) => seMaterialDate(e)} />
                   </div>
                 )}
               </div>

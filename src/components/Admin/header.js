@@ -3,7 +3,7 @@ import { useState, useEffect } from "react";
 import { baseUrl } from "../config";
 import toast from "react-hot-toast";
 
-const Header = ({ setGlobalMatchingProducts, setGlobalSelectedAddress }) => {
+const Header = ({ setGlobalMatchingProducts, setGlobalSelectedAddress, materialDate }) => {
   const [masterAddresses, setMasterAdresses] = useState([]);
   const [isLoading, setIsloading] = useState(false);
 
@@ -30,11 +30,19 @@ const Header = ({ setGlobalMatchingProducts, setGlobalSelectedAddress }) => {
   }, []);
 
   const [matchingAddress, setMatchingAddress] = useState([]);
+  const reformatDate = (dateString) => {
+    const date = new Date(dateString);
+    const day = String(date.getUTCDate()).padStart(2, "0");
+    const month = String(date.getUTCMonth() + 1).padStart(2, "0");
+    const year = date.getUTCFullYear();
+    return `${day}/${month}/${year}`;
+  };
 
   const GetPropertyMacthingProducts = async (id) => {
     setIsloading(true);
     let body = {
       master_address_id: id,
+      ordered_date: materialDate && reformatDate(materialDate),
     };
 
     try {

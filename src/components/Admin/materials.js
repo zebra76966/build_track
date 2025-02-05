@@ -3,15 +3,16 @@ import { baseUrl } from "../config";
 import toast from "react-hot-toast";
 import axios from "axios";
 import { Cheerio } from "cheerio";
+import iconsData from "./materialscat.json";
+import DatePicker from "react-datepicker"; // Import react-datepicker
+import "react-datepicker/dist/react-datepicker.css"; // Import the styles
 
-
-const Materials = ({ globalMatchingProducts }) => {
+const Materials = ({ globalMatchingProducts, seMaterialDate }) => {
   const [transactions, setTransactions] = useState([]);
   const [filteredTransactions, setFilteredTransactions] = useState([]);
   const [isLoading, setIsloading] = useState(false);
   const [active, setActive] = useState("");
   const [activeDetail, setActiveDetail] = useState("");
-
 
   const handleDetailView = async () => {
     setIsloading(true);
@@ -36,6 +37,34 @@ const Materials = ({ globalMatchingProducts }) => {
     }
   }, [active]);
 
+  const getIcon = (name) => {
+    const item = iconsData.find((item) => item.name === name);
+    return item ? item.icon : "logo192.png";
+  };
+
+  const [categories, setCategories] = useState([]);
+
+  const getCategories = async () => {
+    setIsloading(true);
+
+    try {
+      const response = await fetch(baseUrl + `/dashboard/get-categories/`, {
+        method: "GET",
+        headers: { "Content-Type": "application/json" },
+      });
+      const data = await response.json();
+      setCategories(data.categories);
+    } catch (error) {
+      toast.error("Something went wrong while fetching transactions.");
+    } finally {
+      setIsloading(false);
+    }
+  };
+
+  useEffect(() => {
+    getCategories();
+  }, []);
+
   const hasFetched = useRef(false);
 
   const handlesubmit = async () => {
@@ -55,7 +84,7 @@ const Materials = ({ globalMatchingProducts }) => {
       setIsloading(false);
     }
   };
-  
+
   useEffect(() => {
     if (!hasFetched.current) {
       hasFetched.current = true;
@@ -88,13 +117,12 @@ const Materials = ({ globalMatchingProducts }) => {
   };
 
   // for calender picker
-  const dateInputRef = useRef(null); 
+  const dateInputRef = useRef(null);
   const openDatePicker = () => {
     if (dateInputRef.current) {
-      dateInputRef.current.showPicker(); 
+      dateInputRef.current.showPicker();
     }
   };
-  
 
   const cheerio = require("cheerio");
 
@@ -116,9 +144,62 @@ const Materials = ({ globalMatchingProducts }) => {
   }
 
   const [isFull, setIsFull] = useState(false);
+  const [selectedCategories, setSelectedCategories] = useState([]);
+
+  const handleCategoryClick = (category) => {
+    setSelectedCategories((prevSelected) => (prevSelected.includes(category) ? prevSelected.filter((c) => c !== category) : [...prevSelected, category]));
+  };
+
+  // Date Filtering===========>
+  const [selectedDate, setSelectedDate] = useState(null); // State to hold selected date
+
+  const [calendarVisible, setCalendarVisible] = useState(false); // Control calendar visibility
+
+  // Handle the click on the calendar icon
+  const handleCalendarClick = () => {
+    setCalendarVisible(!calendarVisible);
+  };
+
+  // Date Filtering===========>
+
+  useEffect(() => {
+    if (selectedDate) {
+      seMaterialDate(selectedDate);
+    }
+  }, [selectedDate]);
+
+  const [viewAll, setViewAll] = useState(false);
+
+  const [selectedOptions, setSelectedOptions] = useState([]);
+  const options = ["HD", "Amazon", "Walmart"];
+  const [dropdownOpen, setDropdownOpen] = useState(false);
+
+  const toggleDropdown = () => {
+    setDropdownOpen(!dropdownOpen);
+  };
+
+  const handleOptionChange = (option) => {
+    let updatedSelection = [...selectedOptions];
+
+    if (updatedSelection.includes(option)) {
+      updatedSelection = updatedSelection.filter((item) => item !== option);
+    } else {
+      updatedSelection.push(option);
+    }
+
+    setSelectedOptions(updatedSelection);
+  };
+
+  const filteredProducts =
+    selectedCategories.length || selectedOptions.length
+      ? globalMatchingProducts.filter(
+          (product) => (selectedCategories.length ? selectedCategories.includes(product.category) : true) && (selectedOptions.length ? selectedOptions.includes(product.vendor) : true)
+        )
+      : globalMatchingProducts;
 
   return (
     <>
+      {console.log("categories", selectedCategories)}
       <div className="w-100 p-3">
         <h4 className="fs-3 my-0 py-0 mb-4">Materials</h4>
         <div className="position-relative ">
@@ -139,84 +220,91 @@ const Materials = ({ globalMatchingProducts }) => {
           </div>
         </div>
 
-        <div className="d-flex align-items-center gap-3 mt-3">
+        <div className="d-flex align-items-center gap-3 mt-5 mb-4">
           <p className="lead text-secondary mb-0"> Appliances</p>
-          <div className="position-relative">
+          {/* <div className="position-relative">
             <input
               className="form-control topSearch bg-black  border-1 border-secondary w-100 py-3 px-2  text-light"
               type="date"
               ref={dateInputRef}
               value={searchTerm}
               onChange={handleSearch}
-              style={{ borderRadius: "1em"}}
-              />
-            <div className="p-3 position-absolute top-0 end-0 h-100"
-              onClick={openDatePicker}
-              style={{ cursor: "pointer" }}
-              >
+              style={{ borderRadius: "1em" }}
+            />
+            <div className="p-3 position-absolute top-0 end-0 h-100" onClick={openDatePicker} style={{ cursor: "pointer" }}>
               <img src="icons/calendar-range-solid.svg" height={"100%"} />
+            </div>
+          </div> */}
+
+          <div className="position-relative mb-2 w-100">
+            <div className="position-absolute  mb-2  start-0" style={{ zIndex: "9999", transform: calendarVisible ? "translateY(-10%)" : "translateY(-50%)" }}>
+              <input
+                className="form-control topSearch bg-black  border-1 border-secondary w-100 py-3 px-2  text-light"
+                type="date"
+                disabled
+                value={selectedDate && selectedDate.toISOString().split("T")[0]}
+                // onChange={handleSearch}
+                style={{ borderRadius: "1em", transition: "width 0.3s ease-in" }}
+              />
+
+              <div className="p-3 position-absolute top-0 end-0 h-100" onClick={handleCalendarClick}>
+                <img src="icons/calendar-range-solid.svg" height={"20px"} />
+              </div>
+              {/* Conditionally render the custom date picker */}
+              {calendarVisible && (
+                <DatePicker
+                  selected={selectedDate}
+                  onChange={(date) => {
+                    const localDate = new Date(date.getTime() - date.getTimezoneOffset() * 60000);
+                    setSelectedDate(localDate);
+                  }}
+                  inline
+                  calendarClassName="custom-calendar" // Optional styling class for the calendar
+                />
+              )}
             </div>
           </div>
         </div>
 
         <div className="tags mt-3">
-          <button className="btn btn-dark rounded-pill  fs-5 me-1 text-secondary">
-            <div className="d-flex align-items-center gap-3">
-              <span>Demo</span>
-              <img src="icons/trash-can-solid.svg" height={20} />
-            </div>
-          </button>
+          {categories.slice(0, viewAll ? categories.length - 1 : 8)?.map((category, index) => (
+            <button
+              key={index}
+              className={`btn rounded-pill fs-5 me-1 mb-2 ${selectedCategories.includes(category) ? "bg-primary text-dark" : "btn-dark text-secondary"}`}
+              onClick={() => handleCategoryClick(category)}
+            >
+              <div className="d-flex align-items-center gap-3">
+                <span>{category}</span>
+                <img src={getIcon(category)} height={20} alt="icon" style={{ filter: selectedCategories.includes(category) ? "invert(1)" : "invert(0)" }} />
+              </div>
+            </button>
+          ))}
 
-          <button className="btn btn-dark bg-primary text-dark rounded-pill  fs-5 me-1 ">
+          <button className={`btn rounded-pill fs-5 me-1 mb-2 bg-black border-primary border-1 border  text-primary `} onClick={() => setViewAll(!viewAll)}>
             <div className="d-flex align-items-center gap-3">
-              <span>Fastners</span>
-              <img src="icons/screwdriver-solid.svg" height={20} />
-            </div>
-          </button>
-
-          <button className="btn btn-dark bg-primary text-dark rounded-pill  fs-5 me-1 ">
-            <div className="d-flex align-items-center gap-3">
-              <span>Lumber</span>
-              <img src="icons/cabin-solid.svg" height={20} />
-            </div>
-          </button>
-
-          <button className="btn btn-dark rounded-pill  fs-5 me-1 text-secondary">
-            <div className="d-flex align-items-center gap-3">
-              <span>Insulation</span>
-              <img src="icons/temperature-snow-sharp-regular.svg" height={20} />
-            </div>
-          </button>
-
-          <button className="btn btn-dark rounded-pill  fs-5 me-1 text-secondary">
-            <div className="d-flex align-items-center gap-3">
-              <span>Roofing</span>
-              <img src="icons/person-shelter-sharp-solid.svg" height={20} />
-            </div>
-          </button>
-
-          <button className="btn btn-dark bg-primary text-dark rounded-pill fs-5 me-1">
-            <div className="d-flex align-items-center gap-3">
-              <span>Windows & Doors</span>
-              <img src="icons/window-frame-sharp-solid.svg" height={20} />
-            </div>
-          </button>
-          <button className="btn btn-dark bg-primary text-dark rounded-pill fs-5 me-1">
-            <div className="d-flex align-items-center gap-3">
-              <span>Exterior</span>
-              <img src="icons/office.svg" height={20} />
-            </div>
-          </button>
-
-          <button className="btn btn-dark bg-black border-primary text-primary rounded-pill fs-5 me-1">
-            <div className="d-flex align-items-center gap-3 px-4">
-              <span>More</span>
+              <span>{viewAll ? "Show Less" : "Show More"}</span>
             </div>
           </button>
         </div>
       </div>
 
       <div className="w-100 p-3 mt-2">
+        <div className="dropdown ms-auto me-5" style={{ maxWidth: "160px" }}>
+          <button className="btn btn-dark border-secondary  rounded-3 px-4 dropdown-toggle" type="button" onClick={toggleDropdown}>
+            {selectedOptions.length > 0 ? selectedOptions.join(", ") : "Select Vendors"}
+          </button>
+          <ul className={`dropdown-menu bg-dark w-100  ${dropdownOpen ? "show" : ""}`} style={{ left: "05%" }}>
+            {options.map((option, index) => (
+              <li key={index} className="dropdown-item text-light">
+                <label className="form-check-label">
+                  <input type="checkbox" className="form-check-input me-2" checked={selectedOptions.includes(option)} onChange={() => handleOptionChange(option)} />
+                  {option == "Amazon" ? "AMZ" : option == "Walmart" ? "WM" : option}
+                </label>
+              </li>
+            ))}
+          </ul>
+        </div>
+
         <div className="row  align-items-stretch p-1 px-0 mb-1 fw-bold">
           {/* <div className="col-1 h-100 position-relative  d-flex px-1 py-0">
             <p className="fs-6 mb-1 text-light">#</p>
@@ -228,7 +316,7 @@ const Materials = ({ globalMatchingProducts }) => {
             <p className="fs-6 text-light mb-0 text-center">Pricing</p>
           </div> */}
           <div className="col-1 border-end flex-column justify-content-center d-flex border-1 border-secondary ">
-            <p className="fs-7 text-light mb-0 text-center">Suggested  Qty.</p>
+            <p className="fs-7 text-light mb-0 text-center">Suggested Qty.</p>
           </div>
           <div className="col-1 border-end flex-column justify-content-center d-flex border-1 border-secondary ">
             <p className="fs-6 text-light mb-0 fw-bold text-center">Pack Qty.</p>
@@ -246,7 +334,7 @@ const Materials = ({ globalMatchingProducts }) => {
           </div>
         </div>
 
-        {globalMatchingProducts.map((ini, index) => (
+        {filteredProducts.map((ini, index) => (
           <div className="row border-1 border border-secondary align-items-stretch p-1 px-0 mb-1" style={{ borderRadius: "1em", height: isFull ? "100%" : "85px", cursor: "pointer" }} key={index}>
             {/* <div className="col-1 h-100 position-relative  d-flex px-1 py-0">
               <img src={`${getProductImageUrl(ini.link)}`} className="w-100 " style={{ objectFit: "cover", height: isFull ? "85px" : "100%", borderRadius: "0.8em 0 0 0.8em" }} />
