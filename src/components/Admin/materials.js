@@ -250,13 +250,13 @@ const Materials = ({ globalMatchingProducts }) => {
             <p className="fs-6 text-light mb-0 text-center">Pricing</p>
           </div> */}
           <div className="col-1 border-end flex-column justify-content-center d-flex border-1 border-secondary ">
-            <p className="fs-7 text-light mb-0 text-center">Suggested Pack Qty.</p>
+            <p className="fs-7 text-light mb-0 text-center">Suggested Qty.</p>
           </div>
           <div className="col-1 border-end flex-column justify-content-center d-flex border-1 border-secondary ">
             <p className="fs-6 text-light mb-0 text-center">Ordered Qty.</p>
           </div>
           <div className="col-2 border-end flex-column justify-content-center d-flex border-1 border-secondary ">
-            <p className="fs-6 text-light mb-0 fw-bold text-center">Category</p>
+            <p className="fs-6 text-light mb-0 fw-bold text-center">Pack Qty.</p>
           </div>
 
           <div className="col-2 border-end flex-column justify-content-center d-flex border-1 border-secondary ">
@@ -283,13 +283,13 @@ const Materials = ({ globalMatchingProducts }) => {
               <p className="fs-6 text-light mb-0 text-center">$29.07</p>
             </div> */}
             <div className="col-1 border-end flex-column justify-content-center d-flex border-1 border-secondary ">
-              <p className="fs-6 text-light mb-0 text-center">{ini.pack_quantity}</p>
+              <p className="fs-6 text-light mb-0 text-center"></p>
             </div>
             <div className="col-1 border-end flex-column justify-content-center d-flex border-1 border-secondary ">
               <p className="fs-6 text-light mb-0 text-center">{ini.total_quantity}</p>
             </div>
             <div className="col-2 border-end flex-column justify-content-center d-flex border-1 border-secondary ">
-              <p className="fs-6 text-light mb-0 fw-bold text-center text-break">{ini.category}</p>
+              <p className="fs-6 text-light mb-0 fw-bold text-center text-break">{ini.pack_quantity}</p>
             </div>
 
             <div className="col-2 border-end flex-column justify-content-center d-flex border-1 border-secondary ">
