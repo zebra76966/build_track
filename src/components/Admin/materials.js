@@ -87,29 +87,7 @@ const Materials = ({ globalMatchingProducts }) => {
     setFilteredTransactions(filteredData); // Update the filtered data
   };
 
-  // const handleSearch = (e) => {
-  //   const value = e.target.value.toLowerCase().trim();
-  //   setSearchTerm(value);
-  //   if (!value) {
-  //     setFilteredTransactions(transactions); 
-  //     return;
-  //   }
-  //   if (!transactions || transactions.length === 0) {
-  //     console.warn("No transactions available to filter.");
-  //     return;
-  //   }
-  //   const filteredData = transactions.filter((transaction) => 
-  //     Object.values(transaction).some((field) => {
-  //       if (field !== null && field !== undefined) {
-  //         return String(field).toLowerCase().includes(value);
-  //       }
-  //       return false;
-  //     })
-  //   );
-  //   console.log("Filtered Data:", filteredData); 
-  //   setFilteredTransactions(filteredData);
-  // };
-  
+  // for calender picker
   const dateInputRef = useRef(null); 
   const openDatePicker = () => {
     if (dateInputRef.current) {
@@ -243,20 +221,20 @@ const Materials = ({ globalMatchingProducts }) => {
           {/* <div className="col-1 h-100 position-relative  d-flex px-1 py-0">
             <p className="fs-6 mb-1 text-light">#</p>
           </div> */}
-          <div className="col-3 d-flex flex-column justify-content-center border-end border-1 border-secondary">
+          <div className="col-4 d-flex flex-column justify-content-center border-end border-1 border-secondary">
             <p className="fs-6 mb-1 text-light">Name</p>
           </div>
           {/* <div className="col-1 border-end flex-column justify-content-center d-flex border-1 border-secondary ">
             <p className="fs-6 text-light mb-0 text-center">Pricing</p>
           </div> */}
           <div className="col-1 border-end flex-column justify-content-center d-flex border-1 border-secondary ">
-            <p className="fs-7 text-light mb-0 text-center">Suggested Qty.</p>
+            <p className="fs-7 text-light mb-0 text-center">Suggested  Qty.</p>
+          </div>
+          <div className="col-1 border-end flex-column justify-content-center d-flex border-1 border-secondary ">
+            <p className="fs-6 text-light mb-0 fw-bold text-center">Pack Qty.</p>
           </div>
           <div className="col-1 border-end flex-column justify-content-center d-flex border-1 border-secondary ">
             <p className="fs-6 text-light mb-0 text-center">Ordered Qty.</p>
-          </div>
-          <div className="col-2 border-end flex-column justify-content-center d-flex border-1 border-secondary ">
-            <p className="fs-6 text-light mb-0 fw-bold text-center">Pack Qty.</p>
           </div>
 
           <div className="col-2 border-end flex-column justify-content-center d-flex border-1 border-secondary ">
@@ -273,7 +251,7 @@ const Materials = ({ globalMatchingProducts }) => {
             {/* <div className="col-1 h-100 position-relative  d-flex px-1 py-0">
               <img src={`${getProductImageUrl(ini.link)}`} className="w-100 " style={{ objectFit: "cover", height: isFull ? "85px" : "100%", borderRadius: "0.8em 0 0 0.8em" }} />
             </div> */}
-            <div className="col-3 d-flex flex-column justify-content-center border-end border-1 border-secondary">
+            <div className="col-4 d-flex flex-column justify-content-center border-end border-1 border-secondary">
               <p className="fs-6 mb-1 text-light text-truncate w-75">{ini.common_name}</p>
               <p className={`text-secondary mb-1 ${isFull ? "" : "textClamp-2"} small`} onClick={() => setIsFull(!isFull)}>
                 {ini.product_name}
@@ -286,10 +264,10 @@ const Materials = ({ globalMatchingProducts }) => {
               <p className="fs-6 text-light mb-0 text-center"></p>
             </div>
             <div className="col-1 border-end flex-column justify-content-center d-flex border-1 border-secondary ">
-              <p className="fs-6 text-light mb-0 text-center">{ini.total_quantity}</p>
+              <p className="fs-6 text-light mb-0 text-center">{ini.pack_quantity}</p>
             </div>
-            <div className="col-2 border-end flex-column justify-content-center d-flex border-1 border-secondary ">
-              <p className="fs-6 text-light mb-0 fw-bold text-center text-break">{ini.pack_quantity}</p>
+            <div className="col-1 border-end flex-column justify-content-center d-flex border-1 border-secondary ">
+              <p className="fs-6 text-light mb-0 fw-bold text-center text-break">{ini.total_quantity}</p>
             </div>
 
             <div className="col-2 border-end flex-column justify-content-center d-flex border-1 border-secondary ">
