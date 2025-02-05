@@ -68,7 +68,7 @@ const Header = ({ setGlobalMatchingProducts, setGlobalSelectedAddress, materialD
     if (selectedAddress) {
       GetPropertyMacthingProducts(selectedAddress);
     }
-  }, [selectedAddress]);
+  }, [selectedAddress, materialDate]);
 
   useEffect(() => {
     if (matchingAddress) {

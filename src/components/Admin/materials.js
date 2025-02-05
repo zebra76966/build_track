@@ -118,30 +118,6 @@ const Materials = ({ globalMatchingProducts, seMaterialDate }) => {
 
   // for calender picker
   const dateInputRef = useRef(null);
-  const openDatePicker = () => {
-    if (dateInputRef.current) {
-      dateInputRef.current.showPicker();
-    }
-  };
-
-  const cheerio = require("cheerio");
-
-  async function getProductImageUrl(productUrl) {
-    try {
-      const { data } = await axios.get(productUrl, {
-        headers: { "User-Agent": "Mozilla/5.0" }, // Avoid bot detection
-      });
-
-      const $ = cheerio.load(data);
-      const imageUrl = $('meta[property="og:image"]').attr("content");
-      console.log("Image URL:", imageUrl);
-
-      return imageUrl || null; // Return image URL or null if not found
-    } catch (error) {
-      console.error("Error fetching Amazon page:", error.message);
-      return null;
-    }
-  }
 
   const [isFull, setIsFull] = useState(false);
   const [selectedCategories, setSelectedCategories] = useState([]);
@@ -171,7 +147,7 @@ const Materials = ({ globalMatchingProducts, seMaterialDate }) => {
   const [viewAll, setViewAll] = useState(false);
 
   const [selectedOptions, setSelectedOptions] = useState([]);
-  const options = ["HD", "Amazon", "Walmart"];
+  const options = ["HD", "AMZ", "WM"];
   const [dropdownOpen, setDropdownOpen] = useState(false);
 
   const toggleDropdown = () => {
@@ -192,8 +168,10 @@ const Materials = ({ globalMatchingProducts, seMaterialDate }) => {
 
   const filteredProducts =
     selectedCategories.length || selectedOptions.length
-      ? globalMatchingProducts.filter(
-          (product) => (selectedCategories.length ? selectedCategories.includes(product.category) : true) && (selectedOptions.length ? selectedOptions.includes(product.vendor) : true)
+      ? globalMatchingProducts.filter((product) =>
+          (selectedCategories.length ? selectedCategories.includes(product.category) : true) && (selectedOptions.length ? selectedOptions.includes(product.vendor) : true) && searchTerm.length
+            ? product.product_name.toLowerCase().includes(searchTerm.toLowerCase())
+            : true
         )
       : globalMatchingProducts;
 
@@ -220,52 +198,56 @@ const Materials = ({ globalMatchingProducts, seMaterialDate }) => {
           </div>
         </div>
 
-        <div className="d-flex align-items-center gap-3 mt-5 mb-4">
-          <p className="lead text-secondary mb-0"> Appliances</p>
-          {/* <div className="position-relative">
-            <input
-              className="form-control topSearch bg-black  border-1 border-secondary w-100 py-3 px-2  text-light"
-              type="date"
-              ref={dateInputRef}
-              value={searchTerm}
-              onChange={handleSearch}
-              style={{ borderRadius: "1em" }}
-            />
-            <div className="p-3 position-absolute top-0 end-0 h-100" onClick={openDatePicker} style={{ cursor: "pointer" }}>
-              <img src="icons/calendar-range-solid.svg" height={"100%"} />
-            </div>
-          </div> */}
+        <div className="d-flex align-items-center gap-5 mt-5 mb-4">
+          <div className="d-flex align-items-center gap-3  ">
+            <p className="lead text-secondary mb-0"> Appliances</p>
 
-          <div className="position-relative mb-2 w-100">
-            <div className="position-absolute  mb-2  start-0" style={{ zIndex: "9999", transform: calendarVisible ? "translateY(-10%)" : "translateY(-50%)" }}>
-              <input
-                className="form-control topSearch bg-black  border-1 border-secondary w-100 py-3 px-2  text-light"
-                type="date"
-                disabled
-                value={selectedDate && selectedDate.toISOString().split("T")[0]}
-                // onChange={handleSearch}
-                style={{ borderRadius: "1em", transition: "width 0.3s ease-in" }}
-              />
-
-              <div className="p-3 position-absolute top-0 end-0 h-100" onClick={handleCalendarClick}>
-                <img src="icons/calendar-range-solid.svg" height={"20px"} />
-              </div>
-              {/* Conditionally render the custom date picker */}
-              {calendarVisible && (
-                <DatePicker
-                  selected={selectedDate}
-                  onChange={(date) => {
-                    const localDate = new Date(date.getTime() - date.getTimezoneOffset() * 60000);
-                    setSelectedDate(localDate);
-                  }}
-                  inline
-                  calendarClassName="custom-calendar" // Optional styling class for the calendar
+            <div className="position-relative mb-2">
+              <div className="position-absolute  mb-2  start-0" style={{ zIndex: "9999", width: "200px", transform: calendarVisible ? "translateY(-10%)" : "translateY(-50%)" }}>
+                <input
+                  className="form-control topSearch bg-black  border-1 border-secondary w-100 py-3 px-2  text-light"
+                  type="date"
+                  disabled
+                  value={selectedDate && selectedDate.toISOString().split("T")[0]}
+                  // onChange={handleSearch}
+                  style={{ borderRadius: "1em", transition: "width 0.3s ease-in" }}
                 />
-              )}
+
+                <div className="p-3 position-absolute top-0 end-0 h-100" onClick={handleCalendarClick}>
+                  <img src="icons/calendar-range-solid.svg" height={"20px"} />
+                </div>
+                {/* Conditionally render the custom date picker */}
+                {calendarVisible && (
+                  <DatePicker
+                    selected={selectedDate}
+                    onChange={(date) => {
+                      const localDate = new Date(date.getTime() - date.getTimezoneOffset() * 60000);
+                      setSelectedDate(localDate);
+                    }}
+                    inline
+                    calendarClassName="custom-calendar" // Optional styling class for the calendar
+                  />
+                )}
+              </div>
             </div>
           </div>
-        </div>
 
+          <div className="dropdown  ms-auto me-4" style={{ maxWidth: "160px" }}>
+            <button className="btn btn-dark border-secondary  rounded-3 px-4 dropdown-toggle" type="button" onClick={toggleDropdown}>
+              {selectedOptions.length > 0 ? selectedOptions.join(", ") : "Select Vendors"}
+            </button>
+            <ul className={`dropdown-menu bg-dark w-100  ${dropdownOpen ? "show" : ""}`} style={{ left: "05%" }}>
+              {options.map((option, index) => (
+                <li key={index} className="dropdown-item text-light">
+                  <label className="form-check-label">
+                    <input type="checkbox" className="form-check-input me-2" checked={selectedOptions.includes(option)} onChange={() => handleOptionChange(option)} />
+                    {option == "Amazon" ? "AMZ" : option == "Walmart" ? "WM" : option}
+                  </label>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </div>
         <div className="tags mt-3">
           {categories.slice(0, viewAll ? categories.length - 1 : 8)?.map((category, index) => (
             <button
@@ -289,22 +271,6 @@ const Materials = ({ globalMatchingProducts, seMaterialDate }) => {
       </div>
 
       <div className="w-100 p-3 mt-2">
-        <div className="dropdown ms-auto me-5" style={{ maxWidth: "160px" }}>
-          <button className="btn btn-dark border-secondary  rounded-3 px-4 dropdown-toggle" type="button" onClick={toggleDropdown}>
-            {selectedOptions.length > 0 ? selectedOptions.join(", ") : "Select Vendors"}
-          </button>
-          <ul className={`dropdown-menu bg-dark w-100  ${dropdownOpen ? "show" : ""}`} style={{ left: "05%" }}>
-            {options.map((option, index) => (
-              <li key={index} className="dropdown-item text-light">
-                <label className="form-check-label">
-                  <input type="checkbox" className="form-check-input me-2" checked={selectedOptions.includes(option)} onChange={() => handleOptionChange(option)} />
-                  {option == "Amazon" ? "AMZ" : option == "Walmart" ? "WM" : option}
-                </label>
-              </li>
-            ))}
-          </ul>
-        </div>
-
         <div className="row  align-items-stretch p-1 px-0 mb-1 fw-bold">
           {/* <div className="col-1 h-100 position-relative  d-flex px-1 py-0">
             <p className="fs-6 mb-1 text-light">#</p>
