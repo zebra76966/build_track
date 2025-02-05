@@ -4,12 +4,14 @@ import toast from "react-hot-toast";
 import axios from "axios";
 import { Cheerio } from "cheerio";
 
+
 const Materials = ({ globalMatchingProducts }) => {
   const [transactions, setTransactions] = useState([]);
   const [filteredTransactions, setFilteredTransactions] = useState([]);
   const [isLoading, setIsloading] = useState(false);
   const [active, setActive] = useState("");
   const [activeDetail, setActiveDetail] = useState("");
+
 
   const handleDetailView = async () => {
     setIsloading(true);
@@ -53,7 +55,7 @@ const Materials = ({ globalMatchingProducts }) => {
       setIsloading(false);
     }
   };
-
+  
   useEffect(() => {
     if (!hasFetched.current) {
       hasFetched.current = true;
@@ -84,6 +86,37 @@ const Materials = ({ globalMatchingProducts }) => {
     const filteredData = transactions.filter((transaction) => Object.values(transaction).some((field) => String(field).toLowerCase().includes(value)));
     setFilteredTransactions(filteredData); // Update the filtered data
   };
+
+  // const handleSearch = (e) => {
+  //   const value = e.target.value.toLowerCase().trim();
+  //   setSearchTerm(value);
+  //   if (!value) {
+  //     setFilteredTransactions(transactions); 
+  //     return;
+  //   }
+  //   if (!transactions || transactions.length === 0) {
+  //     console.warn("No transactions available to filter.");
+  //     return;
+  //   }
+  //   const filteredData = transactions.filter((transaction) => 
+  //     Object.values(transaction).some((field) => {
+  //       if (field !== null && field !== undefined) {
+  //         return String(field).toLowerCase().includes(value);
+  //       }
+  //       return false;
+  //     })
+  //   );
+  //   console.log("Filtered Data:", filteredData); 
+  //   setFilteredTransactions(filteredData);
+  // };
+  
+  const dateInputRef = useRef(null); 
+  const openDatePicker = () => {
+    if (dateInputRef.current) {
+      dateInputRef.current.showPicker(); 
+    }
+  };
+  
 
   const cheerio = require("cheerio");
 
@@ -116,7 +149,7 @@ const Materials = ({ globalMatchingProducts }) => {
             type="search"
             placeholder="Search..."
             aria-label="Search"
-            value={searchTerm}
+            // value={searchTerm}
             onChange={handleSearch}
             style={{ borderRadius: "1em" }}
           />
@@ -134,12 +167,15 @@ const Materials = ({ globalMatchingProducts }) => {
             <input
               className="form-control topSearch bg-black  border-1 border-secondary w-100 py-3 px-2  text-light"
               type="date"
-              // value={searchTerm}
-              // onChange={handleSearch}
-              style={{ borderRadius: "1em" }}
-            />
-
-            <div className="p-3 position-absolute top-0 end-0 h-100">
+              ref={dateInputRef}
+              value={searchTerm}
+              onChange={handleSearch}
+              style={{ borderRadius: "1em"}}
+              />
+            <div className="p-3 position-absolute top-0 end-0 h-100"
+              onClick={openDatePicker}
+              style={{ cursor: "pointer" }}
+              >
               <img src="icons/calendar-range-solid.svg" height={"100%"} />
             </div>
           </div>
@@ -207,20 +243,20 @@ const Materials = ({ globalMatchingProducts }) => {
           {/* <div className="col-1 h-100 position-relative  d-flex px-1 py-0">
             <p className="fs-6 mb-1 text-light">#</p>
           </div> */}
-          <div className="col-4 d-flex flex-column justify-content-center border-end border-1 border-secondary">
+          <div className="col-3 d-flex flex-column justify-content-center border-end border-1 border-secondary">
             <p className="fs-6 mb-1 text-light">Name</p>
           </div>
           {/* <div className="col-1 border-end flex-column justify-content-center d-flex border-1 border-secondary ">
             <p className="fs-6 text-light mb-0 text-center">Pricing</p>
           </div> */}
           <div className="col-1 border-end flex-column justify-content-center d-flex border-1 border-secondary ">
-            <p className="fs-6 text-light mb-0 text-center">Suggested Pack Qty.</p>
+            <p className="fs-7 text-light mb-0 text-center">Suggested Pack Qty.</p>
           </div>
           <div className="col-1 border-end flex-column justify-content-center d-flex border-1 border-secondary ">
-            <p className="fs-6 text-light mb-0 text-center">Qty.</p>
+            <p className="fs-6 text-light mb-0 text-center">Ordered Qty.</p>
           </div>
           <div className="col-2 border-end flex-column justify-content-center d-flex border-1 border-secondary ">
-            <p className="fs-6 text-light mb-0 fw-bold text-center">Cat.</p>
+            <p className="fs-6 text-light mb-0 fw-bold text-center">Category</p>
           </div>
 
           <div className="col-2 border-end flex-column justify-content-center d-flex border-1 border-secondary ">
@@ -228,7 +264,7 @@ const Materials = ({ globalMatchingProducts }) => {
           </div>
 
           <div className="col-2 border-end flex-column justify-content-center d-flex border-1 border-secondary ">
-            <p className="fs-6 text-light mb-0  text-center">Vendors</p>
+            <p className="fs-6 text-light mb-0  text-center">Vendor</p>
           </div>
         </div>
 
@@ -237,7 +273,7 @@ const Materials = ({ globalMatchingProducts }) => {
             {/* <div className="col-1 h-100 position-relative  d-flex px-1 py-0">
               <img src={`${getProductImageUrl(ini.link)}`} className="w-100 " style={{ objectFit: "cover", height: isFull ? "85px" : "100%", borderRadius: "0.8em 0 0 0.8em" }} />
             </div> */}
-            <div className="col-4 d-flex flex-column justify-content-center border-end border-1 border-secondary">
+            <div className="col-3 d-flex flex-column justify-content-center border-end border-1 border-secondary">
               <p className="fs-6 mb-1 text-light text-truncate w-75">{ini.common_name}</p>
               <p className={`text-secondary mb-1 ${isFull ? "" : "textClamp-2"} small`} onClick={() => setIsFull(!isFull)}>
                 {ini.product_name}
@@ -264,7 +300,7 @@ const Materials = ({ globalMatchingProducts }) => {
               <p className="fs-6 text-light mb-0  text-center">{ini.vendor}</p>
             </div>
 
-            <div className="col-1   justify-content-center align-items-center d-flex gap-4 pe-1">
+            <div className="col-1  justify-content-center align-items-center d-flex gap-4 pe-1">
               <a herf={ini.link} target="_blank">
                 <img src="icons/eye.svg" height={30} className="w-100" />
               </a>
