@@ -167,11 +167,12 @@ const Materials = ({ globalMatchingProducts, seMaterialDate }) => {
   };
 
   const filteredProducts =
-    selectedCategories.length || selectedOptions.length
-      ? globalMatchingProducts.filter((product) =>
-          (selectedCategories.length ? selectedCategories.includes(product.category) : true) && (selectedOptions.length ? selectedOptions.includes(product.vendor) : true) && searchTerm.length
-            ? product.product_name.toLowerCase().includes(searchTerm.toLowerCase())
-            : true
+    selectedCategories.length || selectedOptions.length || searchTerm.length
+      ? globalMatchingProducts.filter(
+          (product) =>
+            (selectedCategories.length ? selectedCategories.includes(product.category) : true) &&
+            (selectedOptions.length ? selectedOptions.includes(product.vendor) : true) &&
+            (searchTerm.length ? product.product_name.toLowerCase().includes(searchTerm.toLowerCase()) : true)
         )
       : globalMatchingProducts;
 
@@ -233,7 +234,7 @@ const Materials = ({ globalMatchingProducts, seMaterialDate }) => {
           </div>
 
           <div className="dropdown  ms-auto me-4" style={{ maxWidth: "160px" }}>
-            <button className="btn btn-dark border-secondary  rounded-3 px-4 dropdown-toggle" type="button" onClick={toggleDropdown}>
+            <button className="btn btn-dark border-secondary  rounded-3 px-4 dropdown-toggle" type="button" onClick={toggleDropdown} style={{ minWidth: "180px" }}>
               {selectedOptions.length > 0 ? selectedOptions.join(", ") : "Select Vendors"}
             </button>
             <ul className={`dropdown-menu bg-dark w-100  ${dropdownOpen ? "show" : ""}`} style={{ left: "05%" }}>
