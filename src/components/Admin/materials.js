@@ -7,30 +7,109 @@ import iconsData from "./materialscat.json";
 import DatePicker from "react-datepicker"; // Import react-datepicker
 import "react-datepicker/dist/react-datepicker.css"; // Import the styles
 
+
 const Materials = ({ globalMatchingProducts, seMaterialDate }) => {
   const [transactions, setTransactions] = useState([]);
   const [filteredTransactions, setFilteredTransactions] = useState([]);
   const [isLoading, setIsloading] = useState(false);
   const [active, setActive] = useState("");
   const [activeDetail, setActiveDetail] = useState("");
+  const [showIdColumn, setShowIdColumn] = useState(false); // Default: Show ID column
 
-  const handleDetailView = async () => {
+  const [fixAddressModal, setFixaAddressModal] = useState(false);
+  const [masterAddresses, setMasterAdresses] = useState([]);
+  const [confirmDelete, setConfirmDelete] = useState(false);
+  const [ediMasterid, setEditMasterId] = useState("");
+  
+  // const handleDetailView = async () => {
+  //   setIsloading(true);
+
+  //   try {
+  //     const response = await fetch(baseUrl + `/dashboard/transactions/${active}`, {
+  //       method: "GET",
+  //       headers: { "Content-Type": "application/json" },
+  //     });
+  //     const data = await response.json();
+  //     setActiveDetail(data);
+  //   } catch (error) {
+  //     toast.error("Something went wrong while fetching transactions.");
+  //   } finally {
+  //     setIsloading(false);
+  //   }
+  // };
+
+  const handleDetailView = async (id) => {
     setIsloading(true);
-
     try {
-      const response = await fetch(baseUrl + `/dashboard/transactions/${active}`, {
+      const response = await fetch(`${baseUrl}/dashboard/orders/${id}`, {
         method: "GET",
         headers: { "Content-Type": "application/json" },
       });
+  
+      if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
+  
       const data = await response.json();
+      setActive(id);
       setActiveDetail(data);
     } catch (error) {
-      toast.error("Something went wrong while fetching transactions.");
+      // toast.error("Failed to fetch product details.");
     } finally {
       setIsloading(false);
     }
   };
 
+  const handleDeletePOAddress = async () => {
+    if (active !== "") {
+      setIsloading(true);
+
+      try {
+        const response = await fetch(baseUrl + `/dashboard/orders/${active}/remove-po-master/`, {
+          method: "DELETE",
+          headers: { "Content-Type": "application/json" },
+        });
+        const data = await response.json();
+        toast.success("Success!");
+        setConfirmDelete(false);
+        setActive("");
+        handlesubmit();
+      } catch (error) {
+        toast.error("Something went wrong while fetching orders.");
+      } finally {
+        setIsloading(false);
+      }
+    } else {
+      toast.error("Please select a valid option.");
+    }
+  };
+
+  const handleEditMasterAddress = async () => {
+    if (ediMasterid !== "") {
+      setIsloading(true);
+
+      try {
+        const response = await fetch(baseUrl + `/dashboard/orders/${active}/update-po-master/`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            po_id: ediMasterid,
+          }),
+        });
+        const data = await response.json();
+        console.log("address", data);
+        toast.success("Success!");
+        setEditMasterId("");
+        setActive("");
+        handlesubmit();
+      } catch (error) {
+        toast.error("Something went wrong while fetching orders.");
+      } finally {
+        setIsloading(false);
+      }
+    } else {
+      toast.error("Please select a valid option.");
+    }
+  };
+  
   useEffect(() => {
     if (active !== "") {
       handleDetailView();
@@ -233,23 +312,43 @@ const Materials = ({ globalMatchingProducts, seMaterialDate }) => {
             </div>
           </div>
 
-          <div className="dropdown  ms-auto me-4" style={{ maxWidth: "160px" }}>
-            <button className="btn btn-dark border-secondary  rounded-3 px-4 dropdown-toggle" type="button" onClick={toggleDropdown} style={{ minWidth: "180px" }}>
-              {selectedOptions.length > 0 ? selectedOptions.join(", ") : "Select Vendors"}
+          <div className="d-flex gap-3 ms-auto me-4">
+            <button
+              className="btn btn-dark border-secondary rounded-3 px-4"
+              type="button"
+              onClick={() => setShowIdColumn((prev) => !prev)}
+              style={{ minWidth: "120px" }}
+            >
+              {showIdColumn ? "Hide ID" : "Show ID"}
             </button>
-            <ul className={`dropdown-menu bg-dark w-100  ${dropdownOpen ? "show" : ""}`} style={{ left: "05%" }}>
-              {options.map((option, index) => (
-                <li key={index} className="dropdown-item text-light">
-                  <label className="form-check-label">
-                    <input type="checkbox" className="form-check-input me-2" checked={selectedOptions.includes(option)} onChange={() => handleOptionChange(option)} />
-                    {option == "Amazon" ? "AMZ" : option == "Walmart" ? "WM" : option}
-                  </label>
-                </li>
-              ))}
-            </ul>
+
+            <div className="dropdown" style={{ maxWidth: "160px" }}>
+              <button className="btn btn-dark border-secondary rounded-3 px-4 dropdown-toggle"type="button"
+                onClick={toggleDropdown}
+                style={{ minWidth: "180px" }}
+              >
+                {selectedOptions.length > 0 ? selectedOptions.join(", ") : "Select Vendors"}
+              </button>
+              <ul className={`dropdown-menu bg-dark w-100 ${dropdownOpen ? "show" : ""}`} style={{ left: "05%" }}>
+                {options.map((option, index) => (
+                  <li key={index} className="dropdown-item text-light">
+                    <label className="form-check-label">
+                      <input
+                        type="checkbox"
+                        className="form-check-input me-2"
+                        checked={selectedOptions.includes(option)}
+                        onChange={() => handleOptionChange(option)}
+                      />
+                      {option === "Amazon" ? "AMZ" : option === "Walmart" ? "WM" : option}
+                    </label>
+                  </li>
+                ))}
+              </ul>
+            </div>
           </div>
+
         </div>
-        <div className="tags mt-3">
+          <div className="tags mt-3">
           {categories.slice(0, viewAll ? categories.length - 1 : 8)?.map((category, index) => (
             <button
               key={index}
@@ -271,12 +370,144 @@ const Materials = ({ globalMatchingProducts, seMaterialDate }) => {
         </div>
       </div>
 
+      {activeDetail && active !== "" && (
+          <div className="CustomModal fade-in shadow-lg">
+            <div className="CustomModal-content position-relative bg-dark" style={{ borderRadius: "1.1em" }}>
+              <div className="bg-black text-light d-flex align-items-center justify-content-between p-3" style={{ borderRadius: "1.1em" }}>
+                <h5 className="fs-5">Material ID: #{activeDetail.order_id}</h5>
+                <button type="button" className="btn-close" style={{ filter: "invert(1)" }} onClick={() => setActive("")}></button>
+              </div>
+
+              <div className="modal-body text-light">
+                <div className="d-flex justify-content-center">
+                  <div className="border-1 border-light border rounded-pill d-flex gap-1 p-1">
+                    <button className={`btn ${fixAddressModal ? "btn-outline-light border-0" : "btn-light"} rounded-pill`} onClick={() => setFixaAddressModal(false)}>
+                      Detail
+                    </button>
+                    <button className={`btn ${!fixAddressModal ? "btn-outline-light border-0" : "btn-light "} rounded-pill`} onClick={() => setFixaAddressModal(true)}>
+                      Edit Address
+                    </button>
+                  </div>
+                </div>
+
+                {!fixAddressModal ? (
+                  <div className="w-100">
+                    <div className="d-flex justify-content-between align-items-center mt-4">
+                      <h5 className="fs-5 fw-light">
+                        Vendor: <span className="fw-bold">{activeDetail.source}</span>
+                      </h5>
+
+                      {activeDetail.order_status && (
+                        <div className="text-end">
+                          <h6 className="fs-6 fw-light mt-2 pt-2">
+                            Status:{" "}
+                            <span
+                              className={`fw-bold p-2 rounded-3 ${
+                                activeDetail.order_status.toLowerCase() === "pending"
+                                  ? "bg-danger"
+                                  : activeDetail.order_status.toLowerCase() === "complete"
+                                  ? "bg-success"
+                                  : activeDetail.order_status.toLowerCase() === "delivered" || activeDetail.order_status.toLowerCase() === "shipped"
+                                  ? "bg-info"
+                                  : "bg-warning"
+                              }`}
+                            >
+                              {activeDetail.order_status}
+                            </span>
+                          </h6>
+                          <p className="text-secondary mt-3">{activeDetail.status}</p>
+                        </div>
+                      )}
+                    </div>
+
+                    <div className="row pb-5 pt-3">
+                      <div className="col-md-6">
+                        <div className="card shadow text-white bg-blackOpac mb-3 w-100 border-secondary h-100" style={{ borderRadius: "1.1em" }}>
+                          <div className="card-header border-secondary">Shipping Information</div>
+                          <div className="card-body">
+                            <p>Scrapped Address: <strong>{activeDetail.scrapped_address || "Not Available"}</strong></p>
+                            <p>Master Address: <strong>{activeDetail.master_address || "Not Available"}</strong></p>
+                            <p>Scrapped PO: <strong>{activeDetail.scrapped_po || "Not Found"}</strong></p>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div className="col-md-6">
+                        <div className="card shadow text-white bg-blackOpac mb-3 w-100 border-secondary h-100" style={{ borderRadius: "1.1em" }}>
+                          <div className="card-header border-secondary">Order Details</div>
+                          <div className="card-body">
+                            <p>Ordered Date: <strong>{activeDetail.ordered_date}</strong></p>
+                            <p>Delivery Date: <strong>{activeDetail.delivery_date}</strong></p>
+                            <p>Delivery Message: <strong>{activeDetail.delivery_message || "Not Available"}</strong></p>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <h5 className="fs-5 fw-light">
+                      Total Amount: <span className="fw-bold text-success">${activeDetail.grand_total_amount}</span>
+                    </h5>
+                  </div>
+                ) : (
+                  <div className="w-100 pb-4">
+                    <h5 className="fs-4">Edit Address</h5>
+
+                    {activeDetail.PO && (
+                      <div className="d-flex gap-3 align-items-center mb-5 mt-4">
+                        <p className="fs-5 py-0 my-0 border-end border-1 border-light pe-2">
+                          Current PO: <span className="text-info">{activeDetail.PO}</span>{" "}
+                        </p>
+                        {!confirmDelete ? (
+                          <button type="button" className="btn btn-danger" onClick={() => setConfirmDelete(true)}>
+                            Delete
+                          </button>
+                        ) : (
+                          <button type="button" className="btn btn-warning" onClick={handleDeletePOAddress}>
+                            Confirm
+                          </button>
+                        )}
+                      </div>
+                    )}
+
+                    <p className={`pt-0 mt-0 text-secondary ${activeDetail.PO ? "" : "mt-5"} mb-0`}>Change PO</p>
+
+                    <div className="d-flex gap-4 align-items-center mb-5">
+                      <select value={ediMasterid} onChange={(e) => setEditMasterId(e.target.value)} className="form-select bg-dark text-light mb-3 mt-2">
+                        <option value={null} selected className="text-muted">
+                          ----Select PO----
+                        </option>
+                        {masterAddresses
+                          .filter((ini) => ini.vendor === activeDetail.source)
+                          .map((ini, i) => (
+                            <option key={i} value={ini.id}>
+                              {ini.po_name} ({ini.vendor})
+                            </option>
+                          ))}
+                      </select>
+
+                      <button type="button" className="btn btn-info" onClick={handleEditMasterAddress}>
+                        Save
+                      </button>
+                    </div>
+                  </div>
+                )}
+              </div>
+
+              <div className="modal-footer bg-black position-absolute bottom-0 w-100" style={{ borderRadius: "1.1em" }}>
+                <button type="button" className="btn btn-info" onClick={() => setActive("")}>
+                  Close
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+
       <div className="w-100 p-3 mt-2">
         <div className="row  align-items-stretch p-1 px-0 mb-1 fw-bold">
           {/* <div className="col-1 h-100 position-relative  d-flex px-1 py-0">
             <p className="fs-6 mb-1 text-light">#</p>
           </div> */}
-          <div className="col-4 d-flex flex-column justify-content-center border-end border-1 border-secondary">
+          <div className="col-5 d-flex flex-column justify-content-center border-end border-1 border-secondary">
             <p className="fs-6 mb-1 text-light">Name</p>
           </div>
           {/* <div className="col-1 border-end flex-column justify-content-center d-flex border-1 border-secondary ">
@@ -292,11 +523,12 @@ const Materials = ({ globalMatchingProducts, seMaterialDate }) => {
             <p className="fs-6 text-light mb-0 text-center">Ordered Qty.</p>
           </div>
 
+          {showIdColumn && (
           <div className="col-2 border-end flex-column justify-content-center d-flex border-1 border-secondary ">
-            <p className="fs-6 text-light mb-0  text-center">ID</p>
-          </div>
+            <p className="fs-6 text-light mb-0 text-center">ID</p>
+          </div>)}                
 
-          <div className="col-2 border-end flex-column justify-content-center d-flex border-1 border-secondary ">
+          <div className="col-1 border-end flex-column justify-content-center d-flex border-1 border-secondary ">
             <p className="fs-6 text-light mb-0  text-center">Vendor</p>
           </div>
         </div>
@@ -306,7 +538,7 @@ const Materials = ({ globalMatchingProducts, seMaterialDate }) => {
             {/* <div className="col-1 h-100 position-relative  d-flex px-1 py-0">
               <img src={`${getProductImageUrl(ini.link)}`} className="w-100 " style={{ objectFit: "cover", height: isFull ? "85px" : "100%", borderRadius: "0.8em 0 0 0.8em" }} />
             </div> */}
-            <div className="col-4 d-flex flex-column justify-content-center border-end border-1 border-secondary">
+            <div className="col-5 d-flex flex-column justify-content-center border-end border-1 border-secondary">
               <p className="fs-6 mb-1 text-light text-truncate w-75">{ini.common_name}</p>
               <p className={`text-secondary mb-1 ${isFull ? "" : "textClamp-2"} small`} onClick={() => setIsFull(!isFull)}>
                 {ini.product_name}
@@ -324,19 +556,24 @@ const Materials = ({ globalMatchingProducts, seMaterialDate }) => {
             <div className="col-1 border-end flex-column justify-content-center d-flex border-1 border-secondary ">
               <p className="fs-6 text-light mb-0 fw-bold text-center text-break">{ini.total_quantity}</p>
             </div>
-
+            {showIdColumn && (
             <div className="col-2 border-end flex-column justify-content-center d-flex border-1 border-secondary ">
-              <p className="fs-6 text-light mb-0  text-center">{ini.order_id}</p>
-            </div>
+              <p className="fs-6 text-light mb-0 text-center">{ini.order_id}</p>
+            </div>)}
 
-            <div className="col-2 border-end flex-column justify-content-center d-flex border-1 border-secondary ">
+            <div className="col-1 border-end flex-column justify-content-center d-flex border-1 border-secondary ">
               <p className="fs-6 text-light mb-0  text-center">{ini.vendor}</p>
             </div>
 
-            <div className="col-1  justify-content-center align-items-center d-flex gap-4 pe-1">
-              <a herf={ini.link} target="_blank">
+            <div className="col-1  justify-content-center align-items-center d-flex gap-2 pe-1 " key={index}>
+              {/* <a herf={ini.link} target="_blank">
                 <img src="icons/eye.svg" height={30} className="w-100" />
-              </a>
+              </a> */}
+
+              <button className="btn p-0 border-0 bg-transparent" onClick={() => 
+                handleDetailView(ini.order_id)}>
+                <img src="icons/eye.svg" height={30} className="w-100" alt="View Details" />
+              </button>
 
               {/* <button className="btn btn-dark border-secondary  h-100 px-4  fw-bold w-50 me-0" style={{ borderRadius: "0.9em" }} onClick={handlesubmit}>
                 <span className="fs-3"> ? </span>
