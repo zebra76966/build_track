@@ -380,13 +380,13 @@ const Materials = ({ globalMatchingProducts, seMaterialDate }) => {
 
               <div className="modal-body text-light">
                 <div className="d-flex justify-content-center">
-                  <div className="border-1 border-light border rounded-pill d-flex gap-1 p-1">
+                  <div className="border-1 border-light  border rounded-pill d-flex gap-1 p-1">
                     <button className={`btn ${fixAddressModal ? "btn-outline-light border-0" : "btn-light"} rounded-pill`} onClick={() => setFixaAddressModal(false)}>
                       Detail
                     </button>
-                    <button className={`btn ${!fixAddressModal ? "btn-outline-light border-0" : "btn-light "} rounded-pill`} onClick={() => setFixaAddressModal(true)}>
+                    {/* <button className={`btn ${!fixAddressModal ? "btn-outline-light border-0" : "btn-light "} rounded-pill`} onClick={() => setFixaAddressModal(true)}>
                       Edit Address
-                    </button>
+                    </button> */}
                   </div>
                 </div>
 
@@ -490,7 +490,9 @@ const Materials = ({ globalMatchingProducts, seMaterialDate }) => {
                       </button>
                     </div>
                   </div>
-                )}
+                )
+                
+                }
               </div>
 
               <div className="modal-footer bg-black position-absolute bottom-0 w-100" style={{ borderRadius: "1.1em" }}>
