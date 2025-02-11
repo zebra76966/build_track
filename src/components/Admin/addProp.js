@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import Axios from "axios";
 import toast from "react-hot-toast";
 import { baseUrl } from "../config";
+import statesData from "../../assets/US_States_and_Cities.json";
 
 const AddProperty = () => {
   document.title = "Add Property";
@@ -16,13 +17,18 @@ const AddProperty = () => {
   const [stageOptions, setStageOptions] = useState([]); 
   const [selectedStage, setSelectedStage] = useState(""); 
 
+  const [filteredCities, setFilteredCities] = useState([]);
+  const [filteredStates, setFilteredStates] = useState([]);
+
+
   const [propertyData, setPropertyData] = useState({
+    stage: "",
     title: "",
     project_manager: "",
     property_type: "",
     address: "",
-    city: "",
     state: "",
+    city: "",
     postal_code: "",
     video_link: "",
     content: "",
@@ -53,6 +59,47 @@ const AddProperty = () => {
       setIsLoading(false);
     }
   };
+
+  const handleStateChange = (e) => {
+    const value = e.target.value;
+    setPropertyData({ ...propertyData, state: value });
+
+    if (value.length > 0) {
+      const filtered = Object.keys(statesData).filter((state) =>
+        state.toLowerCase().includes(value.toLowerCase())
+      );
+      setFilteredStates(filtered);
+    } else {
+      setFilteredStates([]);
+    }
+  };
+
+  const handleCityChange = (e) => {
+    const value = e.target.value;
+    setPropertyData({ ...propertyData, city: value });
+
+    if (value.length > 0 && propertyData.state) {
+      const filtered = statesData[propertyData.state]?.filter((city) =>
+        city.toLowerCase().includes(value.toLowerCase())
+      );
+      setFilteredCities(filtered || []);
+    } else {
+      setFilteredCities([]);
+    }
+  };
+
+    // Select a State
+    const selectState = (state) => {
+      setPropertyData({ ...propertyData, state, city: "" });
+      setFilteredStates([]);
+      setFilteredCities(statesData[state] || []);
+    };
+  
+    // Select a City
+    const selectCity = (city) => {
+      setPropertyData({ ...propertyData, city });
+      setFilteredCities([]);
+    };
   
 
   const handleSubmit = (e) => {
@@ -130,7 +177,10 @@ const AddProperty = () => {
                   </select>
               </div>
               
-              {Object.keys(propertyData).map((key) => {
+              {Object.keys(propertyData)
+              .filter((key) => !["stage", "state", "city"].includes(key))
+              .map((key) => {
+                
                 if (key === "property_type") {
                   return (
                     <div className="col-12 col-lg-4" key={key}>
@@ -153,6 +203,85 @@ const AddProperty = () => {
                         ))}
                       </select>
                     </div>
+                  );
+                }
+
+                if (key === "address") {
+                  return (
+                    <React.Fragment key={key}>
+                      {/* Address Field (Already Present) */}
+                      <div className="col-12 col-lg-4">
+                        <label htmlFor={key} className="form-label">Address</label>
+                        <input
+                          type="text"
+                          className="form-control text-light bg-dark shadow-sm p-3 border-light"
+                          id={key}
+                          placeholder="Enter Address"
+                          value={propertyData[key]}
+                          onChange={(e) => setPropertyData({ ...propertyData, [key]: e.target.value })}
+                          style={{ borderRadius: "10px" }}
+                          required
+                        />
+                      </div>
+              
+                      <div className="col-12 col-lg-4 position-relative">
+                        <label htmlFor="state" className="form-label">State</label>
+                        <input
+                          type="text"
+                          className="form-control text-light bg-dark shadow-sm p-3 border-light"
+                          id="state"
+                          placeholder="Enter State"
+                          value={propertyData.state}
+                          onChange={handleStateChange}
+                          style={{ borderRadius: "10px" }}
+                          required
+                        />
+                        {filteredStates.length > 0 && (
+                          <ul className="list-group position-absolute w-100 bg-dark mt-1 border-light"
+                              style={{ maxHeight: "150px", overflowY: "auto", zIndex: 1000 }}>
+                            {filteredStates.map((state, index) => (
+                              <li
+                                key={index}
+                                className="list-group-item text-light bg-dark border-light"
+                                style={{ cursor: "pointer" }}
+                                onClick={() => selectState(state)}
+                              >
+                                {state}
+                              </li>
+                            ))}
+                          </ul>
+                        )}
+                      </div>
+              
+                      <div className="col-12 col-lg-4 position-relative">
+                        <label htmlFor="city" className="form-label">City</label>
+                        <input
+                          type="text"
+                          className="form-control text-light bg-dark shadow-sm p-3 border-light"
+                          id="city"
+                          placeholder="Enter City"
+                          value={propertyData.city}
+                          onChange={handleCityChange}
+                          style={{ borderRadius: "10px" }}
+                          required
+                        />
+                        {filteredCities.length > 0 && (
+                          <ul className="list-group position-absolute w-100 bg-dark mt-1 border-light"
+                              style={{ maxHeight: "150px", overflowY: "auto", zIndex: 1000 }}>
+                            {filteredCities.map((city, index) => (
+                              <li
+                                key={index}
+                                className="list-group-item text-light bg-dark border-light"
+                                style={{ cursor: "pointer" }}
+                                onClick={() => selectCity(city)}
+                              >
+                                {city}
+                              </li>
+                            ))}
+                          </ul>
+                        )}
+                      </div>
+                    </React.Fragment>
                   );
                 }
 
