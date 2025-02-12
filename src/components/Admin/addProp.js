@@ -26,6 +26,8 @@ const AddProperty = () => {
     title: "",
     project_manager: "",
     property_type: "",
+    choose_image_scraper: "", 
+    upload_image: null, 
     address: "",
     state: "",
     city: "",
@@ -119,6 +121,8 @@ const AddProperty = () => {
           stage: "",  
           project_manager: "",
           property_type: "",
+          choose_image_scraper: "", 
+          upload_image: null,
           address: "",
           city: "",
           state: "",
@@ -177,33 +181,64 @@ const AddProperty = () => {
                   </select>
               </div>
               
-              {Object.keys(propertyData)
-              .filter((key) => !["stage", "state", "city"].includes(key))
+            {Object.keys(propertyData)
+              .filter((key) => !["stage", "state", "city","choose_image_scraper","upload_image"].includes(key))
               .map((key) => {
-                
-                if (key === "property_type") {
-                  return (
-                    <div className="col-12 col-lg-4" key={key}>
-                      <label htmlFor={key} className="form-label">Property Type</label>
-                      <select
-                        className="form-control form-select text-light bg-dark shadow-sm p-3 border-light"
-                        id={key}
-                        value={propertyData[key]}
-                        onChange={(e) => setPropertyData({ ...propertyData, [key]: e.target.value })}
-                        style={{ borderRadius: "10px" }}
-                        required
-                      >
-                        <option value="" disabled>Select Property Type</option>
-                        {[
-                          "Single Family", "2-4 Multifamily", "5+ Multifamily", "Commercial",
-                          "Commercial (Hospital)", "Commercial (Industrial)", "Commercial (Office)",
-                          "Commercial (Retail)", "Co-Op", "Condo", "Mobile Home", "Vacant Land",
-                        ].map((option) => (
-                          <option key={option} value={option}>{option}</option>
-                        ))}
-                      </select>
-                    </div>
-                  );
+                  if (key === "property_type") {
+                    return (
+                    <React.Fragment key={key}>
+                      <div className="col-12 col-lg-4" key={key}>
+                        <label htmlFor={key} className="form-label">Property Type</label>
+                        <select
+                          className="form-control form-select text-light bg-dark shadow-sm p-3 border-light"
+                          id={key}
+                          value={propertyData[key]}
+                          onChange={(e) => setPropertyData({ ...propertyData, [key]: e.target.value })}
+                          style={{ borderRadius: "10px" }}
+                          required
+                        >
+                          <option value="" disabled>Select Property Type</option>
+                          {[
+                            "Single Family", "2-4 Multifamily", "5+ Multifamily", "Commercial",
+                            "Commercial (Hospital)", "Commercial (Industrial)", "Commercial (Office)",
+                            "Commercial (Retail)", "Co-Op", "Condo", "Mobile Home", "Vacant Land",
+                          ].map((option) => (
+                            <option key={option} value={option}>{option}</option>
+                          ))}
+                        </select>
+                      </div>
+
+                      <div className="col-12 col-lg-4">
+                        <label htmlFor="choose_image_scraper" className="form-label">Choose Images Scraper</label>
+                        <select
+                          className="form-control form-select text-light bg-dark shadow-sm p-3 border-light"
+                          id="choose_image_scraper"
+                          value={propertyData.choose_image_scraper}
+                          onChange={(e) => setPropertyData({ ...propertyData, choose_image_scraper: e.target.value })}
+                          style={{ borderRadius: "10px" }}
+                          required
+                        >
+                          <option value="" disabled>Select Scraper</option>
+                          {["Zillow", "Realtor", "BrightMLS"].map((scraper) => (
+                            <option key={scraper} value={scraper}>{scraper}</option>
+                          ))}
+                        </select>
+                      </div>
+
+                      <div className="col-12 col-lg-4">
+                        <label htmlFor="upload_image" className="form-label">Upload Image</label>
+                        <input
+                          type="file"
+                          className="form-control text-light bg-dark shadow-sm p-3 border-light"
+                          id="upload_image"
+                          onChange={(e) => setPropertyData({ ...propertyData, upload_image: e.target.files[0] })}
+                          style={{ borderRadius: "10px" }}
+                          accept="image/*"
+                          required
+                        />
+                      </div>
+                    </React.Fragment>
+                    );
                 }
 
                 if (key === "address") {
