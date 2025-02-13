@@ -22,11 +22,12 @@ const AddProperty = () => {
 
 
   const [propertyData, setPropertyData] = useState({
+    select_property_type: "",
     stage: "",
     title: "",
     project_manager: "",
     property_type: "",
-    choose_image_scraper: "", 
+    choose_image_scraper: [], 
     upload_image: null, 
     address: "",
     state: "",
@@ -104,42 +105,53 @@ const AddProperty = () => {
     };
   
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    setIsLoading(true);
+  const handleSubmit = async (e) => {
+      e.preventDefault();
+      setIsLoading(true);
+    
+      const formData = new FormData();
+      Object.entries(propertyData).forEach(([key, value]) => {
+        if (key === "upload_image" && value) {
+          Array.from(value).forEach((file) => formData.append("upload_image", file));
+        } else if (key === "choose_image_scraper" && Array.isArray(value)) {
+          value.forEach((scraper) => formData.append("choose_image_scraper[]", scraper));
+        } else {
+          formData.append(key, value);
+        }
+      });
 
-    const finalData = { ...propertyData, selected_stage: selectedStage }; 
-
-    Axios.post(baseUrl + "/dashboard/add-property/", finalData, {
-      headers: { "Content-Type": "application/json" },
-    })
-      .then(() => {
+      formData.append("selected_stage", selectedStage);
+      try {
+        await Axios.post(baseUrl + "/dashboard/add-property/", formData, {
+          headers: { "Content-Type": "multipart/form-data" },
+        });
+    
         setTresponse("Property added successfully!");
         toast.success("Property added successfully!");
+    
         setPropertyData({
+          select_property_type: "",
+          choose_image_scraper: [],
+          upload_image: null,
+          stage: "",
           title: "",
-          stage: "",  
           project_manager: "",
           property_type: "",
-          choose_image_scraper: "", 
-          upload_image: null,
           address: "",
-          city: "",
           state: "",
+          city: "",
           postal_code: "",
           video_link: "",
           content: "",
         });
-        setSelectedStage("");
-      })
-      .catch(() => {
+    
+      } catch (error) {
         setTresponse("Failed to add property.");
         toast.error("Failed to add property.");
-      })
-      .finally(() => {
+      } finally {
         setIsLoading(false);
-      });
-  };
+      }
+    };
 
   return (
     <>
@@ -158,31 +170,53 @@ const AddProperty = () => {
               <p className="fw-bold text-info">{tresponse}</p>
               <hr />
 
+              {/* Select Property Type Dropdown */}
+              <div className="col-12 col-lg-4">
+                <label htmlFor="select_property_type" className="form-label">Select Property Type</label>
+                <select
+                  className="form-control form-select text-light bg-dark shadow-sm p-3 border-light"
+                  id="select_property_type"
+                  value={propertyData.select_property_type}
+                  onChange={(e) => setPropertyData({ ...propertyData, select_property_type: e.target.value, choose_image_scraper: [], upload_image: null })}
+                  style={{ borderRadius: "10px" }}
+                  required
+                >
+                  <option value="" disabled>Select Property Type</option>
+                  {["Main Property", "Comp Property"].map((type) => (
+                    <option key={type} value={type}>{type}</option>
+                  ))}
+                </select>
+              </div>
+
+              {/* Select stage Dropdown */}
               <div className="col-12 col-lg-4">
                 <label htmlFor="stage" className="form-label">Stage</label>
-                  <select
-                      className="form-control form-select text-light bg-dark shadow-sm p-3 border-light"
-                      id="stage"
-                      value={propertyData.stage}  
-                      onChange={(e) => setPropertyData({ ...propertyData, stage: e.target.value })}  
-                      style={{ borderRadius: "10px" }}
-                      required
-                    >
-                      <option value="" disabled>Select Stage</option>
-                      {stageOptions.length > 0 ? (
-                        stageOptions.map((stage, index) => (
-                          <option key={index} value={stage.key}>
-                            {stage.key}
-                          </option>
-                        ))
-                      ) : (
-                        <option disabled>Loading stages...</option>
-                      )}
+                <select
+                    className="form-control form-select text-light bg-dark shadow-sm p-3 border-light"
+                    id="stage"
+                    value={selectedStage} 
+                    onChange={(e) => {
+                      setSelectedStage(e.target.value);  
+                      setPropertyData({ ...propertyData, stage: e.target.value });
+                    }}
+                    style={{ borderRadius: "10px" }}
+                    required
+                  >
+                    <option value="" disabled>Select Stage</option>
+                    {stageOptions.length > 0 ? (
+                      stageOptions.map((stage, index) => (
+                        <option key={index} value={stage.key}>
+                          {stage.key}
+                        </option>
+                      ))
+                    ) : (
+                      <option disabled>Loading stages...</option>
+                    )}
                   </select>
               </div>
               
             {Object.keys(propertyData)
-              .filter((key) => !["stage", "state", "city","choose_image_scraper","upload_image"].includes(key))
+              .filter((key) => !["stage", "state", "city","choose_image_scraper","upload_image","select_property_type"].includes(key))
               .map((key) => {
                   if (key === "property_type") {
                     return (
@@ -208,7 +242,7 @@ const AddProperty = () => {
                         </select>
                       </div>
 
-                      <div className="col-12 col-lg-4">
+                      {/* <div className="col-12 col-lg-4">
                         <label htmlFor="choose_image_scraper" className="form-label">Choose Images Scraper</label>
                         <select
                           className="form-control form-select text-light bg-dark shadow-sm p-3 border-light"
@@ -223,9 +257,105 @@ const AddProperty = () => {
                             <option key={scraper} value={scraper}>{scraper}</option>
                           ))}
                         </select>
+                      </div>  */}
+
+                      {/* Choose Images Scraper */}
+                      <div className="col-12 col-lg-4">
+                        <label htmlFor="choose_image_scraper" className="form-label">Choose Scrape Image</label>
+
+                        {propertyData.select_property_type === "Comp Property" ? (
+                          // MULTIPLE SELECTION WITH RADIO BUTTONS
+                          <div>
+                            {["Zillow", "Realtor", "BrightMLS"].map((scraper, index) => (
+                              <div key={index} className="form-check">
+                                <input
+                                  className="form-check-input"
+                                  type="checkbox"
+                                  id={`scraper_${scraper}`}
+                                  value={scraper}
+                                  checked={propertyData.choose_image_scraper.includes(scraper)}
+                                  onChange={(e) => {
+                                    const selectedOptions = propertyData.choose_image_scraper.includes(scraper)
+                                      ? propertyData.choose_image_scraper.filter(item => item !== scraper)
+                                      : [...propertyData.choose_image_scraper, scraper];
+                                    setPropertyData({ ...propertyData, choose_image_scraper: selectedOptions });
+                                  }}
+                                />
+                                <label className="form-check-label text-light" htmlFor={`scraper_${scraper}`}>
+                                  {scraper}
+                                </label>
+                              </div>
+                            ))}
+                          </div>
+                        ) : (
+                          // SINGLE SELECTION FOR MAIN PROPERTY
+                          <select
+                            className="form-control form-select text-light bg-dark shadow-sm p-3 border-light"
+                            id="choose_image_scraper"
+                            value={propertyData.choose_image_scraper[0] || ""}
+                            onChange={(e) => setPropertyData({ ...propertyData, choose_image_scraper: [e.target.value] })}
+                            style={{ borderRadius: "10px" }}
+                            required
+                          >
+                            <option value="" disabled>Select Scrape Image</option>
+                            {["Zillow", "Realtor", "BrightMLS"].map((scraper) => (
+                              <option key={scraper} value={scraper}>{scraper}</option>
+                            ))}
+                          </select>
+                        )}
                       </div>
 
+
+                    {/* Upload Image (Allows Multiple If "Main Property" is Selected) */}
+                    {propertyData.select_property_type === "Main Property" && (
                       <div className="col-12 col-lg-4">
+                        <label htmlFor="upload_image" className="form-label">Upload Images</label>
+                        <input
+                          type="file"
+                          className="form-control text-light bg-dark shadow-sm p-3 border-light"
+                          id="upload_image"
+                          multiple
+                          onChange={(e) => {
+                            const newFiles = Array.from(e.target.files);
+                            setPropertyData({ 
+                              ...propertyData, 
+                              upload_image: [...(propertyData.upload_image || []), ...newFiles] 
+                            });
+                          }}
+                          style={{ borderRadius: "10px" }}
+                          accept="image/*"
+                          required
+                        />
+                        
+                        {/* Display Selected Images with Cancel Option */}
+                        {propertyData.upload_image && propertyData.upload_image.length > 0 && (
+                          <ul className="list-group mt-2">
+                            {propertyData.upload_image.map((file, index) => (
+                              <li 
+                                key={index} 
+                                className="list-group-item d-flex justify-content-between align-items-center bg-dark text-light border-light"
+                              >
+                                {file.name}
+                                <button
+                                  type="button"
+                                  className="btn btn-sm"
+                                  style={{ backgroundColor: "transparent", color: "white", border: "none" }}
+                                  onClick={() => {
+                                    const updatedFiles = propertyData.upload_image.filter((_, i) => i !== index);
+                                    setPropertyData({ ...propertyData, upload_image: updatedFiles });
+                                  }}
+                                >
+                                  ❌
+                                </button>
+                              </li>
+                            ))}
+                          </ul>
+                        )}
+                      </div>
+                    )}
+
+
+                      {/* <div className="col-12 col-lg-4">
                         <label htmlFor="upload_image" className="form-label">Upload Image</label>
                         <input
                           type="file"
@@ -236,7 +366,7 @@ const AddProperty = () => {
                           accept="image/*"
                           required
                         />
-                      </div>
+                      </div> */}
                     </React.Fragment>
                     );
                 }
