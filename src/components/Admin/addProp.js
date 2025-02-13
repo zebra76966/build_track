@@ -20,6 +20,9 @@ const AddProperty = () => {
   const [filteredCities, setFilteredCities] = useState([]);
   const [filteredStates, setFilteredStates] = useState([]);
 
+  const [scrapeUrls, setScrapeUrls] = useState([]); // Stores multiple URLs for "Comp Property"
+  const [scrapeUrlInput, setScrapeUrlInput] = useState(""); // Stores input field value for URL
+  const [mainPropertyScrapeUrl, setMainPropertyScrapeUrl] = useState(""); // Stores single URL for "Main Property"
 
   const [propertyData, setPropertyData] = useState({
     select_property_type: "",
@@ -29,6 +32,7 @@ const AddProperty = () => {
     property_type: "",
     choose_image_scraper: [], 
     upload_image: null, 
+    scrapeUrls: [],
     address: "",
     state: "",
     city: "",
@@ -121,6 +125,11 @@ const AddProperty = () => {
       });
 
       formData.append("selected_stage", selectedStage);
+      if (propertyData.select_property_type === "Main Property" && mainPropertyScrapeUrl) {
+        formData.append("scrape_url", mainPropertyScrapeUrl);
+      } else if (propertyData.select_property_type === "Comp Property") {
+        scrapeUrls.forEach((url) => formData.append("scrape_urls[]", url));
+      }
       try {
         await Axios.post(baseUrl + "/dashboard/add-property/", formData, {
           headers: { "Content-Type": "multipart/form-data" },
@@ -133,6 +142,7 @@ const AddProperty = () => {
           select_property_type: "",
           choose_image_scraper: [],
           upload_image: null,
+          scrapeUrls: [],
           stage: "",
           title: "",
           project_manager: "",
@@ -144,6 +154,10 @@ const AddProperty = () => {
           video_link: "",
           content: "",
         });
+
+        setScrapeUrls([]);
+        setMainPropertyScrapeUrl(""); 
+
     
       } catch (error) {
         setTresponse("Failed to add property.");
@@ -172,7 +186,7 @@ const AddProperty = () => {
 
               {/* Select Property Type Dropdown */}
               <div className="col-12 col-lg-4">
-                <label htmlFor="select_property_type" className="form-label">Select Property Type</label>
+                <label htmlFor="select_property_type" className="form-label">Select Property</label>
                 <select
                   className="form-control form-select text-light bg-dark shadow-sm p-3 border-light"
                   id="select_property_type"
@@ -216,7 +230,7 @@ const AddProperty = () => {
               </div>
               
             {Object.keys(propertyData)
-              .filter((key) => !["stage", "state", "city","choose_image_scraper","upload_image","select_property_type"].includes(key))
+              .filter((key) => !["stage", "state", "city","choose_image_scraper","upload_image","select_property_type","scrapeUrls"].includes(key))
               .map((key) => {
                   if (key === "property_type") {
                     return (
@@ -258,6 +272,19 @@ const AddProperty = () => {
                           ))}
                         </select>
                       </div>  */}
+
+                      {/* <div className="col-12 col-lg-4">
+                        <label htmlFor="upload_image" className="form-label">Upload Image</label>
+                        <input
+                          type="file"
+                          className="form-control text-light bg-dark shadow-sm p-3 border-light"
+                          id="upload_image"
+                          onChange={(e) => setPropertyData({ ...propertyData, upload_image: e.target.files[0] })}
+                          style={{ borderRadius: "10px" }}
+                          accept="image/*"
+                          required
+                        />
+                      </div> */}
 
                       {/* Choose Images Scraper */}
                       <div className="col-12 col-lg-4">
@@ -305,68 +332,138 @@ const AddProperty = () => {
                         )}
                       </div>
 
+                      {/* Upload Image (Allows Multiple If "Main Property" is Selected) */}
+                      {propertyData.select_property_type === "Main Property" && (
+                        <div className="col-12 col-lg-4">
+                          <label htmlFor="upload_image" className="form-label">Upload Images</label>
+                          <input
+                            type="file"
+                            className="form-control text-light bg-dark shadow-sm p-3 border-light"
+                            id="upload_image"
+                            multiple
+                            onChange={(e) => {
+                              const newFiles = Array.from(e.target.files);
+                              setPropertyData({ 
+                                ...propertyData, 
+                                upload_image: [...(propertyData.upload_image || []), ...newFiles] 
+                              });
+                            }}
+                            style={{ borderRadius: "10px" }}
+                            accept="image/*"
+                            required
+                          />
+                            {/* Display Selected Images with Shortened Names */}
+                            {propertyData.upload_image && propertyData.upload_image.length > 0 && (
+                              <ul className="list-group mt-2">
+                                {propertyData.upload_image.map((file, index) => (
+                                  <li key={index} className="list-group-item d-flex justify-content-between align-items-center bg-dark text-light border-light">
+                                    {file.name.length > 7 ? file.name.substring(0, 10) + "..." : file.name} {/* Shorten name */}
+                                    <button
+                                      type="button"
+                                      className="btn btn-sm"
+                                      style={{ color: "white" }}
+                                      onClick={() => {
+                                        const updatedFiles = propertyData.upload_image.filter((_, i) => i !== index);
+                                        setPropertyData({ ...propertyData, upload_image: updatedFiles });
+                                      }}
+                                    >
+                                      ❌
+                                    </button>
+                                  </li>
+                                ))}
+                              </ul>
+                            )}
+                        </div>
+                      )}
 
-                    {/* Upload Image (Allows Multiple If "Main Property" is Selected) */}
-                    {propertyData.select_property_type === "Main Property" && (
-                      <div className="col-12 col-lg-4">
-                        <label htmlFor="upload_image" className="form-label">Upload Images</label>
-                        <input
-                          type="file"
-                          className="form-control text-light bg-dark shadow-sm p-3 border-light"
-                          id="upload_image"
-                          multiple
-                          onChange={(e) => {
-                            const newFiles = Array.from(e.target.files);
-                            setPropertyData({ 
-                              ...propertyData, 
-                              upload_image: [...(propertyData.upload_image || []), ...newFiles] 
-                            });
-                          }}
-                          style={{ borderRadius: "10px" }}
-                          accept="image/*"
-                          required
-                        />
-                        
-                        {/* Display Selected Images with Cancel Option */}
-                        {propertyData.upload_image && propertyData.upload_image.length > 0 && (
-                          <ul className="list-group mt-2">
-                            {propertyData.upload_image.map((file, index) => (
-                              <li 
-                                key={index} 
-                                className="list-group-item d-flex justify-content-between align-items-center bg-dark text-light border-light"
-                              >
-                                {file.name}
-                                <button
-                                  type="button"
-                                  className="btn btn-sm"
-                                  style={{ backgroundColor: "transparent", color: "white", border: "none" }}
-                                  onClick={() => {
-                                    const updatedFiles = propertyData.upload_image.filter((_, i) => i !== index);
-                                    setPropertyData({ ...propertyData, upload_image: updatedFiles });
-                                  }}
+
+                      {/* Scrape URL Field - Works for Both Property Types */}
+                      {propertyData.select_property_type === "Main Property" && (
+                        <div className="col-12 col-lg-4">
+                          <label htmlFor="scrape_url_main" className="form-label">Scrape URL</label>
+                          <input
+                            type="url"
+                            className="form-control text-light bg-dark shadow-sm p-3 border-light"
+                            id="scrape_url_main"
+                            placeholder="Enter Scrape URL"
+                            value={mainPropertyScrapeUrl}
+                            onChange={(e) => setMainPropertyScrapeUrl(e.target.value)} // Directly sets the value
+                            style={{ borderRadius: "10px" }}
+                          />
+
+                          {/* Display the Added Scrape URL with Cancel Option */}
+                            {mainPropertyScrapeUrl && (
+                              <ul className="list-group mt-2">
+                                <li className="list-group-item d-flex justify-content-between align-items-center bg-dark text-light border-light">
+                                  {mainPropertyScrapeUrl.length > 7 ? mainPropertyScrapeUrl.substring(0, 10) + "..." : mainPropertyScrapeUrl}
+                                  <button
+                                    type="button"
+                                    className="btn btn-sm"
+                                    style={{ color: "white" }}
+                                    onClick={() => setMainPropertyScrapeUrl("")} // Clears the URL
+                                  >
+                                    ❌
+                                  </button>
+                                </li>
+                              </ul>
+                            )}
+                        </div>
+                      )}
+
+                      {propertyData.select_property_type === "Comp Property" && (
+                        <div className="col-12 col-lg-4">
+                          <label htmlFor="scrape_url" className="form-label">Scrape URL</label>
+                          <div className="d-flex">
+                            <input
+                              type="url"
+                              className="form-control text-light bg-dark shadow-sm p-3 border-light"
+                              id="scrape_url"
+                              placeholder="Enter Scrape URL"
+                              value={scrapeUrlInput}
+                              onChange={(e) => setScrapeUrlInput(e.target.value)}
+                              style={{ borderRadius: "10px", flex: 1 }}
+                            />
+                            <button
+                              type="button"
+                              className="btn btn-light ms-2"
+                              onClick={() => {
+                                if (scrapeUrlInput) {
+                                  setScrapeUrls([...scrapeUrls, scrapeUrlInput]);
+                                  setScrapeUrlInput(""); // Clear input after adding
+                                }
+                              }}
+                            >
+                              +
+                            </button>
+                          </div>
+
+                          {/* Display List of Scrape URLs for "Comp Property" */}
+                          {scrapeUrls.length > 0 && (
+                            <ul className="list-group mt-2">
+                              {scrapeUrls.map((url, index) => (
+                                <li
+                                  key={index}
+                                  className="list-group-item d-flex justify-content-between align-items-center bg-dark text-light border-light"
                                 >
-                                  ❌
-                                </button>
-                              </li>
-                            ))}
-                          </ul>
-                        )}
-                      </div>
-                    )}
+                                  {url.length > 7 ? url.substring(0, ) + "..." : url} {/* Shorten URL */}
+                                  <button
+                                    type="button"
+                                    className="btn btn-sm"
+                                    style={{ color: "white" }}
+                                    onClick={() => {
+                                      const updatedUrls = scrapeUrls.filter((_, i) => i !== index);
+                                      setScrapeUrls(updatedUrls);
+                                    }}
+                                  >
+                                    ❌
+                                  </button>
+                                </li>
+                              ))}
+                            </ul>
+                          )}
+                        </div>
+                      )}
 
-
-                      {/* <div className="col-12 col-lg-4">
-                        <label htmlFor="upload_image" className="form-label">Upload Image</label>
-                        <input
-                          type="file"
-                          className="form-control text-light bg-dark shadow-sm p-3 border-light"
-                          id="upload_image"
-                          onChange={(e) => setPropertyData({ ...propertyData, upload_image: e.target.files[0] })}
-                          style={{ borderRadius: "10px" }}
-                          accept="image/*"
-                          required
-                        />
-                      </div> */}
                     </React.Fragment>
                     );
                 }
