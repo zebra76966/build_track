@@ -17,12 +17,17 @@ const AddProperty = () => {
   const [stageOptions, setStageOptions] = useState([]); 
   const [selectedStage, setSelectedStage] = useState(""); 
 
+  const [managerOptions, setManagerOptions] = useState([]);
+    useEffect(() => {
+      handleFetchManagers();
+    }, []);
+
   const [filteredCities, setFilteredCities] = useState([]);
   const [filteredStates, setFilteredStates] = useState([]);
 
-  const [scrapeUrls, setScrapeUrls] = useState([]); // Stores multiple URLs for "Comp Property"
-  const [scrapeUrlInput, setScrapeUrlInput] = useState(""); // Stores input field value for URL
-  const [mainPropertyScrapeUrl, setMainPropertyScrapeUrl] = useState(""); // Stores single URL for "Main Property"
+  const [scrapeUrls, setScrapeUrls] = useState([]); 
+  // const [scrapeUrlInput, setScrapeUrlInput] = useState(""); 
+  const [mainPropertyScrapeUrl, setMainPropertyScrapeUrl] = useState(""); 
 
   const [propertyData, setPropertyData] = useState({
     select_property_type: "",
@@ -107,8 +112,20 @@ const AddProperty = () => {
       setPropertyData({ ...propertyData, city });
       setFilteredCities([]);
     };
-  
 
+  const handleFetchManagers = async () => {
+    try {
+      const response = await Axios.get("http://127.0.0.1:8000/dashboard/get-all-managers");
+      if (response.data && Array.isArray(response.data.managers)) {
+        setManagerOptions(response.data.managers);
+      } else {
+        toast.error("Invalid response format.");
+      }
+    } catch (error) {
+      toast.error("Failed to fetch project managers.");
+    }
+  };
+    
   const handleSubmit = async (e) => {
       e.preventDefault();
       setIsLoading(true);
@@ -184,24 +201,6 @@ const AddProperty = () => {
               <p className="fw-bold text-info">{tresponse}</p>
               <hr />
 
-              {/* Select Property Type Dropdown */}
-              <div className="col-12 col-lg-4">
-                <label htmlFor="select_property_type" className="form-label">Select Property</label>
-                <select
-                  className="form-control form-select text-light bg-dark shadow-sm p-3 border-light"
-                  id="select_property_type"
-                  value={propertyData.select_property_type}
-                  onChange={(e) => setPropertyData({ ...propertyData, select_property_type: e.target.value, choose_image_scraper: [], upload_image: null })}
-                  style={{ borderRadius: "10px" }}
-                  required
-                >
-                  <option value="" disabled>Select Property Type</option>
-                  {["Main Property", "Comp Property"].map((type) => (
-                    <option key={type} value={type}>{type}</option>
-                  ))}
-                </select>
-              </div>
-
               {/* Select stage Dropdown */}
               <div className="col-12 col-lg-4">
                 <label htmlFor="stage" className="form-label">Stage</label>
@@ -230,245 +229,58 @@ const AddProperty = () => {
               </div>
               
             {Object.keys(propertyData)
-              .filter((key) => !["stage", "state", "city","choose_image_scraper","upload_image","select_property_type","scrapeUrls"].includes(key))
+              .filter((key) => !["stage", "state", "city","choose_image_scraper","upload_image","select_property_type","scrapeUrls","project_manager"].includes(key))
               .map((key) => {
                   if (key === "property_type") {
                     return (
-                    <React.Fragment key={key}>
-                      <div className="col-12 col-lg-4" key={key}>
-                        <label htmlFor={key} className="form-label">Property Type</label>
-                        <select
-                          className="form-control form-select text-light bg-dark shadow-sm p-3 border-light"
-                          id={key}
-                          value={propertyData[key]}
-                          onChange={(e) => setPropertyData({ ...propertyData, [key]: e.target.value })}
-                          style={{ borderRadius: "10px" }}
-                          required
-                        >
-                          <option value="" disabled>Select Property Type</option>
-                          {[
-                            "Single Family", "2-4 Multifamily", "5+ Multifamily", "Commercial",
-                            "Commercial (Hospital)", "Commercial (Industrial)", "Commercial (Office)",
-                            "Commercial (Retail)", "Co-Op", "Condo", "Mobile Home", "Vacant Land",
-                          ].map((option) => (
-                            <option key={option} value={option}>{option}</option>
-                          ))}
-                        </select>
-                      </div>
+                      <React.Fragment key={key}>
+                            <div className="col-12 col-lg-4">
+                              <label htmlFor="project_manager" className="form-label">Project Manager</label>
+                              <select
+                                className="form-control form-select text-light bg-dark shadow-sm p-3 border-light"
+                                id="project_manager"
+                                value={propertyData.project_manager}
+                                onChange={(e) => setPropertyData({ ...propertyData, project_manager: e.target.value })}
+                                style={{ borderRadius: "10px" }}
+                                required
+                              >
+                                <option value="" disabled>Select Project Manager</option>
+                                {managerOptions.length > 0 ? (
+                                  managerOptions.map((manager, index) => (
+                                    <option key={index} value={manager}>{manager}</option>
+                                  ))
+                                ) : (
+                                  <option disabled>Loading Project Manager</option> 
+                                )}
+                              </select>
+                            </div>
 
-                      {/* <div className="col-12 col-lg-4">
-                        <label htmlFor="choose_image_scraper" className="form-label">Choose Images Scraper</label>
-                        <select
-                          className="form-control form-select text-light bg-dark shadow-sm p-3 border-light"
-                          id="choose_image_scraper"
-                          value={propertyData.choose_image_scraper}
-                          onChange={(e) => setPropertyData({ ...propertyData, choose_image_scraper: e.target.value })}
-                          style={{ borderRadius: "10px" }}
-                          required
-                        >
-                          <option value="" disabled>Select Scraper</option>
-                          {["Zillow", "Realtor", "BrightMLS"].map((scraper) => (
-                            <option key={scraper} value={scraper}>{scraper}</option>
-                          ))}
-                        </select>
-                      </div>  */}
-
-                      {/* <div className="col-12 col-lg-4">
-                        <label htmlFor="upload_image" className="form-label">Upload Image</label>
-                        <input
-                          type="file"
-                          className="form-control text-light bg-dark shadow-sm p-3 border-light"
-                          id="upload_image"
-                          onChange={(e) => setPropertyData({ ...propertyData, upload_image: e.target.files[0] })}
-                          style={{ borderRadius: "10px" }}
-                          accept="image/*"
-                          required
-                        />
-                      </div> */}
-
-                      {/* Choose Images Scraper */}
-                      <div className="col-12 col-lg-4">
-                        <label htmlFor="choose_image_scraper" className="form-label">Choose Scrape Image</label>
-
-                        {propertyData.select_property_type === "Comp Property" ? (
-                          // MULTIPLE SELECTION WITH RADIO BUTTONS
-                          <div>
-                            {["Zillow", "Realtor", "BrightMLS"].map((scraper, index) => (
-                              <div key={index} className="form-check">
-                                <input
-                                  className="form-check-input"
-                                  type="checkbox"
-                                  id={`scraper_${scraper}`}
-                                  value={scraper}
-                                  checked={propertyData.choose_image_scraper.includes(scraper)}
-                                  onChange={(e) => {
-                                    const selectedOptions = propertyData.choose_image_scraper.includes(scraper)
-                                      ? propertyData.choose_image_scraper.filter(item => item !== scraper)
-                                      : [...propertyData.choose_image_scraper, scraper];
-                                    setPropertyData({ ...propertyData, choose_image_scraper: selectedOptions });
-                                  }}
-                                />
-                                <label className="form-check-label text-light" htmlFor={`scraper_${scraper}`}>
-                                  {scraper}
-                                </label>
-                              </div>
-                            ))}
-                          </div>
-                        ) : (
-                          // SINGLE SELECTION FOR MAIN PROPERTY
-                          <select
-                            className="form-control form-select text-light bg-dark shadow-sm p-3 border-light"
-                            id="choose_image_scraper"
-                            value={propertyData.choose_image_scraper[0] || ""}
-                            onChange={(e) => setPropertyData({ ...propertyData, choose_image_scraper: [e.target.value] })}
-                            style={{ borderRadius: "10px" }}
-                            required
-                          >
-                            <option value="" disabled>Select Scrape Image</option>
-                            {["Zillow", "Realtor", "BrightMLS"].map((scraper) => (
-                              <option key={scraper} value={scraper}>{scraper}</option>
-                            ))}
-                          </select>
-                        )}
-                      </div>
-
-                      {/* Upload Image (Allows Multiple If "Main Property" is Selected) */}
-                      {propertyData.select_property_type === "Main Property" && (
-                        <div className="col-12 col-lg-4">
-                          <label htmlFor="upload_image" className="form-label">Upload Images</label>
-                          <input
-                            type="file"
-                            className="form-control text-light bg-dark shadow-sm p-3 border-light"
-                            id="upload_image"
-                            multiple
-                            onChange={(e) => {
-                              const newFiles = Array.from(e.target.files);
-                              setPropertyData({ 
-                                ...propertyData, 
-                                upload_image: [...(propertyData.upload_image || []), ...newFiles] 
-                              });
-                            }}
-                            style={{ borderRadius: "10px" }}
-                            accept="image/*"
-                            required
-                          />
-                            {/* Display Selected Images with Shortened Names */}
-                            {propertyData.upload_image && propertyData.upload_image.length > 0 && (
-                              <ul className="list-group mt-2">
-                                {propertyData.upload_image.map((file, index) => (
-                                  <li key={index} className="list-group-item d-flex justify-content-between align-items-center bg-dark text-light border-light">
-                                    {file.name.length > 7 ? file.name.substring(0, 10) + "..." : file.name} {/* Shorten name */}
-                                    <button
-                                      type="button"
-                                      className="btn btn-sm"
-                                      style={{ color: "white" }}
-                                      onClick={() => {
-                                        const updatedFiles = propertyData.upload_image.filter((_, i) => i !== index);
-                                        setPropertyData({ ...propertyData, upload_image: updatedFiles });
-                                      }}
-                                    >
-                                      ❌
-                                    </button>
-                                  </li>
+                            <div className="col-12 col-lg-4" key={key}>
+                              <label htmlFor={key} className="form-label">Property Type</label>
+                              <select
+                                className="form-control form-select text-light bg-dark shadow-sm p-3 border-light"
+                                id={key}
+                                value={propertyData[key]}
+                                onChange={(e) => setPropertyData({ ...propertyData, [key]: e.target.value })}
+                                style={{ borderRadius: "10px" }}
+                                required
+                              >
+                                <option value="" disabled>Select Property Type</option>
+                                {[
+                                  "Single Family", "2-4 Multifamily", "5+ Multifamily", "Commercial",
+                                  "Commercial (Hospital)", "Commercial (Industrial)", "Commercial (Office)",
+                                  "Commercial (Retail)", "Co-Op", "Condo", "Mobile Home", "Vacant Land",
+                                ].map((option) => (
+                                  <option key={option} value={option}>{option}</option>
                                 ))}
-                              </ul>
-                            )}
-                        </div>
-                      )}
+                              </select>
+                            </div>
+                      </React.Fragment>
 
-
-                      {/* Scrape URL Field - Works for Both Property Types */}
-                      {propertyData.select_property_type === "Main Property" && (
-                        <div className="col-12 col-lg-4">
-                          <label htmlFor="scrape_url_main" className="form-label">Scrape URL</label>
-                          <input
-                            type="url"
-                            className="form-control text-light bg-dark shadow-sm p-3 border-light"
-                            id="scrape_url_main"
-                            placeholder="Enter Scrape URL"
-                            value={mainPropertyScrapeUrl}
-                            onChange={(e) => setMainPropertyScrapeUrl(e.target.value)} // Directly sets the value
-                            style={{ borderRadius: "10px" }}
-                          />
-
-                          {/* Display the Added Scrape URL with Cancel Option */}
-                            {mainPropertyScrapeUrl && (
-                              <ul className="list-group mt-2">
-                                <li className="list-group-item d-flex justify-content-between align-items-center bg-dark text-light border-light">
-                                  {mainPropertyScrapeUrl.length > 7 ? mainPropertyScrapeUrl.substring(0, 10) + "..." : mainPropertyScrapeUrl}
-                                  <button
-                                    type="button"
-                                    className="btn btn-sm"
-                                    style={{ color: "white" }}
-                                    onClick={() => setMainPropertyScrapeUrl("")} // Clears the URL
-                                  >
-                                    ❌
-                                  </button>
-                                </li>
-                              </ul>
-                            )}
-                        </div>
-                      )}
-
-                      {propertyData.select_property_type === "Comp Property" && (
-                        <div className="col-12 col-lg-4">
-                          <label htmlFor="scrape_url" className="form-label">Scrape URL</label>
-                          <div className="d-flex">
-                            <input
-                              type="url"
-                              className="form-control text-light bg-dark shadow-sm p-3 border-light"
-                              id="scrape_url"
-                              placeholder="Enter Scrape URL"
-                              value={scrapeUrlInput}
-                              onChange={(e) => setScrapeUrlInput(e.target.value)}
-                              style={{ borderRadius: "10px", flex: 1 }}
-                            />
-                            <button
-                              type="button"
-                              className="btn btn-light ms-2"
-                              onClick={() => {
-                                if (scrapeUrlInput) {
-                                  setScrapeUrls([...scrapeUrls, scrapeUrlInput]);
-                                  setScrapeUrlInput(""); // Clear input after adding
-                                }
-                              }}
-                            >
-                              +
-                            </button>
-                          </div>
-
-                          {/* Display List of Scrape URLs for "Comp Property" */}
-                          {scrapeUrls.length > 0 && (
-                            <ul className="list-group mt-2">
-                              {scrapeUrls.map((url, index) => (
-                                <li
-                                  key={index}
-                                  className="list-group-item d-flex justify-content-between align-items-center bg-dark text-light border-light"
-                                >
-                                  {url.length > 7 ? url.substring(0, ) + "..." : url} {/* Shorten URL */}
-                                  <button
-                                    type="button"
-                                    className="btn btn-sm"
-                                    style={{ color: "white" }}
-                                    onClick={() => {
-                                      const updatedUrls = scrapeUrls.filter((_, i) => i !== index);
-                                      setScrapeUrls(updatedUrls);
-                                    }}
-                                  >
-                                    ❌
-                                  </button>
-                                </li>
-                              ))}
-                            </ul>
-                          )}
-                        </div>
-                      )}
-
-                    </React.Fragment>
                     );
                 }
 
-                if (key === "address") {
+                  if (key === "address") {
                   return (
                     <React.Fragment key={key}>
                       {/* Address Field (Already Present) */}
@@ -547,8 +359,9 @@ const AddProperty = () => {
                   );
                 }
 
-                if (key === "content") {
+                  if (key === "content") {
                   return (
+                  <React.Fragment key={key}>
                     <div className="col-12" key={key}>
                       <label htmlFor={key} className="form-label">
                         {key.replace(/_/g, " ").replace(/\b\w/g, (char) => char.toUpperCase())}
@@ -564,10 +377,154 @@ const AddProperty = () => {
                         required
                       />
                     </div>
+
+                    <div className="col-12 mt-3">
+                      <h5 className="text-info fw-bold">Properties</h5>
+                      <hr />
+
+                      <div className="row">
+                        {/* Select Property Type Dropdown */}
+                        <div className="col-12 col-lg-4">
+                          <label htmlFor="select_property_type" className="form-label">Select Property Type</label>
+                          <select
+                            className="form-control form-select text-light bg-dark shadow-sm p-3 border-light"
+                            id="select_property_type"
+                            value={propertyData.select_property_type}
+                            onChange={(e) => setPropertyData({ ...propertyData, select_property_type: e.target.value, choose_image_scraper: [], upload_image: null })}
+                            style={{ borderRadius: "10px" }}
+                            required
+                          >
+                            <option value="" disabled>Select Property Type</option>
+                            {["Main Property", "Comp Property"].map((type) => (
+                              <option key={type} value={type}>{type}</option>
+                            ))}
+                          </select>
+                        </div>
+
+                        {/* Choose Images Scraper */}
+                        <div className="col-12 col-lg-4 mt-2">
+                            <label htmlFor="choose_image_scraper" className="form-label">Choose Scrape Image</label>
+                              <div>
+                                {["Zillow", "Realtor", "BrightMLS"].map((scraper, index) => (
+                                  <div key={index} className="form-check">
+                                    <input
+                                      className="form-check-input"
+                                      type="radio"
+                                      id={`scraper_${scraper}`}
+                                      value={scraper}
+                                      checked={propertyData.choose_image_scraper.includes(scraper)}
+                                      onChange={(e) => {
+                                        if (propertyData.choose_image_scraper.includes(scraper)) {
+                                          const updatedScrapers = propertyData.choose_image_scraper.filter(item => item !== scraper);
+                                          const updatedUrls = { ...scrapeUrls };
+                                          delete updatedUrls[scraper];
+
+                                          setPropertyData({ ...propertyData, choose_image_scraper: updatedScrapers });
+                                          setScrapeUrls(updatedUrls);
+                                        } else {
+                                          const updatedScrapers = propertyData.select_property_type === "Main Property"
+                                            ? [scraper]  
+                                            : [...propertyData.choose_image_scraper, scraper]; 
+
+                                          setPropertyData({ ...propertyData, choose_image_scraper: updatedScrapers });
+                                          setScrapeUrls({ ...scrapeUrls, [scraper]: "" }); 
+                                        }
+                                      }}
+                                    />
+                                    <label className="form-check-label text-light ms-2" htmlFor={`scraper_${scraper}`}>
+                                      {scraper}
+                                    </label>
+
+                                    {/* Show URL selected scraper */}
+                                    {propertyData.choose_image_scraper.includes(scraper) && (
+                                      <div className="mt-2">
+                                        <input
+                                          type="url"
+                                          className="form-control text-light bg-dark shadow-sm p-2 border-light"
+                                          placeholder={`Enter URL for ${scraper}`}
+                                          value={scrapeUrls[scraper] || ""}
+                                          onChange={(e) => {
+                                            setScrapeUrls({ ...scrapeUrls, [scraper]: e.target.value });
+                                          }}
+                                          style={{ borderRadius: "10px", width: "100%" }}
+                                        />
+                                        {scrapeUrls[scraper] && (
+                                          <div className="d-flex align-items-center mt-1">
+                                            <span className="text-light">
+                                              🔗 {scrapeUrls[scraper].length > 10 ? scrapeUrls[scraper].substring(0, 10) + "..." : scrapeUrls[scraper]}
+                                            </span>
+                                            <button
+                                              type="button"
+                                              className="btn btn-sm text-white ms-2"
+                                              onClick={() => {
+                                                const updatedUrls = { ...scrapeUrls };
+                                                delete updatedUrls[scraper];
+                                                setScrapeUrls(updatedUrls);
+                                              }}
+                                            >
+                                              ❌
+                                            </button>
+                                          </div>
+                                        )}
+                                      </div>
+                                    )}
+                                  </div>
+                                ))}
+                              </div>
+                            
+                          </div>
+
+                        {/* Upload Image (Only for Main Property) */}
+                        {propertyData.select_property_type === "Main Property" && (
+                          <div className="col-12 col-lg-4">
+                            <label htmlFor="upload_image" className="form-label">Upload Images</label>
+                            <input
+                              type="file"
+                              className="form-control text-light bg-dark shadow-sm p-3 border-light"
+                              id="upload_image"
+                              multiple
+                              onChange={(e) => {
+                                const newFiles = Array.from(e.target.files);
+                                setPropertyData({ 
+                                  ...propertyData, 
+                                  upload_image: [...(propertyData.upload_image || []), ...newFiles] 
+                                });
+                              }}
+                              style={{ borderRadius: "10px" }}
+                              accept="image/*"
+                              required
+                            />
+                            {/* Display Selected Images with Shortened Names */}
+                            {propertyData.upload_image && propertyData.upload_image.length > 0 && (
+                              <ul className="list-group mt-2">
+                                {propertyData.upload_image.map((file, index) => (
+                                  <li key={index} className="list-group-item d-flex justify-content-between align-items-center bg-dark text-light border-light"
+                                    style={{ maxWidth: "180px", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+                                    {file.name.length > 7 ? file.name.substring(0, 10) + "..." : file.name}
+                                    <button
+                                      type="button"
+                                      className="btn btn-sm text-white"
+                                      onClick={() => {
+                                        const updatedFiles = propertyData.upload_image.filter((_, i) => i !== index);
+                                        setPropertyData({ ...propertyData, upload_image: updatedFiles });
+                                      }}
+                                    >
+                                      ❌
+                                    </button>
+                                  </li>
+                                ))}
+                              </ul>
+                            )}
+                          </div>
+                        )}
+                      </div> 
+ 
+                    </div>
+                  </React.Fragment>
                   );
                 }
 
-                return (
+                  return (
                   <div className="col-12 col-lg-4" key={key}>
                     <label htmlFor={key} className="form-label">
                       {key.replace(/_/g, " ").replace(/\b\w/g, (char) => char.toUpperCase())}
