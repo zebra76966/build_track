@@ -100,7 +100,7 @@ const AdminDashboard = () => {
 
                 {active == 3 && (
                   <div className="fade-in position-relative">
-                    <Materials globalMatchingProducts={globalMatchingProducts} seMaterialDate={(e) => seMaterialDate(e)} />
+                    <Materials globalMatchingProducts={globalMatchingProducts} seMaterialDate={(e) => seMaterialDate(e)} globalSelectedAddress={globalSelectedAddress} />
                   </div>
                 )}
               </div>
