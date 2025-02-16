@@ -245,6 +245,46 @@ const Materials = ({ globalMatchingProducts, seMaterialDate }) => {
     setSelectedOptions(updatedSelection);
   };
 
+
+
+  const [sortDropdownOpen, setSortDropdownOpen] = useState(false); 
+  const [selectedSortOption, setSelectedSortOption] = useState(""); 
+  const [products, setProducts] = useState([]); 
+
+  const fetchSortedProducts = async (sortBy, sortOrder) => {
+    try {
+      const response = await axios.post("http://127.0.0.1:8000/dashboard/property-matching-products/", {
+        sort_by: sortBy, 
+        sort_order: sortOrder,
+      });
+  
+      if (response.data && response.data.matching_products) {
+        setProducts(response.data.matching_products);
+        toast.success("Products sorted successfully!");
+      } else {
+        toast.error("No products found.");
+      }
+    } catch (error) {
+      console.error("Sorting error:", error.response?.data || error.message);
+      toast.error("Failed to fetch sorted products.");
+    }
+  };
+  
+  const handleSortChange = (sortBy, sortOrder) => {
+    setSelectedSortOption(sortOrder === "desc" ? "Newest to Oldest" : "Oldest to Newest");
+    setSortDropdownOpen(false);
+    
+    fetchSortedProducts(sortBy, sortOrder);
+  };
+  
+
+  const toggleSortDropdown = () => {
+    setSortDropdownOpen((prev) => !prev);
+  };
+ 
+
+
+
   const filteredProducts =
     selectedCategories.length || selectedOptions.length || searchTerm.length
       ? globalMatchingProducts.filter(
@@ -312,7 +352,31 @@ const Materials = ({ globalMatchingProducts, seMaterialDate }) => {
             </div>
           </div>
 
-          <div className="d-flex gap-3 ms-auto me-4">
+          <div className="d-flex gap-4 ms-auto me-4">
+              {/* New Sort by Order Date Dropdown */}
+              <div className="dropdown" style={{ maxWidth: "200px" }}>
+                <button
+                  className="btn btn-dark border-secondary rounded-3 px-4 dropdown-toggle"
+                  type="button"
+                  onClick={toggleSortDropdown}
+                  style={{ minWidth: "180px" }}
+                >
+                  {selectedSortOption || "Sort by Order Date"}
+                </button>
+                <ul className={`dropdown-menu bg-dark w-100 ${sortDropdownOpen ? "show" : ""}`}>
+                  {["Newest to Oldest", "Oldest to Newest"].map((sortOption, index) => (
+                    <li key={index} className="dropdown-item text-light">
+                      <button
+                        className="btn btn-dark w-100 text-start"
+                        onClick={() => handleSortChange(sortOption)}
+                      >
+                        {sortOption}
+                      </button>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+
             <button
               className="btn btn-dark border-secondary rounded-3 px-4"
               type="button"
