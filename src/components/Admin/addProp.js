@@ -33,15 +33,16 @@ const AddProperty = () => {
     select_property_type: "",
     stage: "",
     title: "",
-    project_manager: "",
-    property_type: "",
     choose_image_scraper: [],
     upload_image: null,
     scrapeUrls: [],
+    property_type: "",
     address: "",
     state: "",
     city: "",
     postal_code: "",
+    project_manager: "",
+
     video_link: "",
     content: "",
   });
@@ -158,12 +159,13 @@ const AddProperty = () => {
         scrapeUrls: [],
         stage: "",
         title: "",
-        project_manager: "",
         property_type: "",
         address: "",
         state: "",
         city: "",
         postal_code: "",
+        project_manager: "",
+
         video_link: "",
         content: "",
       });
@@ -231,38 +233,11 @@ const AddProperty = () => {
               </div>
 
               {Object.keys(propertyData)
-                .filter((key) => !["stage", "state", "city", "choose_image_scraper", "upload_image", "select_property_type", "scrapeUrls", "project_manager"].includes(key))
+                .filter((key) => !["stage", "state", "city", "choose_image_scraper", "upload_image", "select_property_type", "scrapeUrls"].includes(key))
                 .map((key) => {
                   if (key === "property_type") {
                     return (
                       <React.Fragment key={key}>
-                        <div className="col-12 col-lg-4">
-                          <label htmlFor="project_manager" className="form-label">
-                            Project Manager
-                          </label>
-                          <select
-                            className="form-control form-select text-light bg-dark shadow-sm p-3 border-light"
-                            id="project_manager"
-                            value={propertyData.project_manager}
-                            onChange={(e) => setPropertyData({ ...propertyData, project_manager: e.target.value })}
-                            style={{ borderRadius: "10px" }}
-                            required
-                          >
-                            <option value="" disabled>
-                              Select Project Manager
-                            </option>
-                            {managerOptions.length > 0 ? (
-                              managerOptions.map((manager, index) => (
-                                <option key={index} value={manager}>
-                                  {manager}
-                                </option>
-                              ))
-                            ) : (
-                              <option disabled>Loading Project Manager</option>
-                            )}
-                          </select>
-                        </div>
-
                         <div className="col-12 col-lg-4" key={key}>
                           <label htmlFor={key} className="form-label">
                             Property Type
@@ -296,6 +271,39 @@ const AddProperty = () => {
                                 {option}
                               </option>
                             ))}
+                          </select>
+                        </div>
+                      </React.Fragment>
+                    );
+                  }
+
+                  if (key === "project_manager") {
+                    return (
+                      <React.Fragment key={key}>
+                        <div className="col-12 col-lg-4">
+                          <label htmlFor="project_manager" className="form-label">
+                            Project Manager
+                          </label>
+                          <select
+                            className="form-control form-select text-light bg-dark shadow-sm p-3 border-light"
+                            id="project_manager"
+                            value={propertyData.project_manager}
+                            onChange={(e) => setPropertyData({ ...propertyData, project_manager: e.target.value })}
+                            style={{ borderRadius: "10px" }}
+                            required
+                          >
+                            <option value="" disabled>
+                              Select Project Manager
+                            </option>
+                            {managerOptions.length > 0 ? (
+                              managerOptions.map((manager, index) => (
+                                <option key={index} value={manager}>
+                                  {manager}
+                                </option>
+                              ))
+                            ) : (
+                              <option disabled>Loading Project Manager</option>
+                            )}
                           </select>
                         </div>
                       </React.Fragment>
