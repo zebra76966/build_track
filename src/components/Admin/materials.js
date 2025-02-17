@@ -7,7 +7,7 @@ import iconsData from "./materialscat.json";
 import DatePicker from "react-datepicker"; // Import react-datepicker
 import "react-datepicker/dist/react-datepicker.css"; // Import the styles
 
-const Materials = ({ globalMatchingProducts, seMaterialDate, globalSelectedAddress }) => {
+const Materials = ({ globalMatchingProducts, seMaterialDate, globalSelectedAddress, setGlobalMatchingProducts }) => {
   const [transactions, setTransactions] = useState([]);
   const [filteredTransactions, setFilteredTransactions] = useState([]);
   const [isLoading, setIsloading] = useState(false);
@@ -257,7 +257,8 @@ const Materials = ({ globalMatchingProducts, seMaterialDate, globalSelectedAddre
       });
 
       if (response.data && response.data.matching_products) {
-        setProducts(response.data.matching_products);
+        setGlobalMatchingProducts(response.data.matching_products);
+        // setProducts(response.data.matching_products);
         toast.success("Products sorted successfully!");
       } else {
         toast.error("No products found.");
@@ -291,7 +292,6 @@ const Materials = ({ globalMatchingProducts, seMaterialDate, globalSelectedAddre
 
   return (
     <>
-      {console.log("categories", selectedCategories)}
       <div className="w-100 p-3">
         <h4 className="fs-3 my-0 py-0 mb-4">Materials</h4>
         <div className="position-relative ">

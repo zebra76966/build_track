@@ -43,7 +43,7 @@ const AddProperty = () => {
     postal_code: "",
     project_manager: "",
 
-    video_link: "",
+    // video_link: "",
     content: "",
   });
 
@@ -166,7 +166,7 @@ const AddProperty = () => {
         postal_code: "",
         project_manager: "",
 
-        video_link: "",
+        // video_link: "",
         content: "",
       });
 
