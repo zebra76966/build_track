@@ -139,11 +139,20 @@ const AddProperty = () => {
     });
 
     formData.append("selected_stage", selectedStage);
+
     if (propertyData.select_property_type === "Main Property" && mainPropertyScrapeUrl) {
       formData.append("scrape_url", mainPropertyScrapeUrl);
     } else if (propertyData.select_property_type === "Comp Property") {
-      scrapeUrls.forEach((url) => formData.append("scrape_urls[]", url));
+      if (scrapeUrls && Object.keys(scrapeUrls).length > 0) {
+        Object.entries(scrapeUrls).forEach(([scraper, url]) => {
+          formData.append(`scrapeUrls[${scraper}]`, url);
+        });
+      }   
     }
+
+    formData.append("scrapeUrls", JSON.stringify(scrapeUrls));
+
+
     try {
       await Axios.post(baseUrl + "/dashboard/add-property/", formData, {
         headers: { "Content-Type": "multipart/form-data" },
@@ -156,7 +165,7 @@ const AddProperty = () => {
         select_property_type: "",
         choose_image_scraper: [],
         upload_image: null,
-        scrapeUrls: [],
+        scrapeUrls: {},
         stage: "",
         title: "",
         property_type: "",
@@ -170,7 +179,7 @@ const AddProperty = () => {
         content: "",
       });
 
-      setScrapeUrls([]);
+      setScrapeUrls({});      
       setMainPropertyScrapeUrl("");
     } catch (error) {
       setTresponse("Failed to add property.");
