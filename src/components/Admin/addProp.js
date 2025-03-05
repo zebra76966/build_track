@@ -42,6 +42,7 @@ const AddProperty = () => {
     city: "",
     postal_code: "",
     project_manager: "",
+    block_lot: "",
 
     // video_link: "",
     content: "",
@@ -174,6 +175,7 @@ const AddProperty = () => {
         city: "",
         postal_code: "",
         project_manager: "",
+        block_lot: "",
 
         // video_link: "",
         content: "",
@@ -186,6 +188,26 @@ const AddProperty = () => {
       toast.error("Failed to add property.");
     } finally {
       setIsLoading(false);
+    }
+
+  const requestData = {
+      property_name: propertyData.property_name,
+      property_address: propertyData.property_address,
+      zillow_url: scrapeUrls["Zillow"] || "", // Get the Zillow URL entered by the user
+      formatted_address: propertyData.formatted_address,
+    };
+  
+    try {
+      const response = await fetch("dashboard/scrappers/zillow.py", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(requestData),
+      });
+  
+      const data = await response.json();
+      console.log("Scrape response:", data);
+    } catch (error) {
+      console.error("Error:", error);
     }
   };
 
@@ -242,7 +264,7 @@ const AddProperty = () => {
               </div>
 
               {Object.keys(propertyData)
-                .filter((key) => !["stage", "state", "city", "choose_image_scraper", "upload_image", "select_property_type", "scrapeUrls"].includes(key))
+                .filter((key) => !["stage", "state", "city", "choose_image_scraper", "upload_image", "select_property_type", "scrapeUrls","block_lot"].includes(key))
                 .map((key) => {
                   if (key === "property_type") {
                     return (
@@ -314,6 +336,21 @@ const AddProperty = () => {
                               <option disabled>Loading Project Manager</option>
                             )}
                           </select>
+                        </div>
+                        <div className="col-12 col-lg-4">
+                          <label htmlFor="block_lot" className="form-label">
+                            Block-Lot
+                          </label>
+                          <input
+                            type="text"
+                            className="form-control text-light bg-dark shadow-sm p-3 border-light"
+                            id="block_lot"
+                            placeholder=" eg: 1901-43"
+                            value={propertyData.block_lot || ""}
+                            onChange={(e) => setPropertyData({ ...propertyData, block_lot: e.target.value })}
+                            style={{ borderRadius: '10px' }}
+                            required
+                          />
                         </div>
                       </React.Fragment>
                     );
