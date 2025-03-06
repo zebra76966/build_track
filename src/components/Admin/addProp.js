@@ -152,11 +152,12 @@ const AddProperty = () => {
     }
 
     formData.append("scrapeUrls", JSON.stringify(scrapeUrls));
-
+    // formData.append(JSON.stringify(scrapeUrls));
+    // console.log("formData", formData);
 
     try {
       await Axios.post(baseUrl + "/dashboard/add-property/", formData, {
-        headers: { "Content-Type": "multipart/form-data" },
+        headers: { "Content-Type": "application/json" },
       });
 
       setTresponse("Property added successfully!");
@@ -189,26 +190,7 @@ const AddProperty = () => {
     } finally {
       setIsLoading(false);
     }
-
-  const requestData = {
-      property_name: propertyData.property_name,
-      property_address: propertyData.property_address,
-      zillow_url: scrapeUrls["Zillow"] || "", // Get the Zillow URL entered by the user
-      formatted_address: propertyData.formatted_address,
-    };
-  
-    try {
-      const response = await fetch("dashboard/scrappers/zillow.py", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(requestData),
-      });
-  
-      const data = await response.json();
-      console.log("Scrape response:", data);
-    } catch (error) {
-      console.error("Error:", error);
-    }
+    
   };
 
   return (
