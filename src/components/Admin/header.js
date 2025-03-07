@@ -3,7 +3,7 @@ import { useState, useEffect } from "react";
 import { baseUrl } from "../config";
 import toast from "react-hot-toast";
 
-const Header = ({ setGlobalMatchingProducts, setGlobalSelectedAddress, materialDate }) => {
+const Header = ({ setGlobalMatchingProducts, setGlobalSelectedAddress, materialDate , setActive, active }) => {
   const [masterAddresses, setMasterAdresses] = useState([]);
   const [isLoading, setIsloading] = useState(false);
 
@@ -138,11 +138,16 @@ const Header = ({ setGlobalMatchingProducts, setGlobalSelectedAddress, materialD
           </form>
 
           <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
-            <li class="nav-item">
-              <a class="nav-link active" aria-current="page" href="#">
-                Link#1
+            <li className="nav-item">
+              <a 
+                className={`nav-link ${active === 5 ? "active" : ""}`} 
+                onClick={() => setActive && setActive(5)} 
+                style={{ cursor: "pointer" }}
+              >
+                Login
               </a>
             </li>
+
             <li class="nav-item">
               <a class="nav-link" href="#">
                 Link#2

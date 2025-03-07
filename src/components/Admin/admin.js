@@ -5,12 +5,14 @@ import "./admin.css";
 import Orders from "./orders";
 import Transactions from "./transactions";
 import TodoList from "./todolist";
-import { ToastBar, Toaster } from "react-hot-toast";
+import { Toaster } from "react-hot-toast";
 import FilterCard from "./filtercard";
 import AddProperty from "./addProp";
 import Materials from "./materials";
 import DatePicker from "react-datepicker"; // Import react-datepicker
 import "react-datepicker/dist/react-datepicker.css"; // Import the styles
+import Register from "./register"; // Import Register component
+import Login from "./login"; // Import Login component
 
 const AdminDashboard = () => {
   const [active, setActive] = useState(0);
@@ -19,16 +21,14 @@ const AdminDashboard = () => {
   const [globalMatchingProducts, setGlobalMatchingProducts] = useState([]);
   const [globalSelectedAddress, setGlobalSelectedAddress] = useState(null);
 
-  const [selectedDate, setSelectedDate] = useState(null); // State to hold selected date
-
-  const [calendarVisible, setCalendarVisible] = useState(false); // Control calendar visibility
-
+  const [selectedDate, setSelectedDate] = useState(null);
+  const [calendarVisible, setCalendarVisible] = useState(false);
   const [materialDate, seMaterialDate] = useState(null);
 
-  // Handle the click on the calendar icon
   const handleCalendarClick = () => {
     setCalendarVisible(!calendarVisible);
   };
+
   return (
     <div className="d-flex bg-dark" style={{ height: "100dvh" }}>
       <Toaster />
@@ -36,38 +36,34 @@ const AdminDashboard = () => {
         <Sidebar setActive={(e) => setActive(e)} active={active} />
       </div>
 
-      <div className="mainSection ">
+      <div className="mainSection">
         <div className="w-100 mb-1 py-1 px-2">
-          <Header setGlobalMatchingProducts={(e) => setGlobalMatchingProducts(e)} setGlobalSelectedAddress={(e) => setGlobalSelectedAddress(e)} materialDate={materialDate} />
+        <Header setActive={setActive} active={active} setGlobalMatchingProducts={setGlobalMatchingProducts} setGlobalSelectedAddress={setGlobalSelectedAddress} materialDate={materialDate} />
         </div>
         <div className="px-1 pb-3 pt-0">
           <div className="mainSectionInner w-100 py-4 px-3 text-light noScrollBar">
             <div className="row mx-0 px-0">
               <div className="col-12">{active !== 3 && <h4 className="display-6 fw-semi-bold">Good Evening 👋</h4>}</div>
               <div className="col-xl-12 mt-2">
-                {active == 0 && (
-                  <div className="fade-in ">
+                {active === 0 && (
+                  <div className="fade-in">
                     <div className="row">
                       <div className="col-9">
-                        <Orders orderFilter={orderFilter} globalSelectedAddress={globalSelectedAddress} date={selectedDate && selectedDate.toISOString().split("T")[0]} />
+                        <Orders orderFilter={orderFilter} globalSelectedAddress={globalSelectedAddress} date={selectedDate?.toISOString().split("T")[0]} />
                       </div>
-                      {console.log("selectedDate", selectedDate)}
                       <div className="col-3">
                         <div className="position-sticky top-0 left-0">
                           <div className="position-relative mb-2">
                             <input
-                              className="form-control topSearch bg-black  border-1 border-secondary w-100 py-3 px-2  text-light"
+                              className="form-control topSearch bg-black border-1 border-secondary w-100 py-3 px-2 text-light"
                               type="date"
                               disabled
-                              value={selectedDate && selectedDate.toISOString().split("T")[0]}
-                              // onChange={handleSearch}
+                              value={selectedDate?.toISOString().split("T")[0]}
                               style={{ borderRadius: "1em" }}
                             />
-
                             <div className="p-3 position-absolute top-0 end-0 h-100" onClick={handleCalendarClick}>
                               <img src="icons/calendar-range-solid.svg" height={"20px"} />
                             </div>
-                            {/* Conditionally render the custom date picker */}
                             {calendarVisible && (
                               <DatePicker
                                 selected={selectedDate}
@@ -76,40 +72,26 @@ const AdminDashboard = () => {
                                   setSelectedDate(localDate);
                                 }}
                                 inline
-                                calendarClassName="custom-calendar" // Optional styling class for the calendar
+                                calendarClassName="custom-calendar"
                               />
                             )}
                           </div>
-
-                          <FilterCard setFilter={(e) => setOrderFilter(e)} />
+                          <FilterCard setFilter={setOrderFilter} />
                         </div>
                       </div>
                     </div>
                   </div>
                 )}
-                {active == 1 && (
-                  <div className="fade-in position-relative">
-                    <Transactions />
-                  </div>
-                )}
-                {active == 2 && (
-                  <div className="fade-in position-relative">
-                    <AddProperty />
-                  </div>
-                )}
-
-                {active == 3 && (
-                  <div className="fade-in position-relative">
-                    <Materials
-                      globalMatchingProducts={globalMatchingProducts}
-                      setGlobalMatchingProducts={(e) => setGlobalMatchingProducts(e)}
-                      seMaterialDate={(e) => seMaterialDate(e)}
-                      globalSelectedAddress={globalSelectedAddress}
-                    />
-                  </div>
-                )}
+                {active === 1 && <Transactions />}
+                {active === 2 && <AddProperty />}
+                {active === 3 && <Materials globalMatchingProducts={globalMatchingProducts} setGlobalMatchingProducts={setGlobalMatchingProducts} seMaterialDate={seMaterialDate} globalSelectedAddress={globalSelectedAddress} />}
+                {/* {active === 4 && (<div className="fade-in position-relative"><Register /></div>)} */}
+                {active === 5 ? (
+                <Login setActive={setActive} active={active} />
+                  ) : (
+                      <Register setActive={setActive} active={active} />
+                  )}
               </div>
-
               <div className="col-xl-4 mt-2 d-none">
                 <div className="position-sticky top-0 left-0 fade-in">
                   <TodoList />
