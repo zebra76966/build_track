@@ -85,12 +85,8 @@ const AdminDashboard = () => {
                 {active === 1 && <Transactions />}
                 {active === 2 && <AddProperty />}
                 {active === 3 && <Materials globalMatchingProducts={globalMatchingProducts} setGlobalMatchingProducts={setGlobalMatchingProducts} seMaterialDate={seMaterialDate} globalSelectedAddress={globalSelectedAddress} />}
-                {/* {active === 4 && (<div className="fade-in position-relative"><Register /></div>)} */}
-                {active === 5 ? (
-                <Login setActive={setActive} active={active} />
-                  ) : (
-                      <Register setActive={setActive} active={active} />
-                  )}
+                {active === 4 && <Register setActive={setActive} />}
+                {active === 5 && <Login Login setActive={setActive} active={active} />}
               </div>
               <div className="col-xl-4 mt-2 d-none">
                 <div className="position-sticky top-0 left-0 fade-in">
