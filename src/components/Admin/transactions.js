@@ -98,9 +98,9 @@ const Transactions = () => {
                 value={searchTerm}
                 onChange={handleSearch}
               />
-              <img src="icons/search.svg" className="searchIcon" alt="Search" />
+              <img src="/icons/search.svg" className="searchIcon" alt="Search" />
             </div>
-            <img src="icons/more-vertical.svg" height={15} />
+            <img src="/icons/more-vertical.svg" height={15} />
           </div>
         </div>
         {activeDetail && active !== "" && (

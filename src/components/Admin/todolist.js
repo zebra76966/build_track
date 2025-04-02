@@ -25,10 +25,10 @@ const TodoList = () => {
           <div className="position-relative">
             <input class="form-control me-2 topSearch bg-black rounded-pill border-0 px-5 py-2" type="search" placeholder="Search..." aria-label="Search" />
 
-            <img src="icons/search.svg" className="searchIcon" />
+            <img src="/icons/search.svg" className="searchIcon" />
           </div>
 
-          <img src="icons/more-vertical.svg" height={15} />
+          <img src="/icons/more-vertical.svg" height={15} />
         </div>
       </div>
 

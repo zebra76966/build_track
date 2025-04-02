@@ -1,5 +1,6 @@
 import React from "react";
 import { useState } from "react";
+import { Link, Outlet } from "react-router-dom";
 
 const Sidebar = ({ setActive, active }) => {
   const [expand, setExpand] = useState(false);
@@ -11,7 +12,7 @@ const Sidebar = ({ setActive, active }) => {
         onClick={() => {
           setExpand(!expand);
         }}
-        src="icons/sidebar-collapse.svg"
+        src="/icons/sidebar-collapse.svg"
         height={25}
         alt="Close"
         style={{ filter: "invert(1)" }}
@@ -24,38 +25,38 @@ const Sidebar = ({ setActive, active }) => {
       <hr className="bg-black" />
       <ul class="nav nav-pills flex-column mb-auto ">
         <li class="nav-item" onClick={() => setActive(0)}>
-          <span class={`nav-link  ps-4 ${active == 0 ? "active" : ""}`}>
-            <img src="logo192.png" className="me-2" height={20} />
+          <Link to="/dashboard/orders" class={`nav-link  ps-4 ${active == 0 ? "active" : ""}`}>
+            <img src="/logo192.png" className="me-2" height={20} />
             <span className="txt">Orders</span>
-          </span>
+          </Link>
         </li>
         <li class="nav-item" onClick={() => setActive(1)}>
-          <a href="#" class={`nav-link ps-4 text-white ${active == 1 ? "active" : ""}`}>
-            <img src="logo192.png" className="me-2" height={20} />
+          <Link to="/dashboard/transactions" class={`nav-link ps-4 text-white ${active == 1 ? "active" : ""}`}>
+            <img src="/logo192.png" className="me-2" height={20} />
             <span className="txt">Transactions</span>
-          </a>
+          </Link>
         </li>
         <li class="nav-item" onClick={() => setActive(2)}>
-          <a href="#" class={`nav-link ps-4 text-white ${active == 2 ? "active" : ""}`}>
-            <img src="logo192.png" className="me-2" height={20} />
+          <Link to="/dashboard/add-property" class={`nav-link ps-4 text-white ${active == 2 ? "active" : ""}`}>
+            <img src="/logo192.png" className="me-2" height={20} />
             <span className="txt">Add Property</span>
-          </a>
+          </Link>
         </li>
         <li class="nav-item" onClick={() => setActive(3)}>
-          <a href="#" class={`nav-link ps-4 text-white ${active == 3 ? "active" : ""}`}>
-            <img src="logo192.png" className="me-2" height={20} />
+          <Link to="/dashboard/materials" class={`nav-link ps-4 text-white ${active == 3 ? "active" : ""}`}>
+            <img src="/logo192.png" className="me-2" height={20} />
             <span className="txt">Materials</span>
-          </a>
+          </Link>
         </li>
         <li class="nav-item">
           <a href="#" class="nav-link ps-4 text-white">
-            <img src="logo192.png" className="me-2" height={20} />
+            <img src="/logo192.png" className="me-2" height={20} />
             <span className="txt">Products</span>
           </a>
         </li>
         <li class="nav-item">
           <a href="#" class="nav-link ps-4 text-white">
-            <img src="logo192.png" className="me-2" height={20} />
+            <img src="/logo192.png" className="me-2" height={20} />
             <span className="txt">Customers</span>
           </a>
         </li>
@@ -94,6 +95,7 @@ const Sidebar = ({ setActive, active }) => {
           </li>
         </ul>
       </div>
+      <Outlet />
     </div>
   );
 };

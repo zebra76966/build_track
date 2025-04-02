@@ -304,7 +304,7 @@ const Materials = ({ globalMatchingProducts, seMaterialDate, globalSelectedAddre
             onChange={handleSearch}
             style={{ borderRadius: "1em" }}
           />
-          <img src="icons/search.svg" className="searchIconFull" alt="Search" />
+          <img src="/icons/search.svg" className="searchIconFull" alt="Search" />
           <div className="p-1 position-absolute top-0 end-0 h-100">
             <button className="btn btn-dark border-secondary  h-100 px-4" style={{ borderRadius: "0.9em" }} onClick={handlesubmit}>
               Search
@@ -328,7 +328,7 @@ const Materials = ({ globalMatchingProducts, seMaterialDate, globalSelectedAddre
                 />
 
                 <div className="p-3 position-absolute top-0 end-0 h-100" onClick={handleCalendarClick}>
-                  <img src="icons/calendar-range-solid.svg" height={"20px"} />
+                  <img src="/icons/calendar-range-solid.svg" height={"20px"} />
                 </div>
                 {/* Conditionally render the custom date picker */}
                 {calendarVisible && (
@@ -617,11 +617,11 @@ const Materials = ({ globalMatchingProducts, seMaterialDate, globalSelectedAddre
 
             <div className="col-1  justify-content-center align-items-center d-flex gap-2 pe-1 " key={index}>
               {/* <a herf={ini.link} target="_blank">
-                <img src="icons/eye.svg" height={30} className="w-100" />
+                <img src="/icons/eye.svg" height={30} className="w-100" />
               </a> */}
 
               <button className="btn p-0 border-0 bg-transparent" onClick={() => handleDetailView(ini.order_id)}>
-                <img src="icons/eye.svg" height={30} className="w-100" alt="View Details" />
+                <img src="/icons/eye.svg" height={30} className="w-100" alt="View Details" />
               </button>
 
               {/* <button className="btn btn-dark border-secondary  h-100 px-4  fw-bold w-50 me-0" style={{ borderRadius: "0.9em" }} onClick={handlesubmit}>

@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import Sidebar from "./sidebar";
 import Header from "./header";
 import "./admin.css";
@@ -11,12 +11,35 @@ import AddProperty from "./addProp";
 import Materials from "./materials";
 import DatePicker from "react-datepicker"; // Import react-datepicker
 import "react-datepicker/dist/react-datepicker.css"; // Import the styles
-import Register from "./register"; // Import Register component
-import Login from "./login"; // Import Login component
+import { useParams, useNavigate } from "react-router-dom";
+import { useCookies } from "react-cookie";
+
 import Profile from "./profile"; // Import Profile component
 
 const AdminDashboard = () => {
+  const navigate = useNavigate();
+  const params = useParams();
+  const tabName = useParams.tab;
+  const [cookies, setCookie, removeCookie] = useCookies(["uToken"]);
+  useEffect(() => {
+    if (cookies.uToken == undefined) {
+      navigate("/");
+    }
+  }, [cookies]);
+
   const [active, setActive] = useState(0);
+  useEffect(() => {
+    if (tabName == "orders") {
+      setActive(0);
+    }
+    if (tabName == "transactions") {
+      setActive(1);
+    } else if (tabName == "add-property") {
+      setActive(2);
+    } else if (tabName == "materials") {
+      setActive(3);
+    }
+  }, [tabName]);
 
   const [orderFilter, setOrderFilter] = useState({ vendors: [], status: [], addresses: [] });
   const [globalMatchingProducts, setGlobalMatchingProducts] = useState([]);
@@ -39,7 +62,7 @@ const AdminDashboard = () => {
 
       <div className="mainSection">
         <div className="w-100 mb-1 py-1 px-2">
-        <Header setActive={setActive} active={active} setGlobalMatchingProducts={setGlobalMatchingProducts} setGlobalSelectedAddress={setGlobalSelectedAddress} materialDate={materialDate} />
+          <Header setActive={setActive} active={active} setGlobalMatchingProducts={setGlobalMatchingProducts} setGlobalSelectedAddress={setGlobalSelectedAddress} materialDate={materialDate} />
         </div>
         <div className="px-1 pb-3 pt-0">
           <div className="mainSectionInner w-100 py-4 px-3 text-light noScrollBar">
@@ -63,7 +86,7 @@ const AdminDashboard = () => {
                               style={{ borderRadius: "1em" }}
                             />
                             <div className="p-3 position-absolute top-0 end-0 h-100" onClick={handleCalendarClick}>
-                              <img src="icons/calendar-range-solid.svg" height={"20px"} />
+                              <img src="/icons/calendar-range-solid.svg" height={"20px"} />
                             </div>
                             {calendarVisible && (
                               <DatePicker
@@ -85,10 +108,16 @@ const AdminDashboard = () => {
                 )}
                 {active === 1 && <Transactions />}
                 {active === 2 && <AddProperty />}
-                {active === 3 && <Materials globalMatchingProducts={globalMatchingProducts} setGlobalMatchingProducts={setGlobalMatchingProducts} seMaterialDate={seMaterialDate} globalSelectedAddress={globalSelectedAddress} />}
-                {active === 4 && <Register setActive={setActive} />}
-                {active === 5 && <Login setActive={setActive} active={active} />}
-                {active === 6 && <Profile />} 
+                {active === 3 && (
+                  <Materials
+                    globalMatchingProducts={globalMatchingProducts}
+                    setGlobalMatchingProducts={setGlobalMatchingProducts}
+                    seMaterialDate={seMaterialDate}
+                    globalSelectedAddress={globalSelectedAddress}
+                  />
+                )}
+
+                {active === 6 && <Profile />}
               </div>
               <div className="col-xl-4 mt-2 d-none">
                 <div className="position-sticky top-0 left-0 fade-in">

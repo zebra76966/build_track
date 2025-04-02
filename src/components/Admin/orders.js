@@ -1,9 +1,11 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState, useRef, useContext } from "react";
 import { baseUrl } from "../config";
 import toast from "react-hot-toast";
 import Skeleton from "../skeleton";
+import { AuthContext } from "./auth/authContext";
 
 const Orders = ({ orderFilter, globalSelectedAddress, date }) => {
+  const { accessToken, clearToken, saveToken } = useContext(AuthContext);
   const [orders, setOrders] = useState([]);
   const [filteredOrders, setFilteredOrders] = useState([]);
   const [isLoading, setIsloading] = useState(false);
@@ -27,7 +29,7 @@ const Orders = ({ orderFilter, globalSelectedAddress, date }) => {
     try {
       const response = await fetch(baseUrl + `/dashboard/orders/${active}`, {
         method: "GET",
-        headers: { "Content-Type": "application/json" },
+        headers: { "Content-Type": "application/json", Authorization: `Bearer ${accessToken}` },
       });
       const data = await response.json();
       setActiveDetail(data);
@@ -50,14 +52,18 @@ const Orders = ({ orderFilter, globalSelectedAddress, date }) => {
     setIsloading(true);
 
     let body = {
-      master_address_id: id,
+      master_address_id: id ? id : 7,
       ordered_date: date,
     };
 
     try {
       const response = await fetch(baseUrl + "/dashboard/orders/", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+
+          Authorization: `Bearer ${accessToken}`,
+        },
         body: JSON.stringify(body),
       });
       const data = await response.json();
@@ -115,7 +121,7 @@ const Orders = ({ orderFilter, globalSelectedAddress, date }) => {
     try {
       const response = await fetch(baseUrl + "/dashboard/pos/", {
         method: "GET",
-        headers: { "Content-Type": "application/json" },
+        headers: { "Content-Type": "application/json", Authorization: `Bearer ${accessToken}` },
       });
       const data = await response.json();
       console.log("address", data);
@@ -140,7 +146,7 @@ const Orders = ({ orderFilter, globalSelectedAddress, date }) => {
       try {
         const response = await fetch(baseUrl + `/dashboard/orders/${active}/update-po-master/`, {
           method: "POST",
-          headers: { "Content-Type": "application/json" },
+          headers: { "Content-Type": "application/json", Authorization: `Bearer ${accessToken}` },
           body: JSON.stringify({
             po_id: ediMasterid,
           }),
@@ -170,7 +176,7 @@ const Orders = ({ orderFilter, globalSelectedAddress, date }) => {
       try {
         const response = await fetch(baseUrl + `/dashboard/orders/${active}/remove-po-master/`, {
           method: "DELETE",
-          headers: { "Content-Type": "application/json" },
+          headers: { "Content-Type": "application/json", Authorization: `Bearer ${accessToken}` },
         });
         const data = await response.json();
         toast.success("Success!");
@@ -205,9 +211,9 @@ const Orders = ({ orderFilter, globalSelectedAddress, date }) => {
               value={searchTerm}
               onChange={handleSearch}
             />
-            <img src="icons/search.svg" className="searchIcon" alt="Search" />
+            <img src="/icons/search.svg" className="searchIcon" alt="Search" />
           </div>
-          <img src="icons/more-vertical.svg" height={15} alt="More" />
+          <img src="/icons/more-vertical.svg" height={15} alt="More" />
         </div>
       </div>
       {console.log(fixAddressModal)}
@@ -423,7 +429,7 @@ const Orders = ({ orderFilter, globalSelectedAddress, date }) => {
                         {!ini.master_address ? (
                           <>
                             <span className="txt-2 pe-2">{"No matching master address found"}</span>
-                            <img src="icons/pen.svg" className="ms-1 border-start border-light ps-2" height={20} />
+                            <img src="/icons/pen.svg" className="ms-1 border-start border-light ps-2" height={20} />
                           </>
                         ) : (
                           <span className="txt-1">{ini.master_address}</span>

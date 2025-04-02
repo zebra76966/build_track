@@ -47,7 +47,7 @@ const FilterCard = ({ filter, setFilter }) => {
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
         />
-        <img src="icons/search.svg" className="searchIcon" alt="Search" />
+        <img src="/icons/search.svg" className="searchIcon" alt="Search" />
       </div>
 
       <hr />
