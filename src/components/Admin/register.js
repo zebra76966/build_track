@@ -5,7 +5,8 @@ import { useNavigate } from "react-router-dom";
 const Register = () => {
     const navigate = useNavigate();
     const [formData, setFormData] = useState({
-        name: "",
+        first_name: "",
+        last_name: "",
         email: "",
         password: "",
         password2: "",
@@ -60,8 +61,14 @@ const Register = () => {
             navigate("/login");
             }, 2000);
         } else {
-            setError(data.error || "Registration failed. Please try again.");
-        }
+            if (data.email) {
+                setError("This email is already registered. Please use a different email.");
+            } else if (data.password) {
+                setError("Invalid password. Please meet the required criteria.");
+            } else {
+                setError("Registration failed. Please try again.");
+            }
+                    }
         } catch (err) {
         setError("Something went wrong. Please try again.");
         } finally {
@@ -80,27 +87,36 @@ const Register = () => {
 
             <form onSubmit={handleSubmit} className="d-flex flex-column">
             <div className="mb-3">
-                <label htmlFor="name" className="form-label">Name</label>
-                <input type="text" name="name" className="form-control text-light bg-dark border-light p-2"  placeholder={"Enter your Name"}
-                value={formData.name} onChange={handleChange} required />
-            </div>
-            <div className="mb-3">
-                <label htmlFor="email" className="form-label">Email</label>
-                <input type="email" name="email" className="form-control text-light bg-dark border-light p-2"  placeholder={"Enter the Email Id"}
-                value={formData.email} onChange={handleChange} required />
-            </div>
-            <div className="mb-3">
-                <label htmlFor="password" className="form-label">Password</label>
-                <input type="password" name="password" className="form-control text-light bg-dark border-light p-2"  placeholder={"Enter the Password"}
-                value={formData.password} onChange={handleChange} required />
-            </div>
-            <div className="mb-3">
-                <label htmlFor="password2" className="form-label">Confirm Password</label>
-                <input type="password" name="password2" className="form-control text-light bg-dark border-light p-2"  placeholder="Enter the Password again"
-                value={formData.password2} onChange={handleChange} required />
+                <label htmlFor="first_name" className="form-label">First Name</label>
+                <input type="text" name="first_name" className="form-control text-light bg-dark border-light p-2"
+                placeholder="Enter your First Name" value={formData.first_name} onChange={handleChange} required />
             </div>
 
-            <button type="submit" className="btn btn-lg bg-black w-50 mt-2 mx-auto text-white fw-bold fs-5" style={{ width: "50%" }} disabled={loading}>
+            <div className="mb-3">
+                <label htmlFor="last_name" className="form-label">Last Name</label>
+                <input type="text" name="last_name" className="form-control text-light bg-dark border-light p-2"
+                placeholder="Enter your Last Name" value={formData.last_name} onChange={handleChange} required />
+            </div>
+
+            <div className="mb-3">
+                <label htmlFor="email" className="form-label">Email</label>
+                <input type="email" name="email" className="form-control text-light bg-dark border-light p-2"
+                placeholder="Enter the Email Id" value={formData.email} onChange={handleChange} required />
+            </div>
+
+            <div className="mb-3">
+                <label htmlFor="password" className="form-label">Password</label>
+                <input type="password" name="password" className="form-control text-light bg-dark border-light p-2"
+                placeholder="Enter the Password" value={formData.password} onChange={handleChange} required />
+            </div>
+
+            <div className="mb-3">
+                <label htmlFor="password2" className="form-label">Confirm Password</label>
+                <input type="password" name="password2" className="form-control text-light bg-dark border-light p-2"
+                placeholder="Enter the Password again" value={formData.password2} onChange={handleChange} required />
+            </div>
+
+            <button type="submit" className="btn btn-lg bg-black w-50 mt-2 mx-auto text-white fw-bold fs-5" disabled={loading}>
                 {loading ? "Registering..." : "Register"}
             </button>
             </form>

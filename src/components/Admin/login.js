@@ -3,7 +3,7 @@ import { baseUrl } from "../config";
 import { useNavigate } from "react-router-dom";
 
 const Login = () => {
-    const [email, setEmail] = useState("");
+    const [username, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [error, setError] = useState(null);
     const [loading, setLoading] = useState(false);
@@ -26,7 +26,7 @@ const Login = () => {
                 headers: {
                     "Content-Type": "application/json",
                 },
-                body: JSON.stringify({ email, password }),
+                body: JSON.stringify({ username, password }),
             });
 
             const data = await response.json();
@@ -52,9 +52,9 @@ const Login = () => {
 
                 <form onSubmit={handleLogin} className="d-flex flex-column">
                     <div className="mb-3">
-                        <label htmlFor="email" className="form-label" >Email</label>
+                        <label htmlFor="email" className="form-label" >Username</label>
                         <input type="email" className="form-control text-light bg-dark border-light p-2" placeholder={"Enter the Email Id"}
-                            value={email} onChange={(e) => setEmail(e.target.value)} required />
+                            value={username} onChange={(e) => setEmail(e.target.value)} required />
                     </div>
                     <div className="mb-3">
                         <label htmlFor="password" className="form-label">Password</label>

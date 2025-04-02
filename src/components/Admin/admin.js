@@ -13,6 +13,7 @@ import DatePicker from "react-datepicker"; // Import react-datepicker
 import "react-datepicker/dist/react-datepicker.css"; // Import the styles
 import Register from "./register"; // Import Register component
 import Login from "./login"; // Import Login component
+import Profile from "./profile"; // Import Profile component
 
 const AdminDashboard = () => {
   const [active, setActive] = useState(0);
@@ -86,7 +87,8 @@ const AdminDashboard = () => {
                 {active === 2 && <AddProperty />}
                 {active === 3 && <Materials globalMatchingProducts={globalMatchingProducts} setGlobalMatchingProducts={setGlobalMatchingProducts} seMaterialDate={seMaterialDate} globalSelectedAddress={globalSelectedAddress} />}
                 {active === 4 && <Register setActive={setActive} />}
-                {active === 5 && <Login Login setActive={setActive} active={active} />}
+                {active === 5 && <Login setActive={setActive} active={active} />}
+                {active === 6 && <Profile />} 
               </div>
               <div className="col-xl-4 mt-2 d-none">
                 <div className="position-sticky top-0 left-0 fade-in">
