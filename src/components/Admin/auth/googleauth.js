@@ -14,41 +14,43 @@ function Gauth() {
   const [isLoading, setIsloading] = useState(false);
 
   function onSuccess(res) {
-    // console.log("succzddgsfgess:", res.access_token);
+    console.log("succzddgsfgess:", res.access_token);
     setIsloading(true);
 
-    const config = {
-      headers: { "content-type": "application/json" },
-    };
-    axios
-      .post(baseUrl + "/user-accounts/google/", {
-        access_token: res.access_token,
-      })
-      .then((response) => {
-        console.log(response);
+    localStorage.setItem("google-access", res.access_token);
 
-        axios
-          .post(baseUrl + "/user-accounts/user-token", {}, config)
-          .then((response) => {
-            response.length !== 0 && setCookie("uToken", response.data.token, { path: "/" });
-            toast.success("Success");
-            setIsloading(false);
-            console.log(response.data);
-            window.location.href = "/";
-          })
-          .catch((error) => {
-            console.log(error);
-            toast.error("Something went Wrong /user-token ");
-            setIsloading(false);
-          });
+    // const config = {
+    //   headers: { "content-type": "application/json" },
+    // };
+    // axios
+    //   .post(baseUrl + "/user-accounts/google/", {
+    //     access_token: res.access_token,
+    //   })
+    //   .then((response) => {
+    //     console.log(response);
 
-        // toast.success("Success");
-        // window.location.href = "/";
-      })
-      .catch((error) => {
-        console.log(error);
-        toast.error("Something went Wrong");
-      });
+    //     axios
+    //       .post(baseUrl + "/user-accounts/user-token", {}, config)
+    //       .then((response) => {
+    //         response.length !== 0 && setCookie("uToken", response.data.token, { path: "/" });
+    //         toast.success("Success");
+    //         setIsloading(false);
+    //         console.log(response.data);
+    //         window.location.href = "/";
+    //       })
+    //       .catch((error) => {
+    //         console.log(error);
+    //         toast.error("Something went Wrong /user-token ");
+    //         setIsloading(false);
+    //       });
+
+    //     // toast.success("Success");
+    //     // window.location.href = "/";
+    //   })
+    //   .catch((error) => {
+    //     console.log(error);
+    //     toast.error("Something went Wrong");
+    //   });
   }
   // Use this function to trigger the
   // "LogIn With Google" process
