@@ -72,7 +72,7 @@ const SignUp = (props) => {
           }, 1000);
         })
         .catch((error) => {
-          setResponse(error.response.data.email?.[0]);
+          setResponse(error.response.data?.error);
           toast.error(error.message ? error.message : "Something went Wrong");
           setIsloading(false);
           console.log(error);

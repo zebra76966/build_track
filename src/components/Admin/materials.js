@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useContext } from "react";
 import { baseUrl } from "../config";
 import toast from "react-hot-toast";
 import axios from "axios";
@@ -6,8 +6,10 @@ import { Cheerio } from "cheerio";
 import iconsData from "./materialscat.json";
 import DatePicker from "react-datepicker"; // Import react-datepicker
 import "react-datepicker/dist/react-datepicker.css"; // Import the styles
+import { AuthContext } from "./auth/authContext";
 
 const Materials = ({ globalMatchingProducts, seMaterialDate, globalSelectedAddress, setGlobalMatchingProducts }) => {
+  const { accessToken, clearToken, saveToken } = useContext(AuthContext);
   const [transactions, setTransactions] = useState([]);
   const [filteredTransactions, setFilteredTransactions] = useState([]);
   const [isLoading, setIsloading] = useState(false);
@@ -249,11 +251,16 @@ const Materials = ({ globalMatchingProducts, seMaterialDate, globalSelectedAddre
   const [products, setProducts] = useState([]);
 
   const fetchSortedProducts = async (sortOrder, sortBy) => {
+    let body = {
+      sort_by: sortBy,
+      sort_order: sortOrder,
+      master_address_id: globalSelectedAddress,
+    };
     try {
       const response = await axios.post(baseUrl + "/dashboard/property-matching-products/", {
-        sort_by: sortBy,
-        sort_order: sortOrder,
-        master_address_id: globalSelectedAddress,
+        method: "POST",
+        headers: { "Content-Type": "application/json", Authorization: `Bearer ${accessToken}` },
+        body: JSON.stringify(body),
       });
 
       if (response.data && response.data.matching_products) {
