@@ -220,7 +220,7 @@ const SignUp = (props) => {
 
           <p className="lead">
             Already have an Account?
-            <Link to="/login" state={{ check: "Login" }} className="link-info text-decoration-none fw-bold">
+            <Link to="/" state={{ check: "Login" }} className="link-info text-decoration-none fw-bold">
               {" "}
               Login
             </Link>
