@@ -113,7 +113,7 @@ const AddProperty = () => {
 
   const handleFetchManagers = async () => {
     try {
-      const response = await Axios.get("http://127.0.0.1:8000/dashboard/get-all-managers");
+      const response = await Axios.get(baseUrl + "/dashboard/get-all-managers");
       if (response.data && Array.isArray(response.data.managers)) {
         setManagerOptions(response.data.managers);
       } else {
@@ -148,7 +148,7 @@ const AddProperty = () => {
         Object.entries(scrapeUrls).forEach(([scraper, url]) => {
           formData.append(`scrapeUrls[${scraper}]`, url);
         });
-      }   
+      }
     }
 
     formData.append("scrapeUrls", JSON.stringify(scrapeUrls));
@@ -182,7 +182,7 @@ const AddProperty = () => {
         content: "",
       });
 
-      setScrapeUrls({});      
+      setScrapeUrls({});
       setMainPropertyScrapeUrl("");
     } catch (error) {
       setTresponse("Failed to add property.");
@@ -190,7 +190,6 @@ const AddProperty = () => {
     } finally {
       setIsLoading(false);
     }
-    
   };
 
   return (
@@ -246,7 +245,7 @@ const AddProperty = () => {
               </div>
 
               {Object.keys(propertyData)
-                .filter((key) => !["stage", "state", "city", "choose_image_scraper", "upload_image", "select_property_type", "scrapeUrls","block_lot"].includes(key))
+                .filter((key) => !["stage", "state", "city", "choose_image_scraper", "upload_image", "select_property_type", "scrapeUrls", "block_lot"].includes(key))
                 .map((key) => {
                   if (key === "property_type") {
                     return (
@@ -330,7 +329,7 @@ const AddProperty = () => {
                             placeholder=" eg: 1901-43"
                             value={propertyData.block_lot || ""}
                             onChange={(e) => setPropertyData({ ...propertyData, block_lot: e.target.value })}
-                            style={{ borderRadius: '10px' }}
+                            style={{ borderRadius: "10px" }}
                             required
                           />
                         </div>

@@ -72,10 +72,10 @@ const SignUp = (props) => {
           }, 1000);
         })
         .catch((error) => {
-          setResponse(error.message);
-          toast.error("Something went Wrong");
+          setResponse(error.response.data.email?.[0]);
+          toast.error(error.message ? error.message : "Something went Wrong");
           setIsloading(false);
-          console.log(error.message);
+          console.log(error);
         });
     } else {
       toast.error("Form is !ncomplete");

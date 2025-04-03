@@ -250,7 +250,7 @@ const Materials = ({ globalMatchingProducts, seMaterialDate, globalSelectedAddre
 
   const fetchSortedProducts = async (sortOrder, sortBy) => {
     try {
-      const response = await axios.post("http://127.0.0.1:8000/dashboard/property-matching-products/", {
+      const response = await axios.post(baseUrl + "/dashboard/property-matching-products/", {
         sort_by: sortBy,
         sort_order: sortOrder,
         master_address_id: globalSelectedAddress,
