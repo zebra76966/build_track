@@ -5,53 +5,54 @@ import { useGoogleLogin } from "@react-oauth/google";
 import toast, { Toaster } from "react-hot-toast";
 import { useCookies } from "react-cookie";
 import { baseUrl } from "../../config";
+import { useNavigate } from "react-router-dom";
 axios.defaults.xsrfHeaderName = "X-CSRFTOKEN";
 axios.defaults.xsrfCookieName = "csrftoken";
 axios.defaults.withCredentials = true;
 
 function Gauth() {
+  const navigate = useNavigate();
   const [cookies, setCookie, removeCookie] = useCookies(["uToken"]);
   const [isLoading, setIsloading] = useState(false);
 
-  function onSuccess(res) {
-    console.log("succzddgsfgess:", res.access_token);
+  async function onSuccess(res) {
+    console.log("success:", res.access_token);
     setIsloading(true);
 
     localStorage.setItem("google-access", res.access_token);
 
-    // const config = {
-    //   headers: { "content-type": "application/json" },
-    // };
-    // axios
-    //   .post(baseUrl + "/user-accounts/google/", {
-    //     access_token: res.access_token,
-    //   })
-    //   .then((response) => {
-    //     console.log(response);
+    try {
+      // First API call to send Google access token
+      const googleResponse = await axios.post(baseUrl + "/user-accounts/google/", {
+        access_token: res.access_token,
+      });
 
-    //     axios
-    //       .post(baseUrl + "/user-accounts/user-token", {}, config)
-    //       .then((response) => {
-    //         response.length !== 0 && setCookie("uToken", response.data.token, { path: "/" });
-    //         toast.success("Success");
-    //         setIsloading(false);
-    //         console.log(response.data);
-    //         window.location.href = "/";
-    //       })
-    //       .catch((error) => {
-    //         console.log(error);
-    //         toast.error("Something went Wrong /user-token ");
-    //         setIsloading(false);
-    //       });
+      console.log(googleResponse);
+      if (googleResponse.data?.access) {
+        setCookie("uToken", googleResponse.data.access, { path: "/" });
+        toast.success(googleResponse.data.message ? googleResponse.data.message : "Success");
+        navigate("/dashboard/orders");
+      }
 
-    //     // toast.success("Success");
-    //     // window.location.href = "/";
-    //   })
-    //   .catch((error) => {
-    //     console.log(error);
-    //     toast.error("Something went Wrong");
-    //   });
+      // Second API call to get user token
+      // const config = { headers: { "content-type": "application/json" } };
+      // const userTokenResponse = await axios.post(baseUrl + "/user-accounts/user-token", {}, config);
+
+      // if (userTokenResponse.data?.token) {
+      //   setCookie("uToken", userTokenResponse.data.token, { path: "/" });
+      //   toast.success("Success");
+      //   window.location.href = "/";
+      // } else {
+      //   toast.error("Token retrieval failed");
+      // }
+    } catch (error) {
+      console.error(error);
+      toast.error("Something went wrong");
+    } finally {
+      setIsloading(false);
+    }
   }
+
   // Use this function to trigger the
   // "LogIn With Google" process
   // at the end of which the onSuccess function
