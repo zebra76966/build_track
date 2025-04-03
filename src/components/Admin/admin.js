@@ -19,7 +19,7 @@ import Profile from "./profile"; // Import Profile component
 const AdminDashboard = () => {
   const navigate = useNavigate();
   const params = useParams();
-  const tabName = useParams.tab;
+  const tabName = params.tab;
   const [cookies, setCookie, removeCookie] = useCookies(["uToken"]);
   useEffect(() => {
     if (cookies.uToken == undefined) {
@@ -27,17 +27,25 @@ const AdminDashboard = () => {
     }
   }, [cookies]);
 
-  const [active, setActive] = useState(0);
+  const [active, setActive] = useState(() => {
+    return Number(localStorage.getItem("activeTab2")) || 0;
+  });
+
   useEffect(() => {
-    if (tabName == "orders") {
-      setActive(0);
+    let newActive;
+    if (tabName === "orders") {
+      newActive = 0;
+    } else if (tabName === "transactions") {
+      newActive = 1;
+    } else if (tabName === "add-property") {
+      newActive = 2;
+    } else if (tabName === "materials") {
+      newActive = 3;
     }
-    if (tabName == "transactions") {
-      setActive(1);
-    } else if (tabName == "add-property") {
-      setActive(2);
-    } else if (tabName == "materials") {
-      setActive(3);
+
+    if (newActive !== undefined) {
+      setActive(newActive);
+      localStorage.setItem("activeTab2", newActive);
     }
   }, [tabName]);
 

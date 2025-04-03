@@ -52,7 +52,7 @@ const Orders = ({ orderFilter, globalSelectedAddress, date }) => {
     setIsloading(true);
 
     let body = {
-      master_address_id: id ? id : 7,
+      master_address_id: id ? id : null,
       ordered_date: date,
     };
 

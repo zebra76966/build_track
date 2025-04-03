@@ -1,30 +1,30 @@
 [
   {
     "name": "Demo",
-    "icon": "icons/trash-can-solid.svg"
+    "icon": "/icons/trash-can-solid.svg"
   },
   {
     "name": "Fastners",
-    "icon": "icons/screwdriver-solid.svg"
+    "icon": "/icons/screwdriver-solid.svg"
   },
   {
     "name": "Lumber",
-    "icon": "icons/cabin-solid.svg"
+    "icon": "/icons/cabin-solid.svg"
   },
   {
     "name": "Insulation",
-    "icon": "icons/temperature-snow-sharp-regular.svg"
+    "icon": "/icons/temperature-snow-sharp-regular.svg"
   },
   {
     "name": "Roofing",
-    "icon": "icons/person-shelter-sharp-solid.svg"
+    "icon": "/icons/person-shelter-sharp-solid.svg"
   },
   {
     "name": "Windows & Doors",
-    "icon": "icons/window-frame-sharp-solid.svg"
+    "icon": "/icons/window-frame-sharp-solid.svg"
   },
   {
     "name": "Exterior",
-    "icon": "icons/office.svg"
+    "icon": "/icons/office.svg"
   }
 ]

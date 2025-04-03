@@ -54,14 +54,17 @@ const Header = ({ setGlobalMatchingProducts, setGlobalSelectedAddress, materialD
   const GetPropertyMacthingProducts = async (id) => {
     setIsloading(true);
     let body = {
-      master_address_id: id ? id : 7,
+      master_address_id: id ? id : 3,
       ordered_date: materialDate && reformatDate(materialDate),
     };
 
     try {
       const response = await fetch(baseUrl + "/dashboard/property-matching-products/", {
         method: "POST",
-        headers: { "Content-Type": "application/json", Authorization: `Bearer ${accessToken}` },
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${accessToken}`,
+        },
         body: JSON.stringify(body),
       });
       const data = await response.json();

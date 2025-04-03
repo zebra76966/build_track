@@ -119,7 +119,7 @@ const Materials = ({ globalMatchingProducts, seMaterialDate, globalSelectedAddre
 
   const getIcon = (name) => {
     const item = iconsData.find((item) => item.name === name);
-    return item ? item.icon : "logo192.png";
+    return item ? item.icon : "/logo192.png";
   };
 
   const [categories, setCategories] = useState([]);
@@ -254,22 +254,29 @@ const Materials = ({ globalMatchingProducts, seMaterialDate, globalSelectedAddre
     let body = {
       sort_by: sortBy,
       sort_order: sortOrder,
-      master_address_id: globalSelectedAddress,
+      master_address_id: globalSelectedAddress ? globalSelectedAddress : 3,
     };
     try {
-      const response = await axios.post(baseUrl + "/dashboard/property-matching-products/", {
+      const response = await fetch(baseUrl + "/dashboard/property-matching-products/", {
         method: "POST",
-        headers: { "Content-Type": "application/json", Authorization: `Bearer ${accessToken}` },
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${accessToken}`,
+        },
         body: JSON.stringify(body),
       });
 
-      if (response.data && response.data.matching_products) {
-        setGlobalMatchingProducts(response.data.matching_products);
-        // setProducts(response.data.matching_products);
-        toast.success("Products sorted successfully!");
-      } else {
-        toast.error("No products found.");
-      }
+      const data = await response.json();
+
+      setGlobalMatchingProducts(data.matching_products);
+
+      // if (response.data && response.data.matching_products) {
+      //   setGlobalMatchingProducts(response.data.matching_products);
+      //   // setProducts(response.data.matching_products);
+      //   toast.success("Products sorted successfully!");
+      // } else {
+      //   toast.error("No products found.");
+      // }
     } catch (error) {
       console.error("Sorting error:", error.response?.data || error.message);
       toast.error("Failed to fetch sorted products.");
