@@ -132,7 +132,7 @@ const Header = ({ setGlobalMatchingProducts, setGlobalSelectedAddress, materialD
                 data-bs-toggle="dropdown"
                 aria-expanded="false"
               >
-                {masterAddresses.find((ini) => ini.id === selectedAddress)?.formatted_address || "Select Address"}
+                {masterAddresses.find((ini) => ini.id === selectedAddress)?.formatted_address || selectedAddress == null ? "All Active Props." : "Select Address"}
 
                 <span
                   className="position-absolute top-50   translate-middle-y  p-2 bg-black rounded-circle border-primary border-1 border d-flex align-items-center justify-content-center"
@@ -143,7 +143,7 @@ const Header = ({ setGlobalMatchingProducts, setGlobalSelectedAddress, materialD
               </button>
               <ul class="dropdown-menu bg-dark slim-scroll shadow" aria-labelledby="dropdownMenuButton1" style={{ maxHeight: "200px", width: "500px", overflowY: "auto" }}>
                 <li>
-                  <span class="dropdown-item text-warning" onClick={() => setSelectedAddress(-1)} style={{ cursor: "pointer" }}>
+                  <span class="dropdown-item text-warning" onClick={() => setSelectedAddress(null)} style={{ cursor: "pointer" }}>
                     All Active Projects
                   </span>
                 </li>

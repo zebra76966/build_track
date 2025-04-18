@@ -195,6 +195,8 @@ const Orders = ({ orderFilter, globalSelectedAddress, date }) => {
 
   const [confirmDelete, setConfirmDelete] = useState(false);
 
+  // const [pnum, setPNum] = useState(1);
+
   return (
     <div className="w-100 ordersTable bg-dark p-3">
       {console.log(orderFilter)}
@@ -377,6 +379,11 @@ const Orders = ({ orderFilter, globalSelectedAddress, date }) => {
 
       {!isLoading && (
         <>
+          {/* {cardData.length != 0 && (
+                <div className="col-12 text-center">
+                  <Paginate pagecount={(e) => setPNum(e)} total={cardData.length} cactive={pnum} />
+                </div>
+              )} */}
           {filteredOrders && filteredOrders.length > 0 && (
             <table className="table text-light" style={{ filter: activeDetail && active !== "" && "blur(10px)" }}>
               <thead className="thead">

@@ -7,7 +7,7 @@ const FilterCard = ({ filter, setFilter }) => {
   const [udata, setUdata] = useState({ vendors: [], status: [], addresses: [] });
   const [searchTerm, setSearchTerm] = useState("");
 
-  const vendors = ["HD", "Amazon", "Walmart"];
+  const vendors = ["Home Depot", "Amazon", "Walmart"];
   const status = ["Pending", "Being Processed", "Shipped", "Complete", "Delivered", "Cancelled", "Arriving"];
 
   const handleSearch = (e) => {
@@ -80,7 +80,7 @@ const FilterCard = ({ filter, setFilter }) => {
                 checked={udata.vendors.includes(jini.toLowerCase()) ? true : false}
               />
               <label class="form-check-label" for="flexCheckChecked">
-                {jini == "Amazon" ? "Amazon (AMZ)" : jini == "Walmart" ? "Walmart (WM)" : jini == "HD" ? "Home Depot (HD)" : jini}
+                {jini == "Amazon" ? "Amazon (AMZ)" : jini == "Walmart" ? "Walmart (WM)" : jini == "Home Depot" ? "Home Depot (HD)" : jini}
               </label>
             </div>
           ))}
