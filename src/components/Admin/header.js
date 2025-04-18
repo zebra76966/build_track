@@ -81,9 +81,7 @@ const Header = ({ setGlobalMatchingProducts, setGlobalSelectedAddress, materialD
   const [selectedAddress, setSelectedAddress] = useState(null);
 
   useEffect(() => {
-    if (selectedAddress) {
-      GetPropertyMacthingProducts(selectedAddress);
-    }
+    GetPropertyMacthingProducts(selectedAddress);
   }, [selectedAddress, materialDate]);
 
   useEffect(() => {
@@ -93,9 +91,7 @@ const Header = ({ setGlobalMatchingProducts, setGlobalSelectedAddress, materialD
   }, [matchingAddress]);
 
   useEffect(() => {
-    if (selectedAddress) {
-      setGlobalSelectedAddress(selectedAddress);
-    }
+    setGlobalSelectedAddress(selectedAddress);
   }, [selectedAddress]);
 
   return (
@@ -132,7 +128,7 @@ const Header = ({ setGlobalMatchingProducts, setGlobalSelectedAddress, materialD
                 data-bs-toggle="dropdown"
                 aria-expanded="false"
               >
-                {masterAddresses.find((ini) => ini.id === selectedAddress)?.formatted_address || selectedAddress == null ? "All Active Props." : "Select Address"}
+                {selectedAddress == null ? "All Active Props." : masterAddresses.find((ini) => ini.id === selectedAddress)?.formatted_address || "Select Address"}
 
                 <span
                   className="position-absolute top-50   translate-middle-y  p-2 bg-black rounded-circle border-primary border-1 border d-flex align-items-center justify-content-center"

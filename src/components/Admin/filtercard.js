@@ -36,18 +36,29 @@ const FilterCard = ({ filter, setFilter }) => {
     handleFetchMasterAddress();
   }, []);
 
+  const ResetFilters = () => {
+    setUdata({ vendors: [], status: [], addresses: [] });
+    setFilter({ vendors: [], status: [], addresses: [] });
+  };
+
   return (
     <div className="filter-card bg-dark p-3 border-1 border-light border" style={{ borderRadius: "1.5em" }}>
-      <div className="position-relative">
-        <input
-          className="form-control me-2 topSearch bg-black rounded-pill border-0 px-5 py-2 text-light"
-          type="search"
-          placeholder="Search..."
-          aria-label="Search"
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-        />
-        <img src="/icons/search.svg" className="searchIcon" alt="Search" />
+      <div className="d-flex gap-1">
+        <div className="position-relative">
+          <input
+            className="form-control me-2 topSearch bg-black rounded-pill border-0 px-5 py-2 text-light"
+            type="search"
+            placeholder="Search..."
+            aria-label="Search"
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+          />
+          <img src="/icons/search.svg" className="searchIcon" alt="Search" />
+        </div>
+
+        <button className="btn btn-reset btn-dark bg-black rounded-pill d-flex align-items-center " onClick={ResetFilters}>
+          Reset <i className="fa fa-repeat ms-2" />
+        </button>
       </div>
 
       <hr />
