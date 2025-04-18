@@ -88,9 +88,14 @@ const AdminDashboard = () => {
                           <div className="position-relative mb-2">
                             <input
                               className="form-control topSearch bg-black border-1 border-secondary w-100 py-3 px-2 text-light"
-                              type="date"
+                              type="text" // 👈 change from "date" to "text" since we're formatting it manually
                               disabled
-                              value={selectedDate?.toISOString().split("T")[0]}
+                              value={
+                                selectedDate
+                                  ? `${String(selectedDate.getMonth() + 1).padStart(2, "0")}/${String(selectedDate.getDate()).padStart(2, "0")}/${String(selectedDate.getFullYear()).slice(-2)}`
+                                  : ""
+                              }
+                              placeholder="MM/DD/YY"
                               style={{ borderRadius: "1em" }}
                             />
                             <div className="p-3 position-absolute top-0 end-0 h-100" onClick={handleCalendarClick}>
@@ -108,6 +113,7 @@ const AdminDashboard = () => {
                               />
                             )}
                           </div>
+
                           <FilterCard setFilter={setOrderFilter} />
                         </div>
                       </div>

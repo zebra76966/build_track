@@ -243,9 +243,14 @@ const Orders = ({ orderFilter, globalSelectedAddress, date }) => {
               {!fixAddressModal ? (
                 <div className="w-100">
                   <div className="d-flex justify-content-between align-items-center mt-4">
-                    <h5 className="fs-5 fw-light">
-                      Vendor : <span className="fw-bold">{activeDetail.source}</span>
-                    </h5>
+                    <div>
+                      <h5 className="fs-5 fw-light mb-1">
+                        Vendor : <span className="fw-bold">{activeDetail.source}</span>
+                      </h5>
+                      <a href={activeDetail.product_link} target="_blank" className="btn btn-outline-info rounded-3">
+                        Go to Product Page <i className="fa fa-link ms-1"></i>{" "}
+                      </a>
+                    </div>
 
                     {activeDetail.order_status && (
                       <div className="text-end">
@@ -377,17 +382,17 @@ const Orders = ({ orderFilter, globalSelectedAddress, date }) => {
               <thead className="thead">
                 <tr>
                   <th scope="col">#Id</th>
-                  <th scope="col">Source</th>
+                  <th scope="col">Vendor</th>
 
                   <th scope="col" onClick={() => handleSort("ordered_date")} style={{ cursor: "pointer", textDecoration: "none", userSelect: "none" }}>
                     Ordered Date {sortConfig.key === "ordered_date" ? (sortConfig.direction === "asc" ? "↑" : "↓") : ""}
                   </th>
 
                   <th scope="col">Status</th>
-                  <th scope="col">M. Address</th>
+                  <th scope="col">Property</th>
 
                   <th scope="col" onClick={() => handleSort("grand_total_amount")} style={{ cursor: "pointer", textDecoration: "none", userSelect: "none" }}>
-                    Price {sortConfig.key === "grand_total_amount" ? (sortConfig.direction === "asc" ? "↑" : "↓") : ""}
+                    Cost {sortConfig.key === "grand_total_amount" ? (sortConfig.direction === "asc" ? "↑" : "↓") : ""}
                   </th>
                 </tr>
               </thead>
@@ -403,7 +408,7 @@ const Orders = ({ orderFilter, globalSelectedAddress, date }) => {
                   .map((ini, i) => (
                     <tr key={i} onClick={() => setActive(ini.order_id)} style={{ cursor: "pointer" }}>
                       <th scope="row">{ini.order_id}</th>
-                      <td>{ini.source}</td>
+                      <td>{ini.source.toLowerCase() == "amazon" ? "AMZ" : ini.source.toLowerCase() == "home depot" ? "HD" : ini.source.toLowerCase() == "walmart" ? "WM" : ini.source}</td>
 
                       <td>{ini.ordered_date}</td>
                       <td

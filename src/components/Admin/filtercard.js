@@ -80,7 +80,7 @@ const FilterCard = ({ filter, setFilter }) => {
                 checked={udata.vendors.includes(jini.toLowerCase()) ? true : false}
               />
               <label class="form-check-label" for="flexCheckChecked">
-                {jini == "Amazon" ? "AMZ" : jini == "Walmart" ? "WM" : jini}
+                {jini == "Amazon" ? "Amazon (AMZ)" : jini == "Walmart" ? "Walmart (WM)" : jini == "HD" ? "Home Depot (HD)" : jini}
               </label>
             </div>
           ))}

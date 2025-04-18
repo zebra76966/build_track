@@ -142,6 +142,12 @@ const Header = ({ setGlobalMatchingProducts, setGlobalSelectedAddress, materialD
                 </span>
               </button>
               <ul class="dropdown-menu bg-dark slim-scroll shadow" aria-labelledby="dropdownMenuButton1" style={{ maxHeight: "200px", width: "500px", overflowY: "auto" }}>
+                <li>
+                  <span class="dropdown-item text-warning" onClick={() => setSelectedAddress(-1)} style={{ cursor: "pointer" }}>
+                    All Active Projects
+                  </span>
+                </li>
+
                 {masterAddresses.map((ini) => (
                   <li key={ini.id}>
                     <span class="dropdown-item text-light" onClick={() => setSelectedAddress(ini.id)} style={{ cursor: "pointer" }}>
