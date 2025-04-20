@@ -68,9 +68,19 @@ const Header = ({ setGlobalMatchingProducts, setGlobalSelectedAddress, materialD
         body: JSON.stringify(body),
       });
       const data = await response.json();
+
+      if (data?.code === "token_not_valid" || data?.code === "token_expired") {
+        removeCookie("uToken");
+        toast.error("Session expired, please login again.");
+
+        window.location.href = "/";
+      }
+
       console.log("address", data);
+
       setMatchingAddress(data.matching_products);
     } catch (error) {
+      console.log("error", error);
       toast.error("Something went wrong while fetching orders.");
       setMatchingAddress([]);
     } finally {
