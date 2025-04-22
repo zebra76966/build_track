@@ -3,7 +3,7 @@ import { baseUrl } from "../config";
 import toast from "react-hot-toast";
 import Skeleton from "../skeleton";
 import { AuthContext } from "./auth/authContext";
-
+import Paginate from "./paginate";
 const Orders = ({ orderFilter, globalSelectedAddress, date }) => {
   const { accessToken, clearToken, saveToken } = useContext(AuthContext);
   const [orders, setOrders] = useState([]);
@@ -195,7 +195,7 @@ const Orders = ({ orderFilter, globalSelectedAddress, date }) => {
 
   const [confirmDelete, setConfirmDelete] = useState(false);
 
-  // const [pnum, setPNum] = useState(1);
+  const [pnum, setPNum] = useState(1);
 
   return (
     <div className="w-100 ordersTable bg-dark p-3">
@@ -379,11 +379,29 @@ const Orders = ({ orderFilter, globalSelectedAddress, date }) => {
 
       {!isLoading && (
         <>
-          {/* {cardData.length != 0 && (
-                <div className="col-12 text-center">
-                  <Paginate pagecount={(e) => setPNum(e)} total={cardData.length} cactive={pnum} />
-                </div>
-              )} */}
+          {filteredOrders.filter((jini) => {
+            const matchVendors = filters.vendors.length === 0 || filters.vendors.includes(jini.source.toLowerCase());
+            const matchStatus = filters.status.length === 0 || filters.status.includes(jini.order_status && jini.order_status.toLowerCase());
+            const matchAddresses = filters.addresses.length === 0 || filters.addresses.includes(jini.master_address);
+
+            return matchVendors && matchStatus && matchAddresses;
+          }).length != 0 && (
+            <div className="col-12 text-center position-sticky top-0 " style={{ zIndex: "1000" }}>
+              <Paginate
+                pagecount={(e) => setPNum(e)}
+                total={
+                  filteredOrders.filter((jini) => {
+                    const matchVendors = filters.vendors.length === 0 || filters.vendors.includes(jini.source.toLowerCase());
+                    const matchStatus = filters.status.length === 0 || filters.status.includes(jini.order_status && jini.order_status.toLowerCase());
+                    const matchAddresses = filters.addresses.length === 0 || filters.addresses.includes(jini.master_address);
+
+                    return matchVendors && matchStatus && matchAddresses;
+                  }).length
+                }
+                cactive={pnum}
+              />
+            </div>
+          )}
           {filteredOrders && filteredOrders.length > 0 && (
             <table className="table text-light" style={{ filter: activeDetail && active !== "" && "blur(10px)" }}>
               <thead className="thead">
@@ -412,6 +430,7 @@ const Orders = ({ orderFilter, globalSelectedAddress, date }) => {
 
                     return matchVendors && matchStatus && matchAddresses;
                   })
+                  .slice(pnum * 50 - 50, pnum * 50)
                   .map((ini, i) => (
                     <tr key={i} onClick={() => setActive(ini.order_id)} style={{ cursor: "pointer" }}>
                       <th scope="row">{ini.order_id}</th>

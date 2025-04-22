@@ -1,6 +1,6 @@
 import React from "react";
 import { useState, useEffect } from "react";
-import "./master.css";
+
 const Paginate = (props) => {
   const [totalNumbers, setTotalNumber] = useState(10);
 
@@ -36,25 +36,25 @@ const Paginate = (props) => {
   }, []); // Empty dependency array means this effect will run once on mount
 
   return (
-    <nav aria-label="Page navigation example">
+    <nav aria-label="Page navigation example ">
       {console.log(totalNumbers)}
-      <ul className={`pagination ${totalNumbers > 2 ? " pagination-lg" : "pagination-sm"} justify-content-center`}>
-        <li className={`page-item ${props.cactive === 1 ? "disabled " : ""}`}>
+      <ul className={`pagination ${totalNumbers > 2 ? " pagination-lg" : "pagination-sm"} justify-content-center `}>
+        <li className={`page-item shadow-lg ${props.cactive === 1 ? "disabled " : ""}`}>
           <span
-            className={`page-link ${props.cactive === 1 ? "text-secondary bg-muted " : "text-danger"}`}
+            className={`page-link ${props.cactive === 1 ? "text-secondary bg-muted " : "text-light"}`}
             onClick={() => props.pagecount(props.cactive - 1)}
             aria-disabled={`${props.cactive === 1 ? "true" : ""}`}
           >
-            Vorige
+            Prev
           </span>
         </li>
 
         {totalNumbers >= 8 && props.total <= 50 ? (
           <>
-            {[...Array(Math.ceil(props.total / 9))].map((ini, i) => {
+            {[...Array(Math.ceil(props.total / 50))].map((ini, i) => {
               return (
-                <li key={i} className={`page-item ${props.cactive === i + 1 ? "active" : ""}`}>
-                  <a href="#results" className="page-link text-danger" onClick={() => props.pagecount(i + 1)}>
+                <li key={i} className={`page-item shadow-lg ${props.cactive === i + 1 ? "active" : ""}`}>
+                  <a href="#results" className="page-link text-light" onClick={() => props.pagecount(i + 1)}>
                     {i + 1}
                   </a>
                 </li>
@@ -64,25 +64,25 @@ const Paginate = (props) => {
         ) : (
           <>
             {props.cactive > 2 && (
-              <li key={1} className={`page-item ${props.cactive === 1 ? "active" : ""}`}>
-                <a href="#results" className="page-link text-danger" onClick={() => props.pagecount(1)}>
+              <li key={1} className={`page-item shadow-lg ${props.cactive === 1 ? "active" : ""}`}>
+                <a href="#results" className="page-link text-light" onClick={() => props.pagecount(1)}>
                   {1}
                 </a>
               </li>
             )}
             {props.cactive > 2 && (
-              <li className={`page-item`}>
-                <a href="#results" className="page-link text-danger">
+              <li className={`page-item shadow-lg`}>
+                <a href="#results" className="page-link text-light">
                   ...
                 </a>
               </li>
             )}
 
-            {[...Array(Math.ceil(props.total / 9))].slice(Math.max(0, props.cactive - 2), Math.min(Math.ceil(props.total / 9), props.cactive + totalNumbers)).map((_, i) => {
+            {[...Array(Math.ceil(props.total / 50))].slice(Math.max(0, props.cactive - 2), Math.min(Math.ceil(props.total / 50), props.cactive + totalNumbers)).map((_, i) => {
               const pageNumber =
                 i === totalNumbers + 1 && props.cactive !== 1
-                  ? Math.ceil(props.total / 9)
-                  : Math.max(1, Math.min(Math.ceil(props.total / 9), props.cactive !== 1 ? props.cactive - 2 + i + 1 : props.cactive - 1 + i + 1));
+                  ? Math.ceil(props.total / 50)
+                  : Math.max(1, Math.min(Math.ceil(props.total / 50), props.cactive !== 1 ? props.cactive - 2 + i + 1 : props.cactive - 1 + i + 1));
               let isEllipsis = false;
               if (props.cactive == 1) {
                 isEllipsis = i === totalNumbers;
@@ -91,22 +91,22 @@ const Paginate = (props) => {
               }
               return (
                 <>
-                  <li key={i} className={`page-item ${props.cactive === pageNumber ? "active" : ""}`}>
-                    <a href="#results" className="page-link text-danger" onClick={() => props.pagecount(pageNumber)}>
+                  <li key={i} className={`page-item shadow-lg ${props.cactive === pageNumber ? "active" : ""}`}>
+                    <a href="#results" className="page-link text-light" onClick={() => props.pagecount(pageNumber)}>
                       {isEllipsis ? "..." : pageNumber}
                     </a>
                   </li>
                   {isEllipsis && props.cactive !== 1 && (
-                    <li key={i} className={`page-item ${props.cactive === pageNumber ? "active" : ""}`}>
-                      <a href="#results" className="page-link text-danger" onClick={() => props.pagecount(pageNumber)}>
+                    <li key={i} className={`page-item shadow-lg ${props.cactive === pageNumber ? "active" : ""}`}>
+                      <a href="#results" className="page-link text-light" onClick={() => props.pagecount(pageNumber)}>
                         {pageNumber}
                       </a>
                     </li>
                   )}
                   {isEllipsis && props.cactive == 1 && (
-                    <li key={i} className={`page-item ${props.cactive === Math.ceil(props.total / 9) ? "active" : ""}`}>
-                      <a href="#results" className="page-link text-danger" onClick={() => props.pagecount(Math.ceil(props.total / 9))}>
-                        {Math.ceil(props.total / 9)}
+                    <li key={i} className={`page-item shadow-lg ${props.cactive === Math.ceil(props.total / 50) ? "active" : ""}`}>
+                      <a href="#results" className="page-link text-light" onClick={() => props.pagecount(Math.ceil(props.total / 50))}>
+                        {Math.ceil(props.total / 50)}
                       </a>
                     </li>
                   )}
@@ -115,13 +115,13 @@ const Paginate = (props) => {
             })}
           </>
         )}
-        <li className={`page-item ${props.cactive === Math.ceil(props.total / 9) ? "disabled" : ""}`}>
+        <li className={`page-item shadow-lg ${props.cactive === Math.ceil(props.total / 50) ? "disabled" : ""}`}>
           <span
-            className={`page-link ${props.cactive === Math.ceil(props.total / 9) ? "text-secondary bg-muted " : "text-danger"}`}
+            className={`page-link ${props.cactive === Math.ceil(props.total / 50) ? "text-secondary bg-muted " : "text-light"}`}
             onClick={() => props.pagecount(props.cactive + 1)}
-            aria-disabled={`${props.cactive === Math.ceil(props.total / 9) ? "true" : ""}`}
+            aria-disabled={`${props.cactive === Math.ceil(props.total / 50) ? "true" : ""}`}
           >
-            Volgende
+            Next
           </span>
         </li>
       </ul>
