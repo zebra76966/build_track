@@ -6,6 +6,7 @@ import { AuthContext } from "./auth/authContext";
 import Paginate from "./paginate";
 import { useCookies } from "react-cookie";
 const Orders = ({ orderFilter, globalSelectedAddress, date }) => {
+  document.title = "Orders | Admin Dashboard";
   const { accessToken, clearToken, saveToken } = useContext(AuthContext);
   const [cookies, setCookie, removeCookie] = useCookies(["uToken"]);
   const [orders, setOrders] = useState([]);

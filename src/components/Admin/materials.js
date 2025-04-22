@@ -10,6 +10,7 @@ import { AuthContext } from "./auth/authContext";
 import Paginate from "./paginate";
 
 const Materials = ({ globalMatchingProducts, seMaterialDate, globalSelectedAddress, setGlobalMatchingProducts }) => {
+  document.title = "Materials";
   const { accessToken, clearToken, saveToken } = useContext(AuthContext);
   const [transactions, setTransactions] = useState([]);
   const [filteredTransactions, setFilteredTransactions] = useState([]);
