@@ -98,9 +98,11 @@ const AdminDashboard = () => {
                               placeholder="MM/DD/YY"
                               style={{ borderRadius: "1em" }}
                             />
-                            <div className="p-3 position-absolute top-0 end-0 h-100" onClick={handleCalendarClick}>
-                              <img src="/icons/calendar-range-solid.svg" height={"20px"} />
+                            <div className="p-3 position-absolute top-0 end-0  d-flex gap-2 align-items-center">
+                              <img src="/icons/calendar-range-solid.svg" style={{ cursor: "pointer" }} height={"20px"} onClick={handleCalendarClick} />
+                              <i className="fa fa-repeat fs-4 text-light border-start border-light border-1 ps-2" onClick={() => setSelectedDate(null)} style={{ cursor: "pointer" }} />
                             </div>
+
                             {calendarVisible && (
                               <DatePicker
                                 selected={selectedDate}
@@ -110,6 +112,9 @@ const AdminDashboard = () => {
                                 }}
                                 inline
                                 calendarClassName="custom-calendar"
+                                showMonthDropdown
+                                showYearDropdown
+                                dropdownMode="select"
                               />
                             )}
                           </div>
