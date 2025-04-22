@@ -53,9 +53,10 @@ const Header = ({ setGlobalMatchingProducts, setGlobalSelectedAddress, materialD
 
   const GetPropertyMacthingProducts = async (id) => {
     setIsloading(true);
-    let body = {
-      master_address_id: id ? id : null,
-      ordered_date: materialDate && reformatDate(materialDate),
+
+    const body = {
+      master_address_id: id || null,
+      ordered_date: materialDate ? reformatDate(materialDate) : null,
     };
 
     try {
@@ -67,45 +68,39 @@ const Header = ({ setGlobalMatchingProducts, setGlobalSelectedAddress, materialD
         },
         body: JSON.stringify(body),
       });
+
       const data = await response.json();
 
-      if (data?.code === "token_not_valid" || data?.code === "token_expired" || data?.code === "user_not_found" || data?.code === "user_inactive" || data?.code === "password_changed") {
-        clearToken();
-        removeCookie("uToken");
-        toast.error("Session expired, please login again.");
-
-        window.location.href = "/";
+      if (["token_not_valid", "token_expired", "user_not_found", "user_inactive", "password_changed"].includes(data?.code)) {
+        handleSessionExpiry();
+        return;
       }
 
       console.log("address", data);
-
-      setMatchingAddress(data.matching_products);
+      setMatchingAddress(data.matching_products || []);
     } catch (error) {
-      console.log("error", error);
-      if (
-        error.data?.code === "token_not_valid" ||
-        error.data?.code === "token_expired" ||
-        error.data?.code === "user_not_found" ||
-        error.data?.code === "user_inactive" ||
-        error.data?.code === "password_changed"
-      ) {
-        clearToken();
-        removeCookie("uToken");
-        toast.error("Session expired, please login again.");
+      console.error("error", error);
 
-        window.location.href = "/";
+      // Handle fetch/network error
+      if (error?.data?.code && ["token_not_valid", "token_expired", "user_not_found", "user_inactive", "password_changed"].includes(error.data.code)) {
+        handleSessionExpiry();
+        return;
       }
-      clearToken();
-      removeCookie("uToken");
-      toast.error("Session expired, please login again.");
-      window.location.href = "/";
 
+      toast.error("An error occurred while fetching matching products.");
       setMatchingAddress([]);
     } finally {
       setIsloading(false);
     }
   };
 
+  // Helper to reduce duplication
+  const handleSessionExpiry = () => {
+    clearToken();
+    removeCookie("uToken");
+    toast.error("Session expired, please login again.");
+    window.location.href = "/";
+  };
   const [selectedAddress, setSelectedAddress] = useState(null);
 
   useEffect(() => {
@@ -203,6 +198,7 @@ const Header = ({ setGlobalMatchingProducts, setGlobalSelectedAddress, materialD
                           className="btn bg-info text-light mx-2"
                           onClick={() => {
                             removeCookie("uToken");
+                            clearToken();
                             toast.dismiss(t.id);
                             clearToken();
                             window.location.href = "/";
