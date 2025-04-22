@@ -88,7 +88,7 @@ const AdminDashboard = () => {
                           <div className="position-relative mb-2">
                             <input
                               className="form-control topSearch bg-black border-1 border-secondary w-100 py-3 px-2 text-light"
-                              type="text" // 👈 change from "date" to "text" since we're formatting it manually
+                              type="text"
                               disabled
                               value={
                                 selectedDate

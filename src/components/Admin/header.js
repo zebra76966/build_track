@@ -54,7 +54,7 @@ const Header = ({ setGlobalMatchingProducts, setGlobalSelectedAddress, materialD
   const GetPropertyMacthingProducts = async (id) => {
     setIsloading(true);
     let body = {
-      master_address_id: id ? id : 3,
+      master_address_id: id ? id : null,
       ordered_date: materialDate && reformatDate(materialDate),
     };
 
@@ -69,7 +69,7 @@ const Header = ({ setGlobalMatchingProducts, setGlobalSelectedAddress, materialD
       });
       const data = await response.json();
 
-      if (data?.code === "token_not_valid" || data?.code === "token_expired") {
+      if (data?.code === "token_not_valid" || data?.code === "token_expired" || data?.code === "user_not_found" || data?.code === "user_inactive" || data?.code === "password_changed") {
         removeCookie("uToken");
         toast.error("Session expired, please login again.");
 
@@ -81,6 +81,18 @@ const Header = ({ setGlobalMatchingProducts, setGlobalSelectedAddress, materialD
       setMatchingAddress(data.matching_products);
     } catch (error) {
       console.log("error", error);
+      if (
+        error.data?.code === "token_not_valid" ||
+        error.data?.code === "token_expired" ||
+        error.data?.code === "user_not_found" ||
+        error.data?.code === "user_inactive" ||
+        error.data?.code === "password_changed"
+      ) {
+        removeCookie("uToken");
+        toast.error("Session expired, please login again.");
+
+        window.location.href = "/";
+      }
       toast.error("Something went wrong while fetching orders.");
       setMatchingAddress([]);
     } finally {

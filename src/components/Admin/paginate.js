@@ -51,7 +51,7 @@ const Paginate = (props) => {
 
         {totalNumbers >= 8 && props.total <= 50 ? (
           <>
-            {[...Array(Math.ceil(props.total / 50))].map((ini, i) => {
+            {[...Array(Math.ceil(props.total / props.perEnteries))].map((ini, i) => {
               return (
                 <li key={i} className={`page-item shadow-lg ${props.cactive === i + 1 ? "active" : ""}`}>
                   <a href="#results" className="page-link text-light" onClick={() => props.pagecount(i + 1)}>
@@ -78,48 +78,50 @@ const Paginate = (props) => {
               </li>
             )}
 
-            {[...Array(Math.ceil(props.total / 50))].slice(Math.max(0, props.cactive - 2), Math.min(Math.ceil(props.total / 50), props.cactive + totalNumbers)).map((_, i) => {
-              const pageNumber =
-                i === totalNumbers + 1 && props.cactive !== 1
-                  ? Math.ceil(props.total / 50)
-                  : Math.max(1, Math.min(Math.ceil(props.total / 50), props.cactive !== 1 ? props.cactive - 2 + i + 1 : props.cactive - 1 + i + 1));
-              let isEllipsis = false;
-              if (props.cactive == 1) {
-                isEllipsis = i === totalNumbers;
-              } else {
-                isEllipsis = i === totalNumbers + 1;
-              }
-              return (
-                <>
-                  <li key={i} className={`page-item shadow-lg ${props.cactive === pageNumber ? "active" : ""}`}>
-                    <a href="#results" className="page-link text-light" onClick={() => props.pagecount(pageNumber)}>
-                      {isEllipsis ? "..." : pageNumber}
-                    </a>
-                  </li>
-                  {isEllipsis && props.cactive !== 1 && (
+            {[...Array(Math.ceil(props.total / props.perEnteries))]
+              .slice(Math.max(0, props.cactive - 2), Math.min(Math.ceil(props.total / props.perEnteries), props.cactive + totalNumbers))
+              .map((_, i) => {
+                const pageNumber =
+                  i === totalNumbers + 1 && props.cactive !== 1
+                    ? Math.ceil(props.total / props.perEnteries)
+                    : Math.max(1, Math.min(Math.ceil(props.total / props.perEnteries), props.cactive !== 1 ? props.cactive - 2 + i + 1 : props.cactive - 1 + i + 1));
+                let isEllipsis = false;
+                if (props.cactive == 1) {
+                  isEllipsis = i === totalNumbers;
+                } else {
+                  isEllipsis = i === totalNumbers + 1;
+                }
+                return (
+                  <>
                     <li key={i} className={`page-item shadow-lg ${props.cactive === pageNumber ? "active" : ""}`}>
                       <a href="#results" className="page-link text-light" onClick={() => props.pagecount(pageNumber)}>
-                        {pageNumber}
+                        {isEllipsis ? "..." : pageNumber}
                       </a>
                     </li>
-                  )}
-                  {isEllipsis && props.cactive == 1 && (
-                    <li key={i} className={`page-item shadow-lg ${props.cactive === Math.ceil(props.total / 50) ? "active" : ""}`}>
-                      <a href="#results" className="page-link text-light" onClick={() => props.pagecount(Math.ceil(props.total / 50))}>
-                        {Math.ceil(props.total / 50)}
-                      </a>
-                    </li>
-                  )}
-                </>
-              );
-            })}
+                    {isEllipsis && props.cactive !== 1 && (
+                      <li key={i} className={`page-item shadow-lg ${props.cactive === pageNumber ? "active" : ""}`}>
+                        <a href="#results" className="page-link text-light" onClick={() => props.pagecount(pageNumber)}>
+                          {pageNumber}
+                        </a>
+                      </li>
+                    )}
+                    {isEllipsis && props.cactive == 1 && (
+                      <li key={i} className={`page-item shadow-lg ${props.cactive === Math.ceil(props.total / props.perEnteries) ? "active" : ""}`}>
+                        <a href="#results" className="page-link text-light" onClick={() => props.pagecount(Math.ceil(props.total / props.perEnteries))}>
+                          {Math.ceil(props.total / props.perEnteries)}
+                        </a>
+                      </li>
+                    )}
+                  </>
+                );
+              })}
           </>
         )}
-        <li className={`page-item shadow-lg ${props.cactive === Math.ceil(props.total / 50) ? "disabled" : ""}`}>
+        <li className={`page-item shadow-lg ${props.cactive === Math.ceil(props.total / props.perEnteries) ? "disabled" : ""}`}>
           <span
-            className={`page-link ${props.cactive === Math.ceil(props.total / 50) ? "text-secondary bg-muted " : "text-light"}`}
+            className={`page-link ${props.cactive === Math.ceil(props.total / props.perEnteries) ? "text-secondary bg-muted " : "text-light"}`}
             onClick={() => props.pagecount(props.cactive + 1)}
-            aria-disabled={`${props.cactive === Math.ceil(props.total / 50) ? "true" : ""}`}
+            aria-disabled={`${props.cactive === Math.ceil(props.total / props.perEnteries) ? "true" : ""}`}
           >
             Next
           </span>

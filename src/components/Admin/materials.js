@@ -7,6 +7,7 @@ import iconsData from "./materialscat.json";
 import DatePicker from "react-datepicker"; // Import react-datepicker
 import "react-datepicker/dist/react-datepicker.css"; // Import the styles
 import { AuthContext } from "./auth/authContext";
+import Paginate from "./paginate";
 
 const Materials = ({ globalMatchingProducts, seMaterialDate, globalSelectedAddress, setGlobalMatchingProducts }) => {
   const { accessToken, clearToken, saveToken } = useContext(AuthContext);
@@ -219,9 +220,7 @@ const Materials = ({ globalMatchingProducts, seMaterialDate, globalSelectedAddre
   // Date Filtering===========>
 
   useEffect(() => {
-    if (selectedDate) {
-      seMaterialDate(selectedDate);
-    }
+    seMaterialDate(selectedDate);
   }, [selectedDate]);
 
   const [viewAll, setViewAll] = useState(false);
@@ -304,6 +303,8 @@ const Materials = ({ globalMatchingProducts, seMaterialDate, globalSelectedAddre
         )
       : globalMatchingProducts;
 
+  const [pnum, setPNum] = useState(1);
+
   return (
     <>
       <div className="w-100 p-3">
@@ -334,15 +335,18 @@ const Materials = ({ globalMatchingProducts, seMaterialDate, globalSelectedAddre
               <div className="position-absolute  mb-2  start-0" style={{ zIndex: "9999", width: "200px", transform: calendarVisible ? "translateY(-10%)" : "translateY(-50%)" }}>
                 <input
                   className="form-control topSearch bg-black  border-1 border-secondary w-100 py-3 px-2  text-light"
-                  type="date"
+                  type="text"
                   disabled
-                  value={selectedDate && selectedDate.toISOString().split("T")[0]}
-                  // onChange={handleSearch}
+                  value={
+                    selectedDate ? `${String(selectedDate.getMonth() + 1).padStart(2, "0")}/${String(selectedDate.getDate()).padStart(2, "0")}/${String(selectedDate.getFullYear()).slice(-2)}` : ""
+                  }
+                  placeholder="MM/DD/YY"
                   style={{ borderRadius: "1em", transition: "width 0.3s ease-in" }}
                 />
 
-                <div className="p-3 position-absolute top-0 end-0 h-100" onClick={handleCalendarClick}>
-                  <img src="/icons/calendar-range-solid.svg" height={"20px"} />
+                <div className="p-3 position-absolute top-0 end-0  d-flex gap-2 align-items-center">
+                  <img src="/icons/calendar-range-solid.svg" style={{ cursor: "pointer" }} height={"20px"} onClick={handleCalendarClick} />
+                  <i className="fa fa-repeat fs-4 text-light border-start border-light border-1 ps-2" onClick={() => setSelectedDate(null)} style={{ cursor: "pointer" }} />
                 </div>
                 {/* Conditionally render the custom date picker */}
                 {calendarVisible && (
@@ -354,6 +358,9 @@ const Materials = ({ globalMatchingProducts, seMaterialDate, globalSelectedAddre
                     }}
                     inline
                     calendarClassName="custom-calendar" // Optional styling class for the calendar
+                    showMonthDropdown
+                    showYearDropdown
+                    dropdownMode="select"
                   />
                 )}
               </div>
@@ -596,7 +603,13 @@ const Materials = ({ globalMatchingProducts, seMaterialDate, globalSelectedAddre
           </div>
         </div>
 
-        {filteredProducts.map((ini, index) => (
+        {filteredProducts.length != 0 && (
+          <div className="col-12 text-center position-sticky top-0 " style={{ zIndex: "1000" }}>
+            <Paginate pagecount={(e) => setPNum(e)} total={filteredProducts.length} cactive={pnum} perEnteries={30} />
+          </div>
+        )}
+
+        {filteredProducts.slice(pnum * 30 - 30, pnum * 30).map((ini, index) => (
           <div className="row border-1 border border-secondary align-items-stretch p-1 px-0 mb-1" style={{ borderRadius: "1em", height: isFull ? "100%" : "85px", cursor: "pointer" }} key={index}>
             {/* <div className="col-1 h-100 position-relative  d-flex px-1 py-0">
               <img src={`${getProductImageUrl(ini.link)}`} className="w-100 " style={{ objectFit: "cover", height: isFull ? "85px" : "100%", borderRadius: "0.8em 0 0 0.8em" }} />

@@ -398,6 +398,7 @@ const Orders = ({ orderFilter, globalSelectedAddress, date }) => {
                     return matchVendors && matchStatus && matchAddresses;
                   }).length
                 }
+                perEnteries={50}
                 cactive={pnum}
               />
             </div>
