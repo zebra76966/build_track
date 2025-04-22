@@ -4,8 +4,10 @@ import toast from "react-hot-toast";
 import Skeleton from "../skeleton";
 import { AuthContext } from "./auth/authContext";
 import Paginate from "./paginate";
+import { useCookies } from "react-cookie";
 const Orders = ({ orderFilter, globalSelectedAddress, date }) => {
   const { accessToken, clearToken, saveToken } = useContext(AuthContext);
+  const [cookies, setCookie, removeCookie] = useCookies(["uToken"]);
   const [orders, setOrders] = useState([]);
   const [filteredOrders, setFilteredOrders] = useState([]);
   const [isLoading, setIsloading] = useState(false);
@@ -67,9 +69,27 @@ const Orders = ({ orderFilter, globalSelectedAddress, date }) => {
         body: JSON.stringify(body),
       });
       const data = await response.json();
+      if (data?.code === "token_not_valid" || data?.code === "token_expired" || data?.code === "user_not_found" || data?.code === "user_inactive" || data?.code === "password_changed") {
+        removeCookie("uToken");
+        toast.error("Session expired, please login again.");
+
+        window.location.href = "/";
+      }
       setOrders(data);
       setFilteredOrders(data); // Set filtered orders to match the original data
     } catch (error) {
+      if (
+        error.data?.code === "token_not_valid" ||
+        error.data?.code === "token_expired" ||
+        error.data?.code === "user_not_found" ||
+        error.data?.code === "user_inactive" ||
+        error.data?.code === "password_changed"
+      ) {
+        removeCookie("uToken");
+        toast.error("Session expired, please login again.");
+
+        window.location.href = "/";
+      }
       toast.error("Something went wrong while fetching orders.");
       setOrders([]);
       setFilteredOrders([]);
