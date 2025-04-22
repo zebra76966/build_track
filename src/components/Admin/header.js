@@ -70,6 +70,7 @@ const Header = ({ setGlobalMatchingProducts, setGlobalSelectedAddress, materialD
       const data = await response.json();
 
       if (data?.code === "token_not_valid" || data?.code === "token_expired" || data?.code === "user_not_found" || data?.code === "user_inactive" || data?.code === "password_changed") {
+        clearToken();
         removeCookie("uToken");
         toast.error("Session expired, please login again.");
 
@@ -88,6 +89,7 @@ const Header = ({ setGlobalMatchingProducts, setGlobalSelectedAddress, materialD
         error.data?.code === "user_inactive" ||
         error.data?.code === "password_changed"
       ) {
+        clearToken();
         removeCookie("uToken");
         toast.error("Session expired, please login again.");
 
