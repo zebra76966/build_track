@@ -95,9 +95,9 @@ const Orders = ({ orderFilter, globalSelectedAddress, date }) => {
       }
       clearToken();
       removeCookie("uToken");
+      window.location.href = "/";
       toast.error("Session expired, please login again.");
 
-      toast.error("Something went wrong while fetching orders.");
       setOrders([]);
       setFilteredOrders([]);
     } finally {

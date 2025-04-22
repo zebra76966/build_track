@@ -98,8 +98,8 @@ const Header = ({ setGlobalMatchingProducts, setGlobalSelectedAddress, materialD
       clearToken();
       removeCookie("uToken");
       toast.error("Session expired, please login again.");
+      window.location.href = "/";
 
-      toast.error("Something went wrong while fetching orders.");
       setMatchingAddress([]);
     } finally {
       setIsloading(false);
