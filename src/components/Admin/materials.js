@@ -330,7 +330,7 @@ const Materials = ({ globalMatchingProducts, seMaterialDate, globalSelectedAddre
 
         <div className="d-flex align-items-center gap-5 mt-5 mb-4">
           <div className="d-flex align-items-center gap-3  ">
-            <p className="lead text-secondary mb-0"> Appliances</p>
+            <p className=" text-secondary mb-0"> Appliances</p>
 
             <div className="position-relative mb-2">
               <div className="position-absolute  mb-2  start-0" style={{ zIndex: "9999", width: "200px", transform: calendarVisible ? "translateY(-10%)" : "translateY(-50%)" }}>
@@ -410,7 +410,7 @@ const Materials = ({ globalMatchingProducts, seMaterialDate, globalSelectedAddre
           {categories.slice(0, viewAll ? categories.length - 1 : 8)?.map((category, index) => (
             <button
               key={index}
-              className={`btn rounded-pill fs-5 me-1 mb-2 ${selectedCategories.includes(category) ? "bg-primary text-dark" : "btn-dark text-secondary"}`}
+              className={`btn rounded-pill fs-6 me-1 mb-2 ${selectedCategories.includes(category) ? "bg-primary text-dark" : "btn-dark text-secondary"}`}
               onClick={() => handleCategoryClick(category)}
             >
               <div className="d-flex align-items-center gap-3">
@@ -420,7 +420,7 @@ const Materials = ({ globalMatchingProducts, seMaterialDate, globalSelectedAddre
             </button>
           ))}
 
-          <button className={`btn rounded-pill fs-5 me-1 mb-2 bg-black border-primary border-1 border  text-primary `} onClick={() => setViewAll(!viewAll)}>
+          <button className={`btn rounded-pill fs-6 me-1 mb-2 bg-black border-primary border-1 border  text-primary `} onClick={() => setViewAll(!viewAll)}>
             <div className="d-flex align-items-center gap-3">
               <span>{viewAll ? "Show Less" : "Show More"}</span>
             </div>
@@ -606,11 +606,11 @@ const Materials = ({ globalMatchingProducts, seMaterialDate, globalSelectedAddre
 
         {filteredProducts.length != 0 && (
           <div className="col-12 text-center position-sticky top-0 " style={{ zIndex: "1000" }}>
-            <Paginate pagecount={(e) => setPNum(e)} total={filteredProducts.length} cactive={pnum} perEnteries={30} />
+            <Paginate pagecount={(e) => setPNum(e)} total={filteredProducts.length} cactive={pnum} perEnteries={50} />
           </div>
         )}
 
-        {filteredProducts.slice(pnum * 30 - 30, pnum * 30).map((ini, index) => (
+        {filteredProducts.slice(pnum * 50 - 50, pnum * 50).map((ini, index) => (
           <div className="row border-1 border border-secondary align-items-stretch p-1 px-0 mb-1" style={{ borderRadius: "1em", height: isFull ? "100%" : "85px", cursor: "pointer" }} key={index}>
             {/* <div className="col-1 h-100 position-relative  d-flex px-1 py-0">
               <img src={`${getProductImageUrl(ini.link)}`} className="w-100 " style={{ objectFit: "cover", height: isFull ? "85px" : "100%", borderRadius: "0.8em 0 0 0.8em" }} />
