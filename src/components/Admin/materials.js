@@ -605,7 +605,7 @@ const Materials = ({ globalMatchingProducts, seMaterialDate, globalSelectedAddre
         </div>
 
         {filteredProducts.length != 0 && (
-          <div className="col-12 text-center position-sticky top-0 " style={{ zIndex: "1000" }}>
+          <div className=" position-sticky" style={{ zIndex: "999", top: "94%", height: "0" }}>
             <Paginate pagecount={(e) => setPNum(e)} total={filteredProducts.length} cactive={pnum} perEnteries={50} />
           </div>
         )}
