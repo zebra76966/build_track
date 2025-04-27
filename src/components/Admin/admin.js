@@ -75,7 +75,7 @@ const AdminDashboard = () => {
         <div className="px-1 pb-3 pt-0">
           <div className="mainSectionInner w-100 py-4 px-3 text-light noScrollBar">
             <div className="row mx-0 px-0">
-              <div className="col-12">{active !== 3 && <h4 className="display-6 fw-semi-bold">Good Evening 👋</h4>}</div>
+              {/* <div className="col-12">{active !== 3 && <h4 className="display-6 fw-semi-bold">Good Evening 👋</h4>}</div> */}
               <div className="col-xl-12 mt-2">
                 {active === 0 && (
                   <div className="fade-in">

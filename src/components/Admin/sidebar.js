@@ -26,38 +26,38 @@ const Sidebar = ({ setActive, active }) => {
       <ul class="nav nav-pills flex-column mb-auto ">
         <li class="nav-item" onClick={() => setActive(0)}>
           <Link to="/dashboard/orders" class={`nav-link  ps-4 ${active == 0 ? "active" : ""}`}>
-            <img src="/logo192.png" className="me-2" height={20} />
+            <img src="/icons/cart-shopping-solid.svg" className="me-3" height={18} />
             <span className="txt">Orders</span>
           </Link>
         </li>
         <li class="nav-item" onClick={() => setActive(1)}>
           <Link to="/dashboard/transactions" class={`nav-link ps-4 text-white ${active == 1 ? "active" : ""}`}>
-            <img src="/logo192.png" className="me-2" height={20} />
+            <img src="/logo192.png" className="me-3" height={18} />
             <span className="txt">Transactions</span>
           </Link>
         </li>
         <li class="nav-item" onClick={() => setActive(2)}>
           <Link to="/dashboard/add-property" class={`nav-link ps-4 text-white ${active == 2 ? "active" : ""}`}>
-            <img src="/logo192.png" className="me-2" height={20} />
+            <img src="/icons/house-solid.svg" className="me-3" height={18} />
             <span className="txt">Add Property</span>
           </Link>
         </li>
         <li class="nav-item" onClick={() => setActive(3)}>
           <Link to="/dashboard/materials" class={`nav-link ps-4 text-white ${active == 3 ? "active" : ""}`}>
-            <img src="/logo192.png" className="me-2" height={20} />
+            <img src="/icons/hammer-solid.svg" className="me-3" height={18} />
             <span className="txt">Materials</span>
           </Link>
         </li>
-        <li class="nav-item">
+        {/* <li class="nav-item">
           <a href="#" class="nav-link ps-4 text-white">
-            <img src="/logo192.png" className="me-2" height={20} />
+            <img src="/logo192.png" className="me-3" height={18} />
             <span className="txt">Products</span>
           </a>
-        </li>
+        </li> */}
         <li class="nav-item">
           <a href="#" class="nav-link ps-4 text-white">
-            <img src="/logo192.png" className="me-2" height={20} />
-            <span className="txt">Customers</span>
+            <img src="/icons/helmet-safety-solid.svg" className="me-3" height={18} />
+            <span className="txt">Vendors</span>
           </a>
         </li>
       </ul>

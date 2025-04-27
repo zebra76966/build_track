@@ -31,6 +31,13 @@
   border-left: 4px solid #fabc3f;
   border-radius: 0 0.5em 0.5em 0;
 }
+.sidebarBar .nav-link img {
+  filter: invert(100%);
+}
+
+.sidebarBar .nav-link.active img {
+  filter: invert(83%) sepia(45%) saturate(1247%) hue-rotate(320deg) brightness(106%) contrast(101%);
+}
 
 .searchIcon {
   position: absolute;

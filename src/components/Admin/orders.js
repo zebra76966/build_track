@@ -222,6 +222,7 @@ const Orders = ({ orderFilter, globalSelectedAddress, date }) => {
   const [confirmDelete, setConfirmDelete] = useState(false);
 
   const [pnum, setPNum] = useState(1);
+  const [showTooltip, setShowTooltip] = useState(false);
 
   return (
     <>
@@ -287,8 +288,12 @@ const Orders = ({ orderFilter, globalSelectedAddress, date }) => {
                       </div>
 
                       {activeDetail.order_status && (
-                        <div className="text-end">
-                          <h6 className="fs-6 fw-light  mt-2 pt-2">
+                        <div
+                          className="text-end position-relative"
+                          onMouseEnter={() => activeDetail.delivery_images?.length === 1 && setShowTooltip(true)}
+                          onMouseLeave={() => activeDetail.delivery_images?.length === 1 && setShowTooltip(false)}
+                        >
+                          <h6 className="fs-6 fw-light mt-2 pt-2">
                             Status:{" "}
                             <span
                               className={`fw-bold p-2 rounded-3 ${
@@ -305,7 +310,74 @@ const Orders = ({ orderFilter, globalSelectedAddress, date }) => {
                             </span>
                           </h6>
 
-                          <p className="text-secondary mt-3 "> {activeDetail.status}</p>
+                          <p className="text-secondary mt-3">{activeDetail.status}</p>
+
+                          {/* Tooltip for single image */}
+                          {activeDetail.delivery_images && activeDetail.delivery_images.length === 1 && showTooltip && (
+                            <div
+                              className="position-absolute"
+                              style={{
+                                top: "0",
+                                right: "100%",
+                                marginRight: "10px",
+                                background: "white",
+                                border: "1px solid #ccc",
+                                padding: "5px",
+                                borderRadius: "5px",
+                                zIndex: 9999,
+                                boxShadow: "0 0 10px rgba(0,0,0,0.2)",
+                              }}
+                            >
+                              <img src={activeDetail.delivery_images[0]} alt="Delivery Preview" style={{ width: "150px", height: "auto", objectFit: "cover" }} />
+                            </div>
+                          )}
+
+                          {/* Modal launcher for multiple images */}
+                          {activeDetail.delivery_images && activeDetail.delivery_images.length > 1 && (
+                            <>
+                              <div
+                                className="mt-3 position-relative d-inline-block"
+                                style={{ width: "50px", height: "50px", background: "#eee", cursor: "pointer" }}
+                                data-bs-toggle="modal"
+                                data-bs-target="#imageModal"
+                              >
+                                <span className="position-absolute top-50 start-50 translate-middle text-secondary small">View Images</span>
+                              </div>
+
+                              {/* Modal for multiple images */}
+                              <div className="modal fade" id="imageModal" tabIndex="-1" aria-labelledby="imageModalLabel" aria-hidden="true">
+                                <div className="modal-dialog modal-dialog-centered modal-lg">
+                                  <div className="modal-content">
+                                    <div className="modal-header">
+                                      <h5 className="modal-title" id="imageModalLabel">
+                                        Delivery Images
+                                      </h5>
+                                      <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                    </div>
+                                    <div className="modal-body">
+                                      <div id="carouselImages" className="carousel slide" data-bs-ride="carousel">
+                                        <div className="carousel-inner">
+                                          {activeDetail.delivery_images.map((img, index) => (
+                                            <div key={index} className={`carousel-item ${index === 0 ? "active" : ""}`}>
+                                              <img src={img} className="d-block w-100" alt={`Slide ${index + 1}`} />
+                                            </div>
+                                          ))}
+                                        </div>
+                                        <button className="carousel-control-prev" type="button" data-bs-target="#carouselImages" data-bs-slide="prev">
+                                          <span className="carousel-control-prev-icon" aria-hidden="true"></span>
+                                          <span className="visually-hidden">Previous</span>
+                                        </button>
+                                        <button className="carousel-control-next" type="button" data-bs-target="#carouselImages" data-bs-slide="next">
+                                          <span className="carousel-control-next-icon" aria-hidden="true"></span>
+                                          <span className="visually-hidden">Next</span>
+                                        </button>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            </>
+                          )}
                         </div>
                       )}
                     </div>
