@@ -223,6 +223,7 @@ const Orders = ({ orderFilter, globalSelectedAddress, date }) => {
 
   const [pnum, setPNum] = useState(1);
   const [showTooltip, setShowTooltip] = useState(false);
+  const [gallery, setGallery] = useState(false);
 
   return (
     <>
@@ -292,6 +293,7 @@ const Orders = ({ orderFilter, globalSelectedAddress, date }) => {
                           className="text-end position-relative"
                           onMouseEnter={() => activeDetail.delivery_images?.length === 1 && setShowTooltip(true)}
                           onMouseLeave={() => activeDetail.delivery_images?.length === 1 && setShowTooltip(false)}
+                          style={{ cursor: "pointer" }}
                         >
                           <h6 className="fs-6 fw-light mt-2 pt-2">
                             Status:{" "}
@@ -320,15 +322,17 @@ const Orders = ({ orderFilter, globalSelectedAddress, date }) => {
                                 top: "0",
                                 right: "100%",
                                 marginRight: "10px",
-                                background: "white",
+                                background: "black",
                                 border: "1px solid #ccc",
                                 padding: "5px",
+                                height: "50dvh",
+                                width: "500px",
                                 borderRadius: "5px",
-                                zIndex: 9999,
+                                zIndex: 9999999,
                                 boxShadow: "0 0 10px rgba(0,0,0,0.2)",
                               }}
                             >
-                              <img src={activeDetail.delivery_images[0]} alt="Delivery Preview" style={{ width: "150px", height: "auto", objectFit: "cover" }} />
+                              <img src={activeDetail.delivery_images[0]} alt="Delivery Preview" style={{ width: "100%", height: "100%", objectFit: "contain" }} />
                             </div>
                           )}
 
@@ -336,46 +340,57 @@ const Orders = ({ orderFilter, globalSelectedAddress, date }) => {
                           {activeDetail.delivery_images && activeDetail.delivery_images.length > 1 && (
                             <>
                               <div
-                                className="mt-3 position-relative d-inline-block"
-                                style={{ width: "50px", height: "50px", background: "#eee", cursor: "pointer" }}
-                                data-bs-toggle="modal"
-                                data-bs-target="#imageModal"
+                                className="mt-3 position-relative d-inline-block rounded"
+                                style={{ width: "50px", height: "50px", background: "rgba(0,0,0,0.5)", cursor: "pointer" }}
+                                onClick={() => {
+                                  setGallery(true);
+                                }}
                               >
-                                <span className="position-absolute top-50 start-50 translate-middle text-secondary small">View Images</span>
+                                <i className="fa fa-image text-light" style={{ fontSize: "24px", position: "absolute", top: "50%", left: "50%", transform: "translate(-50%, -50%)" }}></i>
                               </div>
 
                               {/* Modal for multiple images */}
-                              <div className="modal fade" id="imageModal" tabIndex="-1" aria-labelledby="imageModalLabel" aria-hidden="true">
-                                <div className="modal-dialog modal-dialog-centered modal-lg">
-                                  <div className="modal-content">
-                                    <div className="modal-header">
-                                      <h5 className="modal-title" id="imageModalLabel">
-                                        Delivery Images
-                                      </h5>
-                                      <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                    </div>
-                                    <div className="modal-body">
-                                      <div id="carouselImages" className="carousel slide" data-bs-ride="carousel">
-                                        <div className="carousel-inner">
-                                          {activeDetail.delivery_images.map((img, index) => (
-                                            <div key={index} className={`carousel-item ${index === 0 ? "active" : ""}`}>
-                                              <img src={img} className="d-block w-100" alt={`Slide ${index + 1}`} />
-                                            </div>
-                                          ))}
+                              {gallery && (
+                                <div
+                                  className="position-absolute"
+                                  style={{
+                                    top: "0",
+                                    right: "100%",
+                                    marginRight: "10px",
+                                    background: "black",
+                                    border: "1px solid #ccc",
+                                    padding: "5px",
+                                    height: "50dvh",
+                                    width: "600px",
+                                    borderRadius: "5px",
+                                    zIndex: 9999999,
+                                    boxShadow: "0 0 10px rgba(0,0,0,0.2)",
+                                  }}
+                                >
+                                  <i
+                                    className="fa fa-times"
+                                    style={{ fontSize: "24px", color: "#fff", position: "absolute", top: "10px", right: "10px", cursor: "pointer", zIndex: "9899999999" }}
+                                    onClick={() => setGallery(false)}
+                                  ></i>
+                                  <div id="carouselImages" className="carousel slide h-100 w-100" data-bs-ride="carousel">
+                                    <div className="carousel-inner h-100 w-100">
+                                      {activeDetail.delivery_images.map((img, index) => (
+                                        <div key={index} className={`carousel-item h-100 w-100 ${index === 0 ? "active" : ""}`}>
+                                          <img src={img} className="d-block h-100 w-100" alt={`Slide ${index + 1}`} style={{ objectFit: "contain" }} />
                                         </div>
-                                        <button className="carousel-control-prev" type="button" data-bs-target="#carouselImages" data-bs-slide="prev">
-                                          <span className="carousel-control-prev-icon" aria-hidden="true"></span>
-                                          <span className="visually-hidden">Previous</span>
-                                        </button>
-                                        <button className="carousel-control-next" type="button" data-bs-target="#carouselImages" data-bs-slide="next">
-                                          <span className="carousel-control-next-icon" aria-hidden="true"></span>
-                                          <span className="visually-hidden">Next</span>
-                                        </button>
-                                      </div>
+                                      ))}
                                     </div>
+                                    <button className="carousel-control-prev" type="button" data-bs-target="#carouselImages" data-bs-slide="prev">
+                                      <span className="carousel-control-prev-icon" aria-hidden="true"></span>
+                                      <span className="visually-hidden">Previous</span>
+                                    </button>
+                                    <button className="carousel-control-next" type="button" data-bs-target="#carouselImages" data-bs-slide="next">
+                                      <span className="carousel-control-next-icon" aria-hidden="true"></span>
+                                      <span className="visually-hidden">Next</span>
+                                    </button>
                                   </div>
                                 </div>
-                              </div>
+                              )}
                             </>
                           )}
                         </div>
