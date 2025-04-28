@@ -254,7 +254,7 @@ const Materials = ({ globalMatchingProducts, seMaterialDate, globalSelectedAddre
     let body = {
       sort_by: sortBy,
       sort_order: sortOrder,
-      master_address_id: globalSelectedAddress ? globalSelectedAddress : 3,
+      master_address_id: globalSelectedAddress ? globalSelectedAddress : null,
     };
     try {
       const response = await fetch(baseUrl + "/dashboard/property-matching-products/", {
