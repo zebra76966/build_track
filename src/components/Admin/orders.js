@@ -300,11 +300,13 @@ const Orders = ({ orderFilter, globalSelectedAddress, date }) => {
                             <span
                               className={`fw-bold p-2 rounded-3 ${
                                 activeDetail.order_status.toLowerCase() === "pending"
-                                  ? "bg-danger"
+                                  ? "bg-secondary"
                                   : activeDetail.order_status.toLowerCase() === "complete"
                                   ? "bg-success"
                                   : activeDetail.order_status.toLowerCase() === "delivered" || activeDetail.order_status.toLowerCase() === "shipped"
                                   ? "bg-info"
+                                  : activeDetail.order_status.toLowerCase() === "cancelled" || activeDetail.order_status.toLowerCase() === "delayed"
+                                  ? "bg-danger"
                                   : "bg-warning"
                               }`}
                             >
@@ -560,12 +562,14 @@ const Orders = ({ orderFilter, globalSelectedAddress, date }) => {
                         <td
                           className={`${
                             ini.order_status && ini.order_status.toLowerCase() === "pending"
-                              ? "text-danger"
+                              ? "text-secondary"
                               : ini.order_status && ini.order_status.toLowerCase() === "complete"
                               ? "text-success"
                               : (ini.order_status && ini.order_status.toLowerCase() === "delivered") || (ini.order_status && ini.order_status.toLowerCase() === "shipped")
-                              ? "text-light"
-                              : "text-info"
+                              ? "text-info"
+                              : ini.order_status.toLowerCase() === "cancelled" || ini.order_status.toLowerCase() === "delayed"
+                              ? "text-danger"
+                              : "text-warning"
                           }`}
                         >
                           {ini.order_status}

@@ -32,7 +32,7 @@ const Sidebar = ({ setActive, active }) => {
         </li>
         <li class="nav-item" onClick={() => setActive(1)}>
           <Link to="/dashboard/transactions" class={`nav-link ps-4 text-white ${active == 1 ? "active" : ""}`}>
-            <img src="/logo192.png" className="me-3" height={18} />
+            <img src="/icons/credit-card-solid-b.svg" className="me-3" height={18} />
             <span className="txt">Transactions</span>
           </Link>
         </li>

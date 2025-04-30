@@ -179,6 +179,37 @@ const Header = ({ setGlobalMatchingProducts, setGlobalSelectedAddress, materialD
           </form>
 
           <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+            <li class="nav-item rounded-circle bg-black p-1 d-flex align-items-center justify-content-center me-2" style={{ width: "50px", height: "50px" }}>
+              <a class="nav-link   " href="#">
+                <img src="/icons/link-duotone-solid.svg" height={22} />
+              </a>
+            </li>
+            <li class="nav-item rounded-circle bg-black p-1 d-flex align-items-center justify-content-center me-2" style={{ width: "50px", height: "50px" }}>
+              <a class="nav-link   " href="#">
+                <img src="/icons/calculator-solid.svg" height={24} />
+              </a>
+            </li>
+            <li class="nav-item rounded-circle bg-black p-1 d-flex align-items-center justify-content-center me-2" style={{ width: "50px", height: "50px" }}>
+              <a class="nav-link   " href="#">
+                <img src="/icons/list-check-solid.svg" height={22} />
+              </a>
+            </li>
+            <li class="nav-item rounded-circle bg-black p-1 d-flex align-items-center justify-content-center me-2" style={{ width: "50px", height: "50px" }}>
+              <a class="nav-link   " href="#">
+                <img src="/icons/message-text-solid.svg" height={22} />
+              </a>
+            </li>
+            <li class="nav-item rounded-circle bg-black p-1 d-flex align-items-center justify-content-center me-2" style={{ width: "50px", height: "50px" }}>
+              <a class="nav-link   " href="#">
+                <img src="/icons/credit-card-solid.svg" height={22} />
+              </a>
+            </li>
+            <li class="nav-item rounded-circle bg-black p-1 d-flex align-items-center justify-content-center me-2" style={{ width: "50px", height: "50px" }}>
+              <a class="nav-link   " href="#">
+                <img src="/icons/calendar-range-solid.svg" height={24} />
+              </a>
+            </li>
+
             {!isLoggedIn ? (
               <li className="nav-item">
                 <Link to="/" className={`nav-link ${active === 5 ? "active" : ""}`} onClick={() => setActive && setActive(5)} style={{ cursor: "pointer" }}>
@@ -217,12 +248,6 @@ const Header = ({ setGlobalMatchingProducts, setGlobalSelectedAddress, materialD
                 </a>
               </li>
             )}
-
-            <li class="nav-item">
-              <a class="nav-link" href="#">
-                Link#2
-              </a>
-            </li>
           </ul>
         </div>
       </div>
