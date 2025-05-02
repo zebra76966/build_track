@@ -578,29 +578,29 @@ const Materials = ({ globalMatchingProducts, seMaterialDate, globalSelectedAddre
             <p className="fs-6 mb-1 text-light">#</p>
           </div> */}
           <div className="col-5 d-flex flex-column justify-content-center border-end border-1 border-secondary">
-            <p className="fs-6 mb-1 text-light">Name</p>
+            <p className="fs-6-md mb-1 text-light">Name</p>
           </div>
           {/* <div className="col-1 border-end flex-column justify-content-center d-flex border-1 border-secondary ">
             <p className="fs-6 text-light mb-0 text-center">Pricing</p>
           </div> */}
           <div className="col-1 border-end flex-column justify-content-center d-flex border-1 border-secondary ">
-            <p className="fs-7 text-light mb-0 text-center">Suggested Qty.</p>
+            <p className="fs-6-md text-light mb-0 text-center">Suggested Qty.</p>
           </div>
           <div className="col-1 border-end flex-column justify-content-center d-flex border-1 border-secondary ">
-            <p className="fs-6 text-light mb-0 fw-bold text-center">Pack Qty.</p>
+            <p className="fs-6-md text-light mb-0 fw-bold text-center">Pack Qty.</p>
           </div>
           <div className="col-1 border-end flex-column justify-content-center d-flex border-1 border-secondary ">
-            <p className="fs-6 text-light mb-0 text-center">Ordered Qty.</p>
+            <p className="fs-6-md text-light mb-0 text-center">Ordered Qty.</p>
           </div>
 
           {showIdColumn && (
             <div className="col-2 border-end flex-column justify-content-center d-flex border-1 border-secondary ">
-              <p className="fs-6 text-light mb-0 text-center">ID</p>
+              <p className="fs-6-md text-light mb-0 text-center">ID</p>
             </div>
           )}
 
           <div className="col-1 border-end flex-column justify-content-center d-flex border-1 border-secondary ">
-            <p className="fs-6 text-light mb-0  text-center">Vendor</p>
+            <p className="fs-6-md text-light mb-0  text-center">Vendor</p>
           </div>
         </div>
 
@@ -616,8 +616,8 @@ const Materials = ({ globalMatchingProducts, seMaterialDate, globalSelectedAddre
               <img src={`${getProductImageUrl(ini.link)}`} className="w-100 " style={{ objectFit: "cover", height: isFull ? "85px" : "100%", borderRadius: "0.8em 0 0 0.8em" }} />
             </div> */}
             <div className="col-5 d-flex flex-column justify-content-center border-end border-1 border-secondary">
-              <p className="fs-6 mb-1 text-light text-truncate w-75">{ini.common_name}</p>
-              <p className={`text-secondary mb-1 ${isFull ? "" : "textClamp-2"} small`} onClick={() => setIsFull(!isFull)}>
+              <p className="fs-6-sm mb-1 text-light text-truncate w-75">{ini.common_name}</p>
+              <p className={`text-secondary mb-1 ${isFull ? "" : "textClamp-2"} small-sm`} onClick={() => setIsFull(!isFull)}>
                 {ini.product_name}
               </p>
             </div>

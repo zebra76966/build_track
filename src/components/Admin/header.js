@@ -117,6 +117,21 @@ const Header = ({ setGlobalMatchingProducts, setGlobalSelectedAddress, materialD
     setGlobalSelectedAddress(selectedAddress);
   }, [selectedAddress]);
 
+  const [isFullScreen, setIsFullScreen] = useState(false);
+
+  const toggleFullScreen = () => {
+    if (!document.fullscreenElement) {
+      setIsFullScreen(true);
+      document.documentElement.requestFullscreen().catch((err) => {
+        setIsFullScreen(false);
+        console.error(`Error attempting to enable full-screen mode: ${err.message}`);
+      });
+    } else {
+      setIsFullScreen(false);
+      document.exitFullscreen();
+    }
+  };
+
   return (
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
       <div class="container-fluid">
@@ -186,28 +201,112 @@ const Header = ({ setGlobalMatchingProducts, setGlobalSelectedAddress, materialD
             </li>
             <li class="nav-item rounded-circle bg-black p-1 d-flex align-items-center justify-content-center me-2" style={{ width: "50px", height: "50px" }}>
               <a class="nav-link   " href="#">
-                <img src="/icons/calculator-solid.svg" height={24} />
-              </a>
-            </li>
-            <li class="nav-item rounded-circle bg-black p-1 d-flex align-items-center justify-content-center me-2" style={{ width: "50px", height: "50px" }}>
-              <a class="nav-link   " href="#">
                 <img src="/icons/list-check-solid.svg" height={22} />
               </a>
             </li>
-            <li class="nav-item rounded-circle bg-black p-1 d-flex align-items-center justify-content-center me-2" style={{ width: "50px", height: "50px" }}>
-              <a class="nav-link   " href="#">
-                <img src="/icons/message-text-solid.svg" height={22} />
-              </a>
-            </li>
-            <li class="nav-item rounded-circle bg-black p-1 d-flex align-items-center justify-content-center me-2" style={{ width: "50px", height: "50px" }}>
-              <a class="nav-link   " href="#">
-                <img src="/icons/credit-card-solid.svg" height={22} />
-              </a>
-            </li>
-            <li class="nav-item rounded-circle bg-black p-1 d-flex align-items-center justify-content-center me-2" style={{ width: "50px", height: "50px" }}>
-              <a class="nav-link   " href="#">
+            <li class="nav-item rounded-circle bg-black p-1 d-flex align-items-center justify-content-center me-2  " style={{ width: "50px", height: "50px" }}>
+              <a class="nav-link ">
                 <img src="/icons/calendar-range-solid.svg" height={24} />
               </a>
+            </li>
+            <li class="nav-item rounded-circle bg-black p-1 d-flex align-items-center justify-content-center me-2 dropdown" style={{ width: "50px", height: "50px" }}>
+              <a class="nav-link  dropdown-toggle noChev" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                <img src="/icons/calculator-solid.svg" height={24} />
+              </a>
+              <ul class="dropdown-menu dropdown-menu-end p-3 bg-dark border-2 border-secondary mt-2" style={{ borderRadius: "1em" }} aria-labelledby="navbarDropdown">
+                <li>
+                  <a class="dropdown-item text-light pb-2 rounded-pill" href="#">
+                    <img src="/icons/hill-rockslide-solid.svg" height={24} width={50} className="me-2" /> Gravel/Dirt
+                  </a>
+                </li>
+                <li>
+                  <a class="dropdown-item text-light pb-2 rounded-pill" href="#">
+                    <img src="/icons/money-check-dollar-pen-sharp-solid.svg" height={24} width={50} className="me-2" /> Payoffs
+                  </a>
+                </li>
+              </ul>
+            </li>
+            <li class="nav-item rounded-circle bg-black p-1 d-flex align-items-center justify-content-center me-2 dropdown" style={{ width: "50px", height: "50px" }}>
+              <a class="nav-link  dropdown-toggle noChev" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                <img src="/icons/message-text-solid.svg" height={22} />
+              </a>
+              <ul class="dropdown-menu dropdown-menu-end p-3 bg-dark border-2 border-secondary mt-2" style={{ borderRadius: "1em" }} aria-labelledby="navbarDropdown">
+                <li>
+                  <a class="dropdown-item text-light pb-2 rounded-pill" href="#">
+                    <img src="/icons/language-solid.svg" height={24} width={50} className="me-2" /> translate
+                  </a>
+                </li>
+                <li>
+                  <a class="dropdown-item text-light pb-2 rounded-pill" href="#">
+                    <img src="/icons/clock-solid.svg" height={24} width={50} className="me-2" /> Schedule
+                  </a>
+                </li>
+
+                <li>
+                  <a class="dropdown-item text-light pb-2 rounded-pill" href="#">
+                    <img src="/icons/comments-solid.svg" height={24} width={50} className="me-2" /> Text Scripts
+                  </a>
+                </li>
+
+                <li>
+                  <a class="dropdown-item text-light pb-2 rounded-pill" href="#">
+                    <img src="/icons/envelope-open-text-solid.svg" height={24} width={50} className="me-2" /> Email Scripts
+                  </a>
+                </li>
+
+                <li>
+                  <a class="dropdown-item text-light pb-2 rounded-pill" href="#">
+                    <img src="/icons/phone-intercom-solid.svg" height={24} width={50} className="me-2" /> Phone Scripts
+                  </a>
+                </li>
+              </ul>
+            </li>
+
+            <li class="nav-item rounded-circle bg-black p-1 d-flex align-items-center justify-content-center me-2 dropdown" style={{ width: "50px", height: "50px" }}>
+              <a class="nav-link   dropdown-toggle noChev" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                <img src="/icons/credit-card-solid.svg" height={22} />
+              </a>
+
+              <ul class="dropdown-menu dropdown-menu-end p-3 bg-dark border-2 border-secondary mt-2" style={{ borderRadius: "1em" }} aria-labelledby="navbarDropdown">
+                <li>
+                  <a class="dropdown-item text-light pb-2 rounded-pill" href="#">
+                    <img src="/icons/envelope-open-dollar-solid.svg" height={24} width={50} className="me-2 " /> Reimbursement
+                  </a>
+                </li>
+                <li>
+                  <a class="dropdown-item text-light pb-2 rounded-pill" href="#">
+                    <img src="/icons/cehckBook.svg" height={24} width={50} className="me-2" /> Checkbook.io
+                  </a>
+                </li>
+
+                <li>
+                  <a class="dropdown-item text-light pb-2 rounded-pill" href="#">
+                    <img src="/icons/money-check-dollar-pen-sharp-solid.svg" height={24} width={50} className="me-2" /> Check Codes
+                  </a>
+                </li>
+
+                <li>
+                  <a class="dropdown-item text-light pb-2 rounded-pill" href="#">
+                    <img src="/icons/simple-cashapp.svg" height={24} width={50} className="me-2" /> CashApp
+                  </a>
+                </li>
+                <li>
+                  <a class="dropdown-item text-light pb-2 rounded-pill" href="#">
+                    <img src="/icons/logo-venmo-svgrepo-com.svg" height={24} width={50} className="me-2" /> Venmo
+                  </a>
+                </li>
+                <li>
+                  <a class="dropdown-item text-light pb-2 rounded-pill" href="#">
+                    <img src="/icons/apple-pay-brands-solid.svg" height={22} width={50} className="me-2" /> Apple Pay
+                  </a>
+                </li>
+              </ul>
+            </li>
+
+            <li class="nav-item rounded-circle bg-black p-1 d-flex align-items-center justify-content-center me-2" style={{ width: "50px", height: "50px" }}>
+              <span class="nav-link   " onClick={toggleFullScreen} style={{ cursor: "pointer" }}>
+                {isFullScreen ? <img src="/icons/material-fullscreen-exit.svg" height={22} /> : <img src="/icons/material-fullscreen.svg" height={22} />}
+              </span>
             </li>
 
             {!isLoggedIn ? (

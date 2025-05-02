@@ -2,6 +2,7 @@ body,
 html {
   font-family: "Poppins", serif;
 }
+
 .dropdown-menu.show {
   right: 0 !important;
 }

@@ -30,19 +30,23 @@ const AddProperty = () => {
   const [mainPropertyScrapeUrl, setMainPropertyScrapeUrl] = useState("");
 
   const [propertyData, setPropertyData] = useState({
-    select_property_type: "",
+    address: "",
+
     stage: "",
-    title: "",
+    // title: "",
     choose_image_scraper: [],
     upload_image: null,
     scrapeUrls: [],
-    property_type: "",
-    address: "",
+
     state: "",
     city: "",
     postal_code: "",
+    block: "",
+    lot: "",
+    qualifier: "",
+    property_type: "",
+    select_property_type: "",
     project_manager: "",
-    block_lot: "",
 
     // video_link: "",
     content: "",
@@ -169,7 +173,7 @@ const AddProperty = () => {
         upload_image: null,
         scrapeUrls: {},
         stage: "",
-        title: "",
+        // title: "",
         property_type: "",
         address: "",
         state: "",
@@ -245,8 +249,81 @@ const AddProperty = () => {
               </div>
 
               {Object.keys(propertyData)
-                .filter((key) => !["stage", "state", "city", "choose_image_scraper", "upload_image", "select_property_type", "scrapeUrls", "block_lot"].includes(key))
+                .filter((key) => !["stage", "state", "city", "choose_image_scraper", "upload_image", "select_property_type", "scrapeUrls"].includes(key))
                 .map((key) => {
+                  if (key === "address") {
+                    return (
+                      <React.Fragment key={key}>
+                        {/* Address Field (Already Present) */}
+                        <div className="col-12 col-lg-4">
+                          <label htmlFor={key} className="form-label">
+                            Street Address
+                          </label>
+                          <input
+                            type="text"
+                            className="form-control text-light bg-dark shadow-sm p-3 border-light"
+                            id={key}
+                            placeholder="Enter Address"
+                            value={propertyData[key]}
+                            onChange={(e) => setPropertyData({ ...propertyData, [key]: e.target.value })}
+                            style={{ borderRadius: "10px" }}
+                            required
+                          />
+                        </div>
+
+                        <div className="col-12 col-lg-4 position-relative">
+                          <label htmlFor="state" className="form-label">
+                            State
+                          </label>
+                          <input
+                            type="text"
+                            className="form-control text-light bg-dark shadow-sm p-3 border-light"
+                            id="state"
+                            placeholder="Enter State"
+                            value={propertyData.state}
+                            onChange={handleStateChange}
+                            style={{ borderRadius: "10px" }}
+                            required
+                          />
+                          {filteredStates.length > 0 && (
+                            <ul className="list-group position-absolute w-100 bg-dark mt-1 border-light" style={{ maxHeight: "150px", overflowY: "auto", zIndex: 1000 }}>
+                              {filteredStates.map((state, index) => (
+                                <li key={index} className="list-group-item text-light bg-dark border-light" style={{ cursor: "pointer" }} onClick={() => selectState(state)}>
+                                  {state}
+                                </li>
+                              ))}
+                            </ul>
+                          )}
+                        </div>
+
+                        <div className="col-12 col-lg-4 position-relative">
+                          <label htmlFor="city" className="form-label">
+                            City
+                          </label>
+                          <input
+                            type="text"
+                            className="form-control text-light bg-dark shadow-sm p-3 border-light"
+                            id="city"
+                            placeholder="Enter City"
+                            value={propertyData.city}
+                            onChange={handleCityChange}
+                            style={{ borderRadius: "10px" }}
+                            required
+                          />
+                          {filteredCities.length > 0 && (
+                            <ul className="list-group position-absolute w-100 bg-dark mt-1 border-light" style={{ maxHeight: "150px", overflowY: "auto", zIndex: 1000 }}>
+                              {filteredCities.map((city, index) => (
+                                <li key={index} className="list-group-item text-light bg-dark border-light" style={{ cursor: "pointer" }} onClick={() => selectCity(city)}>
+                                  {city}
+                                </li>
+                              ))}
+                            </ul>
+                          )}
+                        </div>
+                      </React.Fragment>
+                    );
+                  }
+
                   if (key === "property_type") {
                     return (
                       <React.Fragment key={key}>
@@ -318,7 +395,7 @@ const AddProperty = () => {
                             )}
                           </select>
                         </div>
-                        <div className="col-12 col-lg-4">
+                        {/* <div className="col-12 col-lg-4">
                           <label htmlFor="block_lot" className="form-label">
                             Block-Lot
                           </label>
@@ -332,80 +409,7 @@ const AddProperty = () => {
                             style={{ borderRadius: "10px" }}
                             required
                           />
-                        </div>
-                      </React.Fragment>
-                    );
-                  }
-
-                  if (key === "address") {
-                    return (
-                      <React.Fragment key={key}>
-                        {/* Address Field (Already Present) */}
-                        <div className="col-12 col-lg-4">
-                          <label htmlFor={key} className="form-label">
-                            Address
-                          </label>
-                          <input
-                            type="text"
-                            className="form-control text-light bg-dark shadow-sm p-3 border-light"
-                            id={key}
-                            placeholder="Enter Address"
-                            value={propertyData[key]}
-                            onChange={(e) => setPropertyData({ ...propertyData, [key]: e.target.value })}
-                            style={{ borderRadius: "10px" }}
-                            required
-                          />
-                        </div>
-
-                        <div className="col-12 col-lg-4 position-relative">
-                          <label htmlFor="state" className="form-label">
-                            State
-                          </label>
-                          <input
-                            type="text"
-                            className="form-control text-light bg-dark shadow-sm p-3 border-light"
-                            id="state"
-                            placeholder="Enter State"
-                            value={propertyData.state}
-                            onChange={handleStateChange}
-                            style={{ borderRadius: "10px" }}
-                            required
-                          />
-                          {filteredStates.length > 0 && (
-                            <ul className="list-group position-absolute w-100 bg-dark mt-1 border-light" style={{ maxHeight: "150px", overflowY: "auto", zIndex: 1000 }}>
-                              {filteredStates.map((state, index) => (
-                                <li key={index} className="list-group-item text-light bg-dark border-light" style={{ cursor: "pointer" }} onClick={() => selectState(state)}>
-                                  {state}
-                                </li>
-                              ))}
-                            </ul>
-                          )}
-                        </div>
-
-                        <div className="col-12 col-lg-4 position-relative">
-                          <label htmlFor="city" className="form-label">
-                            City
-                          </label>
-                          <input
-                            type="text"
-                            className="form-control text-light bg-dark shadow-sm p-3 border-light"
-                            id="city"
-                            placeholder="Enter City"
-                            value={propertyData.city}
-                            onChange={handleCityChange}
-                            style={{ borderRadius: "10px" }}
-                            required
-                          />
-                          {filteredCities.length > 0 && (
-                            <ul className="list-group position-absolute w-100 bg-dark mt-1 border-light" style={{ maxHeight: "150px", overflowY: "auto", zIndex: 1000 }}>
-                              {filteredCities.map((city, index) => (
-                                <li key={index} className="list-group-item text-light bg-dark border-light" style={{ cursor: "pointer" }} onClick={() => selectCity(city)}>
-                                  {city}
-                                </li>
-                              ))}
-                            </ul>
-                          )}
-                        </div>
+                        </div> */}
                       </React.Fragment>
                     );
                   }
@@ -415,13 +419,13 @@ const AddProperty = () => {
                       <React.Fragment key={key}>
                         <div className="col-12" key={key}>
                           <label htmlFor={key} className="form-label">
-                            {key.replace(/_/g, " ").replace(/\b\w/g, (char) => char.toUpperCase())}
+                            Additonal Information
                           </label>
                           <textarea
                             rows="5"
                             className="form-control text-light bg-dark shadow-sm p-3 border-light"
                             id={key}
-                            placeholder={`Enter ${key.replace(/_/g, " ")}`}
+                            placeholder={"Enter Additonal Information"}
                             value={propertyData[key]}
                             onChange={(e) => setPropertyData({ ...propertyData, [key]: e.target.value })}
                             style={{ borderRadius: "10px" }}
@@ -582,6 +586,47 @@ const AddProperty = () => {
                           </div>
                         </div>
                       </React.Fragment>
+                    );
+                  }
+
+                  if (key === "block" || key === "lot" || key === "qualifier") {
+                    return (
+                      <div className="col-12 col-lg-2" key={key}>
+                        <label htmlFor={key} className="form-label">
+                          {key.replace(/_/g, " ").replace(/\b\w/g, (char) => char.toUpperCase())}
+                        </label>
+                        <input
+                          type="text"
+                          className="form-control text-light bg-dark shadow-sm p-3 border-light"
+                          id={key}
+                          placeholder={`Enter ${key.replace(/_/g, " ")}`}
+                          value={propertyData[key]}
+                          onChange={(e) => setPropertyData({ ...propertyData, [key]: e.target.value })}
+                          style={{ borderRadius: "10px" }}
+                          maxLength={5}
+                          required
+                        />
+                      </div>
+                    );
+                  }
+                  if (key === "postal_code") {
+                    return (
+                      <div className="col-12 col-lg-2" key={key}>
+                        <label htmlFor={key} className="form-label">
+                          {key.replace(/_/g, " ").replace(/\b\w/g, (char) => char.toUpperCase())}
+                        </label>
+                        <input
+                          type="text"
+                          className="form-control text-light bg-dark shadow-sm p-3 border-light"
+                          id={key}
+                          placeholder={`Enter ${key.replace(/_/g, " ")}`}
+                          value={propertyData[key]}
+                          onChange={(e) => setPropertyData({ ...propertyData, [key]: e.target.value })}
+                          style={{ borderRadius: "10px" }}
+                          maxLength={5}
+                          required
+                        />
+                      </div>
                     );
                   }
 

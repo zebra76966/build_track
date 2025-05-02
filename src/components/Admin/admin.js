@@ -72,7 +72,7 @@ const AdminDashboard = () => {
         <div className="w-100 mb-1 py-1 px-2">
           <Header setActive={setActive} active={active} setGlobalMatchingProducts={setGlobalMatchingProducts} setGlobalSelectedAddress={setGlobalSelectedAddress} materialDate={materialDate} />
         </div>
-        <div className="px-1 pb-3 pt-0">
+        <div className="px-1  pt-0">
           <div className="mainSectionInner w-100 py-4 px-3 text-light noScrollBar">
             <div className="row mx-0 px-0">
               {/* <div className="col-12">{active !== 3 && <h4 className="display-6 fw-semi-bold">Good Evening 👋</h4>}</div> */}

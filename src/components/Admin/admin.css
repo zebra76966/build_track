@@ -278,3 +278,19 @@
   border-color: black;
   cursor: pointer;
 }
+
+.dropdown-toggle.noChev::after {
+  display: none !important;
+}
+
+.fs-6-md {
+  font-size: 0.9rem !important;
+}
+
+.fs-6-sm {
+  font-size: 0.875rem !important;
+}
+
+.small-sm {
+  font-size: 0.785em;
+}
