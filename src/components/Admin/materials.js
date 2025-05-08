@@ -207,6 +207,13 @@ const Materials = ({ globalMatchingProducts, seMaterialDate, globalSelectedAddre
   const handleCategoryClick = (category) => {
     setSelectedCategories((prevSelected) => (prevSelected.includes(category) ? prevSelected.filter((c) => c !== category) : [...prevSelected, category]));
   };
+  const toggleAll = () => {
+    if (selectedCategories.length === categories.length) {
+      setSelectedCategories([]); // deselect all
+    } else {
+      setSelectedCategories(categories); // select all
+    }
+  };
 
   // Date Filtering===========>
   const [selectedDate, setSelectedDate] = useState(null); // State to hold selected date
@@ -407,6 +414,21 @@ const Materials = ({ globalMatchingProducts, seMaterialDate, globalSelectedAddre
           </div>
         </div>
         <div className="tags mt-3">
+          <button className={`btn rounded-pill fs-6 me-1 mb-2 ${selectedCategories.length === categories.length ? "bg-info text-dark" : "btn-dark text-secondary"}`} onClick={toggleAll}>
+            {selectedCategories.length === categories.length ? "Deselect All" : "Select All"}
+
+            <img
+              src={"/icons/toggle-off-solid.svg"}
+              height={24}
+              alt="icon"
+              style={{
+                filter: selectedCategories.length === categories.length ? "invert(0)" : "invert(1)",
+                transform: selectedCategories.length === categories.length ? "rotate(180deg)" : "rotate(0deg)",
+              }}
+              className="ms-1"
+            />
+          </button>
+
           {categories.slice(0, viewAll ? categories.length - 1 : 8)?.map((category, index) => (
             <button
               key={index}

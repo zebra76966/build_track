@@ -1,6 +1,11 @@
 body,
 html {
   font-family: "Poppins", serif;
+  font-size: 90%;
+}
+.zoom-80 {
+  transform: scale(0.8);
+  transform-origin: top left;
 }
 
 .dropdown-menu.show {
