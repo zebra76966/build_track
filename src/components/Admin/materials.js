@@ -313,6 +313,25 @@ const Materials = ({ globalMatchingProducts, seMaterialDate, globalSelectedAddre
 
   const [pnum, setPNum] = useState(1);
 
+  const [modalImage, setModalImage] = useState("");
+  const modalRef = useRef();
+
+  const handleMouseEnter = (image) => {
+    setModalImage(image || "/suppl.jpg");
+
+    // Show Bootstrap 5 modal manually
+    const modal = new window.bootstrap.Modal(modalRef.current);
+    modal.show();
+  };
+
+  const handleMouseLeave = () => {
+    const modalEl = modalRef.current;
+    const modalInstance = window.bootstrap.Modal.getInstance(modalEl);
+    if (modalInstance) {
+      modalInstance.hide();
+    }
+  };
+
   return (
     <>
       <div className="w-100 p-3">
@@ -596,9 +615,9 @@ const Materials = ({ globalMatchingProducts, seMaterialDate, globalSelectedAddre
 
       <div className="w-100 p-3 mt-2">
         <div className="row  align-items-stretch p-1 px-0 mb-1 fw-bold">
-          {/* <div className="col-1 h-100 position-relative  d-flex px-1 py-0">
+          <div className="col-1 h-100 position-relative  d-flex px-1 py-0">
             <p className="fs-6 mb-1 text-light">#</p>
-          </div> */}
+          </div>
           <div className="col-5 d-flex flex-column justify-content-center border-end border-1 border-secondary">
             <p className="fs-6-md mb-1 text-light">Name</p>
           </div>
@@ -634,9 +653,24 @@ const Materials = ({ globalMatchingProducts, seMaterialDate, globalSelectedAddre
 
         {filteredProducts.slice(pnum * 50 - 50, pnum * 50).map((ini, index) => (
           <div className="row border-1 border border-secondary align-items-stretch p-1 px-0 mb-1" style={{ borderRadius: "1em", height: isFull ? "100%" : "85px", cursor: "pointer" }} key={index}>
-            {/* <div className="col-1 h-100 position-relative  d-flex px-1 py-0">
-              <img src={`${getProductImageUrl(ini.link)}`} className="w-100 " style={{ objectFit: "cover", height: isFull ? "85px" : "100%", borderRadius: "0.8em 0 0 0.8em" }} />
-            </div> */}
+            <div
+              className="col-1 h-100 position-relative  d-flex px-1 py-0"
+              onClick={() => handleMouseEnter(ini.material_image || "/suppl.jpg")}
+              onMouseLeave={handleMouseLeave}
+              style={{ cursor: "zoom-in" }}
+            >
+              <img src={`${ini.material_image || "/suppl.jpg"}`} className="w-100 " style={{ objectFit: "cover", height: isFull ? "85px" : "100%", borderRadius: "0.8em 0 0 0.8em" }} />
+            </div>
+            {/* Bootstrap Modal */}
+            <div className="modal fade" tabIndex="-1" ref={modalRef} aria-hidden="true" style={{ cursor: "zoom-out" }}>
+              <div className="modal-dialog modal-dialog-centered">
+                <div className="modal-content">
+                  <div className="modal-body p-0">
+                    <img src={modalImage} alt="Enlarged" className="w-100" style={{ borderRadius: "0.5em" }} />
+                  </div>
+                </div>
+              </div>
+            </div>
             <div className="col-5 d-flex flex-column justify-content-center border-end border-1 border-secondary">
               <p className="fs-6-sm mb-1 text-light text-truncate w-75">{ini.common_name}</p>
               <p className={`text-secondary mb-1 ${isFull ? "" : "textClamp-2"} small-sm`} onClick={() => setIsFull(!isFull)}>
