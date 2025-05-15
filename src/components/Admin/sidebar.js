@@ -48,6 +48,7 @@ const Sidebar = ({ setActive, active }) => {
             <span className="txt">Materials</span>
           </Link>
         </li>
+
         {/* <li class="nav-item">
           <a href="#" class="nav-link ps-4 text-white">
             <img src="/logo192.png" className="me-3" height={18} />
@@ -58,6 +59,12 @@ const Sidebar = ({ setActive, active }) => {
           <a href="#" class="nav-link ps-4 text-white">
             <img src="/icons/helmet-safety-solid.svg" className="me-3" height={18} />
             <span className="txt">Vendors</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a href="https://calendar.google.com/calendar/u/0/r/month" target="_blank" class={`nav-link ps-4 text-white ${active == 4 ? "active" : ""}`}>
+            <img src="/icons/awesome-calendar-check.svg" className="me-3" height={18} />
+            <span className="txt">Calendar</span>
           </a>
         </li>
       </ul>
