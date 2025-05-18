@@ -317,7 +317,7 @@ const Materials = ({ globalMatchingProducts, seMaterialDate, globalSelectedAddre
   const modalRef = useRef();
 
   const handleMouseEnter = (image) => {
-    setModalImage(image || "/suppl.jpg");
+    setModalImage(image || "/icons/default-image.svg");
 
     // Show Bootstrap 5 modal manually
     const modal = new window.bootstrap.Modal(modalRef.current);
@@ -655,11 +655,11 @@ const Materials = ({ globalMatchingProducts, seMaterialDate, globalSelectedAddre
           <div className="row border-1 border border-secondary align-items-stretch p-1 px-0 mb-1" style={{ borderRadius: "1em", height: isFull ? "100%" : "85px", cursor: "pointer" }} key={index}>
             <div
               className="col-1 h-100 position-relative  d-flex px-1 py-0"
-              onClick={() => handleMouseEnter(ini.material_image || "/suppl.jpg")}
+              onClick={() => handleMouseEnter(ini.image || "/icons/default-image.svg")}
               onMouseLeave={handleMouseLeave}
               style={{ cursor: "zoom-in" }}
             >
-              <img src={`${ini.material_image || "/suppl.jpg"}`} className="w-100 " style={{ objectFit: "cover", height: isFull ? "85px" : "100%", borderRadius: "0.8em 0 0 0.8em" }} />
+              <img src={`${ini.image || "/icons/default-image.svg"}`} className="w-100 " style={{ objectFit: "contain", height: isFull ? "85px" : "100%", borderRadius: "0.8em 0 0 0.8em" }} />
             </div>
             {/* Bootstrap Modal */}
             <div className="modal fade" tabIndex="-1" ref={modalRef} aria-hidden="true" style={{ cursor: "zoom-out" }}>
